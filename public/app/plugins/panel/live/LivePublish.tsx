@@ -4,6 +4,7 @@ import { LiveChannelAddress, isValidLiveChannelAddress } from '@grafana/data';
 import { Trans } from '@grafana/i18n';
 import { getBackendSrv, getGrafanaLiveSrv } from '@grafana/runtime';
 import { CodeEditor, Button } from '@grafana/ui';
+import { liveLogger } from 'app/core/utils/logging';
 
 import { MessagePublishMode } from './types';
 
@@ -46,7 +47,7 @@ export function LivePublish({ height, mode, body, addr, onSave }: Props) {
     }
 
     const rsp = await getGrafanaLiveSrv().publish(addr, body);
-    console.log('onPublishClicked (response from publish)', rsp);
+    liveLogger.logDebug('Message published to live channel', { success: String(!!rsp) });
   };
 
   return (

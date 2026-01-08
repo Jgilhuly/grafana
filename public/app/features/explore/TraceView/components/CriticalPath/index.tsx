@@ -14,6 +14,8 @@
 
 import memoizeOne from 'memoize-one';
 
+import { exploreLogger } from 'app/core/utils/logging';
+
 import { TraceSpan, CriticalPathSection, Trace } from '../types/trace';
 
 import findLastFinishingChildSpan from './utils/findLastFinishingChildSpan';
@@ -103,8 +105,9 @@ function criticalPathForTrace(trace: Trace) {
       const sanitizedSpanMap = sanitizeOverFlowingChildren(refinedSpanMap);
       criticalPath = computeCriticalPath(sanitizedSpanMap, rootSpanId, criticalPath);
     } catch (error) {
-      /* eslint-disable no-console */
-      console.log('error while computing critical path for a trace', error);
+      exploreLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+        context: 'computeCriticalPath',
+      });
     }
   }
   return criticalPath;

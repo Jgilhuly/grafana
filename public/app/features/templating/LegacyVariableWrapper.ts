@@ -1,5 +1,6 @@
 import { VariableValue, FormatVariable } from '@grafana/scenes';
 import { VariableModel, VariableType } from '@grafana/schema';
+import { variablesLogger } from 'app/core/utils/logging';
 
 import { ALL_VARIABLE_TEXT, ALL_VARIABLE_VALUE } from '../variables/constants';
 
@@ -31,7 +32,7 @@ export class LegacyVariableWrapper implements FormatVariable {
       return text.join(' + ');
     }
 
-    console.log('value', text);
+    variablesLogger.logDebug('Converting non-standard text value to string', { textType: typeof text });
     return String(text);
   }
 }

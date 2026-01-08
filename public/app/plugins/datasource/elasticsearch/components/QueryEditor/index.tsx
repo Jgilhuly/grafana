@@ -5,6 +5,7 @@ import { SemVer } from 'semver';
 import { getDefaultTimeRange, GrafanaTheme2, QueryEditorProps } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { Alert, InlineField, InlineLabel, Input, QueryField, useStyles2 } from '@grafana/ui';
+import { datasourcesLogger } from 'app/core/utils/logging';
 
 import { ElasticsearchDataQuery } from '../../dataquery.gen';
 import { ElasticDatasource } from '../../datasource';
@@ -37,8 +38,10 @@ function useElasticVersion(datasource: ElasticDatasource): SemVer | null {
         }
       },
       (error) => {
-        // we do nothing
-        console.log(error);
+        // Log the error but don't show it to the user
+        datasourcesLogger.logError(error instanceof Error ? error : new Error(String(error)), {
+          context: 'ElasticsearchQueryEditor.useElasticVersion',
+        });
       }
     );
 

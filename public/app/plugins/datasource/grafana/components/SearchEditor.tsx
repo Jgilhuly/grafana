@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as React from 'react';
 
 import { InlineField, Input, InlineFieldRow, CodeEditor } from '@grafana/ui';
+import { datasourcesLogger } from 'app/core/utils/logging';
 import { SearchQuery } from 'app/features/search/service/types';
 
 interface Props {
@@ -49,7 +50,9 @@ export default function SearchEditor({ value, onChange }: Props) {
       onChange(searchQuery);
       setQuery(searchQuery.query ?? '');
     } catch (ex) {
-      console.log('UNABLE TO parse search', rawSearchJSON, ex);
+      datasourcesLogger.logError(ex instanceof Error ? ex : new Error(String(ex)), {
+        context: 'SearchEditor.onSearchChange',
+      });
     }
   };
 

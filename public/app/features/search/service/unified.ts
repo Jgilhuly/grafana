@@ -6,6 +6,7 @@ import { DataFrame, DataFrameView, getDisplayProcessor, SelectableValue, toDataF
 import { t } from '@grafana/i18n';
 import { config, getBackendSrv } from '@grafana/runtime';
 import { generatedAPI, ListStarsApiResponse } from 'app/api/clients/collections/v1alpha1';
+import { searchLogger } from 'app/core/utils/logging';
 import { getAPIBaseURL } from 'app/api/utils';
 import { TermCount } from 'app/core/components/TagFilter/TagFilter';
 import { contextSrv } from 'app/core/services/context_srv';
@@ -189,11 +190,14 @@ export class UnifiedSearcher implements GrafanaSearcher {
         const resp = await this.fetchResponse(nextPageUrl);
         const frame = toDashboardResults(resp, query.sort ?? '');
         if (!frame) {
-          console.log('no results', frame);
+          searchLogger.logDebug('No results returned from search');
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          searchLogger.logWarning('Invalid frame shape in search results', {
+            expectedFields: String(view.dataFrame.fields.length),
+            actualFields: String(frame.fields.length),
+          });
           return;
         }
 

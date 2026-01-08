@@ -12,6 +12,7 @@ import {
 } from '@grafana/data';
 import { getGrafanaLiveSrv, locationService } from '@grafana/runtime';
 import { appEvents } from 'app/core/app_events';
+import { liveLogger } from 'app/core/utils/logging';
 import { contextSrv } from 'app/core/services/context_srv';
 
 import { ShowModalReactEvent } from '../../../types/events';
@@ -127,7 +128,10 @@ class DashboardWatcher {
 
             const dash = getDashboardSrv().getCurrent();
             if (dash?.uid !== event.message.uid) {
-              console.log('dashboard event for different dashboard?', event, dash);
+              liveLogger.logDebug('Dashboard event received for different dashboard', {
+                eventUid: event.message.uid,
+                currentUid: dash?.uid ?? 'none',
+              });
               return;
             }
 

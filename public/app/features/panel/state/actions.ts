@@ -1,4 +1,5 @@
 import { DataTransformerConfig, FieldConfigSource, getPanelOptionsWithDefaults } from '@grafana/data';
+import { panelLogger } from 'app/core/utils/logging';
 import { PanelModel } from 'app/features/dashboard/state/PanelModel';
 import { getLibraryPanel } from 'app/features/library-panels/state/api';
 import { LibraryElementDTO } from 'app/features/library-panels/types';
@@ -165,7 +166,7 @@ export function loadLibraryPanelAndUpdate(panel: PanelModel): ThunkResult<void> 
 
       await dispatch(initPanelState(panel));
     } catch (ex) {
-      console.log('ERROR: ', ex);
+      panelLogger.logError(ex instanceof Error ? ex : new Error(String(ex)), { context: 'loadLibraryPanelAndUpdate' });
       dispatch(
         panelModelAndPluginReady({
           key: panel.key,

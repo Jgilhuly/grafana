@@ -4,6 +4,7 @@ import { UseFormReturn, Controller } from 'react-hook-form';
 
 import { SelectableValue } from '@grafana/data';
 import { Checkbox, Field, Input, SecretInput, Select, Switch, useTheme2 } from '@grafana/ui';
+import { authLogger } from 'app/core/utils/logging';
 
 import { fieldMap } from './fields';
 import { SSOProviderDTO, SSOSettingsField } from './types';
@@ -78,7 +79,7 @@ export const FieldRenderer = ({
   }, [isDisabled, disabledWhen?.disabledValue, name, setValue]);
 
   if (!field) {
-    console.log('missing field:', name);
+    authLogger.logWarning('Missing field definition', { fieldName: name });
     return null;
   }
 

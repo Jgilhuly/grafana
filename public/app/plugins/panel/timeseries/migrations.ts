@@ -16,6 +16,7 @@ import {
   Threshold,
   ThresholdsMode,
 } from '@grafana/data';
+import { panelLogger } from 'app/core/utils/logging';
 import {
   LegendDisplayMode,
   TooltipDisplayMode,
@@ -283,7 +284,7 @@ export function graphToTimeseriesOptions(angular: any): {
             });
             break;
           default:
-            console.log('Ignore override migration:', seriesOverride.alias, p, v);
+            panelLogger.logDebug('Ignoring override migration', { alias: seriesOverride.alias, property: p });
         }
       }
       if (dashOverride) {
