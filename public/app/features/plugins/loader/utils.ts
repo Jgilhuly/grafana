@@ -1,6 +1,8 @@
-import { config } from '@grafana/runtime';
+import { config, createMonitoringLogger } from '@grafana/runtime';
 
 import { sandboxPluginDependencies } from '../sandbox/pluginDependencies';
+
+const logger = createMonitoringLogger('features.plugins.loader');
 
 import { SHARED_DEPENDENCY_PREFIX } from './constants';
 import { SystemJS } from './systemjs';
@@ -29,7 +31,7 @@ function addPreload(id: string, preload: (() => Promise<System.Module>) | System
   try {
     resolvedId = SystemJS.resolve(id);
   } catch (e) {
-    console.log(e);
+    logger.logDebug('Failed to resolve module', { id, error: String(e) });
   }
 
   if (resolvedId && SystemJS.has(resolvedId)) {

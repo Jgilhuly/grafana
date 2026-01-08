@@ -16,6 +16,7 @@ import {
   Threshold,
   ThresholdsMode,
 } from '@grafana/data';
+import { createMonitoringLogger } from '@grafana/runtime';
 import {
   LegendDisplayMode,
   TooltipDisplayMode,
@@ -34,6 +35,8 @@ import {
   AnnotationQuery,
   ComparisonOperation,
 } from '@grafana/schema';
+
+const logger = createMonitoringLogger('plugins.panel.timeseries.migrations');
 import { TimeRegionConfig } from 'app/core/utils/timeRegions';
 import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
 import { getTimeSrv } from 'app/features/dashboard/services/TimeSrv';
@@ -283,7 +286,7 @@ export function graphToTimeseriesOptions(angular: any): {
             });
             break;
           default:
-            console.log('Ignore override migration:', seriesOverride.alias, p, v);
+            logger.logDebug('Ignoring override migration', { alias: seriesOverride.alias, property: p, value: String(v) });
         }
       }
       if (dashOverride) {
