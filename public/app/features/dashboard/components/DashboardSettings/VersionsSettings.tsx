@@ -1,7 +1,10 @@
 import { PureComponent } from 'react';
 import * as React from 'react';
 
+import { createMonitoringLogger } from '@grafana/runtime';
 import { Spinner, Stack } from '@grafana/ui';
+
+const logger = createMonitoringLogger('features.dashboard.versions-settings');
 import { Page } from 'app/core/components/Page/Page';
 import { historySrv, RevisionsModel } from 'app/features/dashboard-scene/settings/version-history/HistorySrv';
 import { VersionsHistoryButtons } from 'app/features/dashboard-scene/settings/version-history/VersionHistoryButtons';
@@ -76,7 +79,7 @@ export class VersionsSettings extends PureComponent<Props, State> {
         // Update the continueToken for the next request, if available
         this.continueToken = res.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) => logger.logError(err instanceof Error ? err : new Error(String(err))))
       .finally(() => this.setState({ isAppending: false }));
   };
 

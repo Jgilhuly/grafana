@@ -3,8 +3,10 @@ import { useEffect, useId, useState } from 'react';
 import { SemVer } from 'semver';
 
 import { getDefaultTimeRange, GrafanaTheme2, QueryEditorProps } from '@grafana/data';
-import { config } from '@grafana/runtime';
+import { config, createMonitoringLogger } from '@grafana/runtime';
 import { Alert, InlineField, InlineLabel, Input, QueryField, useStyles2 } from '@grafana/ui';
+
+const logger = createMonitoringLogger('plugins.datasource.elasticsearch.query-editor');
 
 import { ElasticsearchDataQuery } from '../../dataquery.gen';
 import { ElasticDatasource } from '../../datasource';
@@ -37,8 +39,8 @@ function useElasticVersion(datasource: ElasticDatasource): SemVer | null {
         }
       },
       (error) => {
-        // we do nothing
-        console.log(error);
+        // we do nothing, just log the error
+        logger.logDebug('Failed to get database version', { error: String(error) });
       }
     );
 

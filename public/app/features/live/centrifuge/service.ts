@@ -17,6 +17,7 @@ import {
   toLiveChannelId,
 } from '@grafana/data';
 import {
+  createMonitoringLogger,
   FetchResponse,
   GrafanaLiveSrv,
   LiveDataStreamOptions,
@@ -26,6 +27,8 @@ import {
   StreamingFrameOptions,
   BackendDataSourceResponse,
 } from '@grafana/runtime';
+
+const logger = createMonitoringLogger('features.live.centrifuge.service');
 
 import { StreamingResponseData } from '../data/utils';
 
@@ -121,7 +124,7 @@ export class CentrifugeService implements CentrifugeSrv {
   };
 
   private onServerSideMessage = (context: ServerPublicationContext) => {
-    console.log('Publication from server-side channel', context);
+    logger.logDebug('Publication from server-side channel', { channel: context.channel });
   };
 
   /**

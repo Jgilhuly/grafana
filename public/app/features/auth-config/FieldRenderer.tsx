@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import { UseFormReturn, Controller } from 'react-hook-form';
 
 import { SelectableValue } from '@grafana/data';
+import { createMonitoringLogger } from '@grafana/runtime';
 import { Checkbox, Field, Input, SecretInput, Select, Switch, useTheme2 } from '@grafana/ui';
+
+const logger = createMonitoringLogger('features.auth-config.field-renderer');
 
 import { fieldMap } from './fields';
 import { SSOProviderDTO, SSOSettingsField } from './types';
@@ -78,7 +81,7 @@ export const FieldRenderer = ({
   }, [isDisabled, disabledWhen?.disabledValue, name, setValue]);
 
   if (!field) {
-    console.log('missing field:', name);
+    logger.logWarning('Missing field configuration', { fieldName: name });
     return null;
   }
 

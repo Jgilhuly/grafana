@@ -4,7 +4,9 @@ import * as React from 'react';
 import ReactGridLayout, { ItemCallback } from 'react-grid-layout';
 import { Subscription } from 'rxjs';
 
-import { config } from '@grafana/runtime';
+import { config, createMonitoringLogger } from '@grafana/runtime';
+
+const logger = createMonitoringLogger('features.dashboard.grid');
 import { appEvents } from 'app/core/app_events';
 import { GRID_CELL_HEIGHT, GRID_CELL_VMARGIN, GRID_COLUMN_COUNT } from 'app/core/constants';
 import { contextSrv } from 'app/core/services/context_srv';
@@ -115,7 +117,7 @@ export class DashboardGrid extends PureComponent<Props, State> {
       this.panelMap[panel.key] = panel;
 
       if (!panel.gridPos) {
-        console.log('panel without gridpos');
+        logger.logWarning('Panel without gridPos detected', { panelKey: panel.key });
         continue;
       }
 
