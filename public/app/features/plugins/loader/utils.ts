@@ -1,6 +1,7 @@
 import { config } from '@grafana/runtime';
 
 import { sandboxPluginDependencies } from '../sandbox/pluginDependencies';
+import { pluginsLogger } from '../utils';
 
 import { SHARED_DEPENDENCY_PREFIX } from './constants';
 import { SystemJS } from './systemjs';
@@ -29,7 +30,7 @@ function addPreload(id: string, preload: (() => Promise<System.Module>) | System
   try {
     resolvedId = SystemJS.resolve(id);
   } catch (e) {
-    console.log(e);
+    pluginsLogger.logError(e instanceof Error ? e : new Error(String(e)), { id });
   }
 
   if (resolvedId && SystemJS.has(resolvedId)) {

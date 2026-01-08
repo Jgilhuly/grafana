@@ -6,6 +6,7 @@ import { DataQueryRequest, DataQueryResponse, LoadingState, QueryResultMetaStat 
 import { config } from '@grafana/runtime';
 
 import { LokiDatasource } from './datasource';
+import { lokiLogger } from './logger';
 import { combineResponses, replaceResponses } from './mergeResponses';
 import { adjustTargetsFromResponseState, runSplitQuery } from './querySplitting';
 import {
@@ -375,5 +376,5 @@ function debug(message: string) {
   if (!DEBUG_ENABLED) {
     return;
   }
-  console.log(message);
+  lokiLogger.logDebug(message);
 }

@@ -39,6 +39,7 @@ import { TokenRevokedModal } from 'app/features/users/TokenRevokedModal';
 import { DashboardDTO } from 'app/types/dashboard';
 import { FolderDTO } from 'app/types/folders';
 
+import { coreLogger } from '../logger';
 import { ShowModalReactEvent } from '../../types/events';
 import { isContentTypeJson, parseInitFromOptions, parseResponseBody, parseUrlFromOptions } from '../utils/fetch';
 import { isDataQuery, isLocalUrl } from '../utils/query';
@@ -236,7 +237,7 @@ export class BackendSrv implements BackendService {
             observer.complete();
           }) // runs in background
           .catch((e) => {
-            console.log(requestId, 'catch', e);
+            coreLogger.logError(e instanceof Error ? e : new Error(String(e)), { requestId });
             observer.error(e);
           }); // from abort
       },

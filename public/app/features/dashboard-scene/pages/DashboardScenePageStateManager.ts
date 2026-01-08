@@ -8,6 +8,8 @@ import { StateManagerBase } from 'app/core/services/StateManagerBase';
 import { contextSrv } from 'app/core/services/context_srv';
 import { getMessageFromError, getMessageIdFromError, getStatusFromError } from 'app/core/utils/errors';
 import { startMeasure, stopMeasure } from 'app/core/utils/metrics';
+
+import { dashboardSceneLogger } from '../logger';
 import {
   AnnoKeyEmbedded,
   AnnoKeyFolder,
@@ -685,7 +687,7 @@ export class DashboardScenePageStateManager extends DashboardScenePageStateManag
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          dashboardSceneLogger.logDebug('URL corrected', { dashboardUrl, currentPath });
         }
       }
 
@@ -874,7 +876,7 @@ export class DashboardScenePageStateManagerV2 extends DashboardScenePageStateMan
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          dashboardSceneLogger.logDebug('URL corrected', { dashboardUrl, currentPath });
         }
       }
       // Populate nav model in global store according to the folder

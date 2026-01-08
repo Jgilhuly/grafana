@@ -7,6 +7,7 @@ import { Settings, UpdateSettingsQuery } from 'app/types/settings';
 import { ThunkResult } from 'app/types/store';
 
 import { getAuthProviderStatus, getRegisteredAuthProviders } from '..';
+import { authConfigLogger } from '../logger';
 import { AuthProviderStatus, SettingsError, SSOProvider } from '../types';
 
 import {
@@ -78,7 +79,7 @@ export function saveSettings(data: UpdateSettingsQuery): ThunkResult<Promise<boo
         dispatch(resetError());
         return true;
       } catch (error) {
-        console.log(error);
+        authConfigLogger.logError(error instanceof Error ? error : new Error(String(error)));
         if (isFetchError(error)) {
           error.isHandled = true;
           const updateErr: SettingsError = {
