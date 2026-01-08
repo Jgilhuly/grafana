@@ -28,6 +28,7 @@ import {
 } from '@grafana/runtime';
 
 import { StreamingResponseData } from '../data/utils';
+import { liveLogger } from '../utils/logging';
 
 import { LiveDataStream } from './LiveDataStream';
 import { CentrifugeLiveChannel } from './channel';
@@ -121,7 +122,7 @@ export class CentrifugeService implements CentrifugeSrv {
   };
 
   private onServerSideMessage = (context: ServerPublicationContext) => {
-    console.log('Publication from server-side channel', context);
+    liveLogger.logDebug('Publication from server-side channel', { channel: context.channel });
   };
 
   /**

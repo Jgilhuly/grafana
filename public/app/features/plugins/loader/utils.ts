@@ -29,7 +29,7 @@ function addPreload(id: string, preload: (() => Promise<System.Module>) | System
   try {
     resolvedId = SystemJS.resolve(id);
   } catch (e) {
-    console.log(e);
+    // SystemJS resolve can fail for various reasons, continue with fallback
   }
 
   if (resolvedId && SystemJS.has(resolvedId)) {

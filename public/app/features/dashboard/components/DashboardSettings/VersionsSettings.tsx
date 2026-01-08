@@ -2,6 +2,8 @@ import { PureComponent } from 'react';
 import * as React from 'react';
 
 import { Spinner, Stack } from '@grafana/ui';
+
+import { dashboardLogger } from '../../utils/logging';
 import { Page } from 'app/core/components/Page/Page';
 import { historySrv, RevisionsModel } from 'app/features/dashboard-scene/settings/version-history/HistorySrv';
 import { VersionsHistoryButtons } from 'app/features/dashboard-scene/settings/version-history/VersionHistoryButtons';
@@ -76,7 +78,7 @@ export class VersionsSettings extends PureComponent<Props, State> {
         // Update the continueToken for the next request, if available
         this.continueToken = res.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) => dashboardLogger.logError(err instanceof Error ? err : new Error(String(err)), { context: 'fetching versions' }))
       .finally(() => this.setState({ isAppending: false }));
   };
 

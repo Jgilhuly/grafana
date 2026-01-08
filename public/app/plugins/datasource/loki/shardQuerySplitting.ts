@@ -375,5 +375,7 @@ function debug(message: string) {
   if (!DEBUG_ENABLED) {
     return;
   }
+  // Intentional console.log for debugging - controlled by localStorage flag
+  // eslint-disable-next-line no-console
   console.log(message);
 }
