@@ -1652,7 +1652,7 @@ var (
 			Stage:        FeatureStageExperimental,
 			Owner:        grafanaFrontendSearchNavOrganise,
 			FrontendOnly: true,
-			Expression:   "false",
+			Expression:   "true", // enabled by default
 		},
 		{
 			Name:         "alertEnrichment",

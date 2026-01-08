@@ -3056,7 +3056,7 @@
         "stage": "experimental",
         "codeowner": "@grafana/grafana-search-navigate-organise",
         "frontend": true,
-        "expression": "false"
+        "expression": "true"
       }
     },
     {
