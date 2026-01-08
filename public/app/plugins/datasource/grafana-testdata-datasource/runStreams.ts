@@ -125,6 +125,8 @@ export function runSignalStream(
     setTimeout(pushNextEvent, 5);
 
     return () => {
+      // Test data stream cleanup - intentional debug log
+      // eslint-disable-next-line no-console
       console.log('unsubscribing to stream ' + streamId);
       clearTimeout(timeoutId);
     };
@@ -171,6 +173,8 @@ export function runLogsStream(
     setTimeout(pushNextEvent, 5);
 
     return () => {
+      // Test data stream cleanup - intentional debug log
+      // eslint-disable-next-line no-console
       console.log('unsubscribing to stream ' + streamId);
       clearTimeout(timeoutId);
     };
@@ -219,6 +223,8 @@ export function runWatchStream(
       .subscribe({
         next: (chunk) => {
           if (!chunk.data || !chunk.ok) {
+            // Test data debug log
+            // eslint-disable-next-line no-console
             console.info('chunk missing data', chunk);
             return;
           }
@@ -240,20 +246,28 @@ export function runWatchStream(
                     state: LoadingState.Streaming,
                   });
                 } catch (err) {
+                  // Test data debug log
+                  // eslint-disable-next-line no-console
                   console.warn('error parsing line', line, err);
                 }
               }
             });
         },
         error: (err) => {
+          // Test data debug log
+          // eslint-disable-next-line no-console
           console.warn('error in stream', streamId, err);
         },
         complete: () => {
+          // Test data debug log
+          // eslint-disable-next-line no-console
           console.info('complete stream', streamId);
         },
       });
 
     return () => {
+      // Test data stream cleanup - intentional debug log
+      // eslint-disable-next-line no-console
       console.log('unsubscribing to stream', streamId);
       sub.unsubscribe();
     };
@@ -314,6 +328,8 @@ export function runFetchStream(
       });
 
       if (value.done) {
+        // Test data debug log
+        // eslint-disable-next-line no-console
         console.log('Finished stream');
         subscriber.complete(); // necessary?
         return;
@@ -334,7 +350,8 @@ export function runFetchStream(
     });
 
     return () => {
-      // Cancel fetch?
+      // Test data stream cleanup - intentional debug log
+      // eslint-disable-next-line no-console
       console.log('unsubscribing to stream ' + streamId);
     };
   });
@@ -368,6 +385,8 @@ export function runTracesStream(
     setTimeout(pushNextEvent, 5);
 
     return () => {
+      // Test data stream cleanup - intentional debug log
+      // eslint-disable-next-line no-console
       console.log('unsubscribing to stream ' + streamId);
       clearTimeout(timeoutId);
     };

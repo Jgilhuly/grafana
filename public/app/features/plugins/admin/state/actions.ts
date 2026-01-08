@@ -3,6 +3,7 @@ import { from, forkJoin, timeout, lastValueFrom, catchError, of } from 'rxjs';
 
 import { PanelPlugin, PluginError } from '@grafana/data';
 import { config, getBackendSrv, isFetchError } from '@grafana/runtime';
+import { pluginLogger } from 'app/plugins/utils/logging';
 import { Settings } from 'app/core/config';
 import { importPanelPlugin } from 'app/features/plugins/importPanelPlugin';
 import { StoreState, ThunkResult } from 'app/types/store';
@@ -114,7 +115,7 @@ export const fetchAll = createAsyncThunk(`${STATE_PREFIX}/fetchAll`, async (_, t
           }
         },
         (error) => {
-          console.log(error);
+          pluginLogger.logError(error instanceof Error ? error : new Error(String(error)), { context: 'fetching plugins' });
           thunkApi.dispatch({ type: `${STATE_PREFIX}/fetchLocal/rejected` });
           thunkApi.dispatch({ type: `${STATE_PREFIX}/fetchRemote/rejected` });
           return thunkApi.rejectWithValue('Unknown error.');

@@ -10,6 +10,8 @@ import { t } from '@grafana/i18n';
 import { config, getBackendSrv } from '@grafana/runtime';
 import { TermCount } from 'app/core/components/TagFilter/TagFilter';
 
+import { searchLogger } from '../utils/logging';
+
 import { DashboardQueryResult, GrafanaSearcher, QueryResponse, SearchQuery, SearchResultMeta } from './types';
 import { replaceCurrentFolderQuery } from './utils';
 
@@ -174,11 +176,14 @@ export class BlugeSearcher implements GrafanaSearcher {
         const frame = toDataFrame(resp.frames[0]);
 
         if (!frame) {
-          console.log('no results', frame);
+          searchLogger.logDebug('No search results returned');
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          searchLogger.logWarning('Search results have invalid shape', { 
+            frameFields: String(frame.fields.length), 
+            viewFields: String(view.dataFrame.fields.length) 
+          });
           return;
         }
 

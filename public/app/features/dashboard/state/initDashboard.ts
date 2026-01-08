@@ -1,6 +1,8 @@
 import { DataQuery, locationUtil, setWeekStart, DashboardLoadedEvent } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, isFetchError, locationService } from '@grafana/runtime';
+
+import { dashboardLogger } from '../utils/logging';
 import { notifyApp } from 'app/core/actions';
 import { appEvents } from 'app/core/app_events';
 import { createErrorNotification } from 'app/core/copy/appNotification';
@@ -110,7 +112,7 @@ async function fetchDashboard(
               ...locationService.getLocation(),
               pathname: dashboardUrl,
             });
-            console.log('not correct url correcting', dashboardUrl, currentPath);
+            dashboardLogger.logDebug('URL correction applied', { dashboardUrl, currentPath });
           }
         }
         return dashDTO;

@@ -253,8 +253,7 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
     if (data.timeRange) {
       const delta = liveTime.to.valueOf() - data.timeRange.to.valueOf();
       if (delta < 100) {
-        // 10hz
-        console.log('Skip tick render', this.props.panel.title, delta);
+        // 10hz - skip rendering to maintain performance
         return;
       }
     }

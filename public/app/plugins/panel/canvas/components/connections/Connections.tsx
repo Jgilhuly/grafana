@@ -131,7 +131,7 @@ export class Connections {
     let element: ElementState | undefined = this.findElementTarget(event.target);
 
     if (!element) {
-      console.log('no element');
+      // No valid element target found
       return;
     }
 
@@ -140,7 +140,7 @@ export class Connections {
     } else {
       this.connectionSource = element;
       if (!this.connectionSource) {
-        console.log('no connection source');
+        // No connection source available
         return;
       }
     }

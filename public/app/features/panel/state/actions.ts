@@ -3,6 +3,7 @@ import { PanelModel } from 'app/features/dashboard/state/PanelModel';
 import { getLibraryPanel } from 'app/features/library-panels/state/api';
 import { LibraryElementDTO } from 'app/features/library-panels/types';
 import { getPanelPluginNotFound } from 'app/features/panel/components/PanelPluginError';
+import { panelLogger } from 'app/features/panel/utils/logging';
 import { loadPanelPlugin } from 'app/features/plugins/admin/state/actions';
 import { DashboardPanelsChangedEvent, PanelOptionsChangedEvent, PanelQueriesChangedEvent } from 'app/types/events';
 import { ThunkResult } from 'app/types/store';
@@ -165,7 +166,7 @@ export function loadLibraryPanelAndUpdate(panel: PanelModel): ThunkResult<void> 
 
       await dispatch(initPanelState(panel));
     } catch (ex) {
-      console.log('ERROR: ', ex);
+      panelLogger.logError(ex instanceof Error ? ex : new Error(String(ex)), { context: 'loading library panel', uid });
       dispatch(
         panelModelAndPluginReady({
           key: panel.key,

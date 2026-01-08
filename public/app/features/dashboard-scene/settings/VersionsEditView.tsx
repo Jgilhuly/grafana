@@ -5,6 +5,8 @@ import { SceneComponentProps, SceneObjectBase, sceneGraph } from '@grafana/scene
 import { Spinner, Stack } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
 
+import { dashboardSceneLogger } from '../utils/logging';
+
 import { DashboardScene } from '../scene/DashboardScene';
 import { NavToolbarActions } from '../scene/NavToolbarActions';
 import { getDashboardSceneFor } from '../utils/utils';
@@ -119,7 +121,7 @@ export class VersionsEditView extends SceneObjectBase<VersionsEditViewState> imp
         // Update the continueToken for the next request, if available
         this._continueToken = result.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) => dashboardSceneLogger.logError(err instanceof Error ? err : new Error(String(err)), { context: 'fetching versions' }))
       .finally(() => this.setState({ isAppending: false }));
   };
 

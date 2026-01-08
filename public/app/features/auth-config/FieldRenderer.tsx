@@ -8,6 +8,7 @@ import { Checkbox, Field, Input, SecretInput, Select, Switch, useTheme2 } from '
 import { fieldMap } from './fields';
 import { SSOProviderDTO, SSOSettingsField } from './types';
 import { isSelectableValueArray } from './utils/guards';
+import { authConfigLogger } from './utils/logging';
 
 interface FieldRendererProps
   extends Pick<
@@ -78,7 +79,7 @@ export const FieldRenderer = ({
   }, [isDisabled, disabledWhen?.disabledValue, name, setValue]);
 
   if (!field) {
-    console.log('missing field:', name);
+    authConfigLogger.logWarning('Missing field configuration', { fieldName: name });
     return null;
   }
 
