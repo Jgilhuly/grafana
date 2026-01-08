@@ -29,6 +29,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AppEvents, DataQueryErrorType, deprecationWarning } from '@grafana/data';
 import { BackendSrv as BackendService, BackendSrvRequest, config, FetchError, FetchResponse } from '@grafana/runtime';
 import { appEvents } from 'app/core/app_events';
+import { coreLogger } from 'app/core/utils/logging';
 import { getConfig } from 'app/core/config';
 import { getSessionExpiry, hasSessionExpiry } from 'app/core/utils/auth';
 import { loadUrlToken } from 'app/core/utils/urlToken';
@@ -236,7 +237,10 @@ export class BackendSrv implements BackendService {
             observer.complete();
           }) // runs in background
           .catch((e) => {
-            console.log(requestId, 'catch', e);
+            coreLogger.logError(e instanceof Error ? e : new Error(String(e)), {
+              requestId,
+              context: 'chunkedFetch',
+            });
             observer.error(e);
           }); // from abort
       },
