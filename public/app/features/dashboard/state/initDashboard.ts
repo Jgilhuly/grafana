@@ -20,6 +20,8 @@ import { buildNewDashboardSaveModel } from 'app/features/dashboard-scene/seriali
 import { dashboardWatcher } from 'app/features/live/dashboard/dashboardWatcher';
 import { playlistSrv } from 'app/features/playlist/PlaylistSrv';
 import { toStateKey } from 'app/features/variables/utils';
+
+import { dashboardLogger } from '../logger';
 import {
   DASHBOARD_FROM_LS_KEY,
   DashboardDTO,
@@ -110,7 +112,7 @@ async function fetchDashboard(
               ...locationService.getLocation(),
               pathname: dashboardUrl,
             });
-            console.log('not correct url correcting', dashboardUrl, currentPath);
+            dashboardLogger.logDebug('URL corrected', { dashboardUrl, currentPath });
           }
         }
         return dashDTO;

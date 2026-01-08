@@ -9,6 +9,7 @@ import {
   dateTimeFormat,
   dateTimeFormatTimeAgo,
   DateTimeInput,
+  deprecationWarning,
   EventBusExtended,
   EventBusSrv,
   PanelModel as IPanelModel,
@@ -1087,13 +1088,13 @@ export class DashboardModel implements TimeModel {
 
   /** @deprecated */
   on<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.on is deprecated use events.subscribe');
+    deprecationWarning('DashboardModel', 'on', 'events.subscribe');
     this.events.on(event, callback);
   }
 
   /** @deprecated */
   off<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.off is deprecated');
+    deprecationWarning('DashboardModel', 'off', 'events.off');
     this.events.off(event, callback);
   }
 

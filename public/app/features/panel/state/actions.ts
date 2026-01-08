@@ -7,6 +7,7 @@ import { loadPanelPlugin } from 'app/features/plugins/admin/state/actions';
 import { DashboardPanelsChangedEvent, PanelOptionsChangedEvent, PanelQueriesChangedEvent } from 'app/types/events';
 import { ThunkResult } from 'app/types/store';
 
+import { panelLogger } from '../logger';
 import { changePanelKey, panelModelAndPluginReady, removePanel } from './reducers';
 
 export function initPanelState(panel: PanelModel): ThunkResult<Promise<void>> {
@@ -165,7 +166,7 @@ export function loadLibraryPanelAndUpdate(panel: PanelModel): ThunkResult<void> 
 
       await dispatch(initPanelState(panel));
     } catch (ex) {
-      console.log('ERROR: ', ex);
+      panelLogger.logError(ex instanceof Error ? ex : new Error(String(ex)), { uid });
       dispatch(
         panelModelAndPluginReady({
           key: panel.key,

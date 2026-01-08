@@ -1,3 +1,5 @@
+import { coreLogger } from '../logger';
+
 export class Edge {
   inputNode?: Node;
   outputNode?: Node;
@@ -268,7 +270,7 @@ export const printGraph = (g: Graph) => {
     if (!inputEdges) {
       inputEdges = '<none>';
     }
-    console.log(`${n.name}:\n - links to:   ${outputEdges}\n - links from: ${inputEdges}`);
+    coreLogger.logDebug('Graph node', { nodeName: n.name, outputEdges, inputEdges });
   });
 };
 

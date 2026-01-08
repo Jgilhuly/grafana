@@ -21,6 +21,7 @@ import {
 import { getBackendSrv } from '@grafana/runtime';
 
 import { getRandomLine } from './LogIpsum';
+import { testdataLogger } from './logger';
 import { TestDataDataQuery, StreamingQuery } from './dataquery';
 
 export const defaultStreamQuery: StreamingQuery = {
@@ -125,7 +126,7 @@ export function runSignalStream(
     setTimeout(pushNextEvent, 5);
 
     return () => {
-      console.log('unsubscribing to stream ' + streamId);
+      testdataLogger.logDebug('Unsubscribing from stream', { streamId });
       clearTimeout(timeoutId);
     };
   });
@@ -171,7 +172,7 @@ export function runLogsStream(
     setTimeout(pushNextEvent, 5);
 
     return () => {
-      console.log('unsubscribing to stream ' + streamId);
+      testdataLogger.logDebug('Unsubscribing from stream', { streamId });
       clearTimeout(timeoutId);
     };
   });
@@ -249,12 +250,12 @@ export function runWatchStream(
           console.warn('error in stream', streamId, err);
         },
         complete: () => {
-          console.info('complete stream', streamId);
+          testdataLogger.logDebug('Stream complete', { streamId });
         },
       });
 
     return () => {
-      console.log('unsubscribing to stream', streamId);
+      testdataLogger.logDebug('Unsubscribing from stream', { streamId });
       sub.unsubscribe();
     };
   });
@@ -314,7 +315,7 @@ export function runFetchStream(
       });
 
       if (value.done) {
-        console.log('Finished stream');
+        testdataLogger.logDebug('Finished stream');
         subscriber.complete(); // necessary?
         return;
       }
@@ -335,7 +336,7 @@ export function runFetchStream(
 
     return () => {
       // Cancel fetch?
-      console.log('unsubscribing to stream ' + streamId);
+      testdataLogger.logDebug('Unsubscribing from stream', { streamId });
     };
   });
 }
@@ -368,7 +369,7 @@ export function runTracesStream(
     setTimeout(pushNextEvent, 5);
 
     return () => {
-      console.log('unsubscribing to stream ' + streamId);
+      testdataLogger.logDebug('Unsubscribing from stream', { streamId });
       clearTimeout(timeoutId);
     };
   });

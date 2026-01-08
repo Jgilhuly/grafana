@@ -12,6 +12,7 @@ import { contextSrv } from 'app/core/services/context_srv';
 import kbn from 'app/core/utils/kbn';
 import { dispatch } from 'app/store/store';
 
+import { searchLogger } from '../logger';
 import { deletedDashboardsCache } from './deletedDashboardsCache';
 import {
   DashboardQueryResult,
@@ -189,11 +190,11 @@ export class UnifiedSearcher implements GrafanaSearcher {
         const resp = await this.fetchResponse(nextPageUrl);
         const frame = toDashboardResults(resp, query.sort ?? '');
         if (!frame) {
-          console.log('no results', frame);
+          searchLogger.logWarning('No search results returned');
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          searchLogger.logWarning('Invalid search results shape', { frameFields: String(frame.fields.length), viewFields: String(view.dataFrame.fields.length) });
           return;
         }
 
