@@ -4,6 +4,7 @@ import { PageLayoutType, dateTimeFormat, dateTimeFormatTimeAgo } from '@grafana/
 import { SceneComponentProps, SceneObjectBase, sceneGraph } from '@grafana/scenes';
 import { Spinner, Stack } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import { sceneLogger } from 'app/core/utils/logger';
 
 import { DashboardScene } from '../scene/DashboardScene';
 import { NavToolbarActions } from '../scene/NavToolbarActions';
@@ -119,7 +120,7 @@ export class VersionsEditView extends SceneObjectBase<VersionsEditViewState> imp
         // Update the continueToken for the next request, if available
         this._continueToken = result.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) => sceneLogger.error('Failed to fetch version history', { dashboardUid: uid }, err))
       .finally(() => this.setState({ isAppending: false }));
   };
 

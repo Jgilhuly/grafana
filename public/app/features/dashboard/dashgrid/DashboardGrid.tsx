@@ -8,6 +8,7 @@ import { config } from '@grafana/runtime';
 import { appEvents } from 'app/core/app_events';
 import { GRID_CELL_HEIGHT, GRID_CELL_VMARGIN, GRID_COLUMN_COUNT } from 'app/core/constants';
 import { contextSrv } from 'app/core/services/context_srv';
+import { dashboardLogger } from 'app/core/utils/logger';
 import { VariablesChanged } from 'app/features/variables/types';
 import { DashboardPanelsChangedEvent } from 'app/types/events';
 
@@ -115,7 +116,7 @@ export class DashboardGrid extends PureComponent<Props, State> {
       this.panelMap[panel.key] = panel;
 
       if (!panel.gridPos) {
-        console.log('panel without gridpos');
+        dashboardLogger.warn('Panel missing gridPos', { panelId: panel.id, panelType: panel.type });
         continue;
       }
 

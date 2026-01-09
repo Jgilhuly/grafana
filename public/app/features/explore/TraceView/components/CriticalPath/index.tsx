@@ -14,7 +14,11 @@
 
 import memoizeOne from 'memoize-one';
 
+import { createStructuredLogger } from 'app/core/utils/logger';
+
 import { TraceSpan, CriticalPathSection, Trace } from '../types/trace';
+
+const traceLogger = createStructuredLogger('TraceView');
 
 import findLastFinishingChildSpan from './utils/findLastFinishingChildSpan';
 import getChildOfSpans from './utils/getChildOfSpans';
@@ -103,8 +107,7 @@ function criticalPathForTrace(trace: Trace) {
       const sanitizedSpanMap = sanitizeOverFlowingChildren(refinedSpanMap);
       criticalPath = computeCriticalPath(sanitizedSpanMap, rootSpanId, criticalPath);
     } catch (error) {
-      /* eslint-disable no-console */
-      console.log('error while computing critical path for a trace', error);
+      traceLogger.error('Error computing critical path for trace', { traceID: trace.traceID, rootSpanId }, error instanceof Error ? error : undefined);
     }
   }
   return criticalPath;

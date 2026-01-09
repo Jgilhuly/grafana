@@ -41,9 +41,12 @@ import { FolderDTO } from 'app/types/folders';
 
 import { ShowModalReactEvent } from '../../types/events';
 import { isContentTypeJson, parseInitFromOptions, parseResponseBody, parseUrlFromOptions } from '../utils/fetch';
+import { createStructuredLogger } from '../utils/logger';
 import { isDataQuery, isLocalUrl } from '../utils/query';
 
 import { FetchQueue } from './FetchQueue';
+
+const backendLogger = createStructuredLogger('BackendSrv');
 import { FetchQueueWorker } from './FetchQueueWorker';
 import { ResponseQueue } from './ResponseQueue';
 import { ContextSrv, contextSrv } from './context_srv';
@@ -236,7 +239,7 @@ export class BackendSrv implements BackendService {
             observer.complete();
           }) // runs in background
           .catch((e) => {
-            console.log(requestId, 'catch', e);
+            backendLogger.debug('Streaming request aborted', { requestId, error: String(e) });
             observer.error(e);
           }); // from abort
       },

@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { Spinner, Stack } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import { dashboardLogger } from 'app/core/utils/logger';
 import { historySrv, RevisionsModel } from 'app/features/dashboard-scene/settings/version-history/HistorySrv';
 import { VersionsHistoryButtons } from 'app/features/dashboard-scene/settings/version-history/VersionHistoryButtons';
 import { VersionHistoryHeader } from 'app/features/dashboard-scene/settings/version-history/VersionHistoryHeader';
@@ -76,7 +77,7 @@ export class VersionsSettings extends PureComponent<Props, State> {
         // Update the continueToken for the next request, if available
         this.continueToken = res.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) => dashboardLogger.error('Failed to fetch version history', { dashboardUid: this.props.dashboard.uid }, err))
       .finally(() => this.setState({ isAppending: false }));
   };
 
