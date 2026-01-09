@@ -18,6 +18,9 @@ import {
   DataFrameJSON,
   isValidLiveChannelAddress,
 } from '@grafana/data';
+import { createStructuredLogger } from 'app/core/utils/logger';
+
+const liveLogger = createStructuredLogger('LiveChannel');
 
 /**
  * Internal class that maps Centrifuge support to GrafanaLive
@@ -80,7 +83,7 @@ export class CentrifugeLiveChannel<T = any> {
           this.sendStatus();
         }
       } catch (err) {
-        console.log('publish error', this.addr, err);
+        liveLogger.error('Publish error', { channel: this.id }, err instanceof Error ? err : undefined);
         this.currentStatus.error = err;
         this.currentStatus.timestamp = Date.now();
         this.sendStatus();

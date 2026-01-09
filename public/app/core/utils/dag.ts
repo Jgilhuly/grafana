@@ -1,3 +1,7 @@
+import { createStructuredLogger } from './logger';
+
+const dagLogger = createStructuredLogger('DAG');
+
 export class Edge {
   inputNode?: Node;
   outputNode?: Node;
@@ -260,15 +264,9 @@ export class Graph {
 export const printGraph = (g: Graph) => {
   Object.keys(g.nodes).forEach((name) => {
     const n = g.nodes[name];
-    let outputEdges = n.outputEdges.map((e: Edge) => e.outputNode?.name).join(', ');
-    if (!outputEdges) {
-      outputEdges = '<none>';
-    }
-    let inputEdges = n.inputEdges.map((e: Edge) => e.inputNode?.name).join(', ');
-    if (!inputEdges) {
-      inputEdges = '<none>';
-    }
-    console.log(`${n.name}:\n - links to:   ${outputEdges}\n - links from: ${inputEdges}`);
+    const outputEdges = n.outputEdges.map((e: Edge) => e.outputNode?.name).join(', ') || '<none>';
+    const inputEdges = n.inputEdges.map((e: Edge) => e.inputNode?.name).join(', ') || '<none>';
+    dagLogger.debug('Graph node', { nodeName: n.name, linksTo: outputEdges, linksFrom: inputEdges });
   });
 };
 

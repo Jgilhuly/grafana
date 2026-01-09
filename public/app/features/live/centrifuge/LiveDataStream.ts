@@ -14,6 +14,9 @@ import {
 } from '@grafana/data';
 import { getStreamingFrameOptions } from '@grafana/data/internal';
 import { LiveDataStreamOptions, StreamingFrameAction, StreamingFrameOptions, toDataQueryError } from '@grafana/runtime';
+import { createStructuredLogger } from 'app/core/utils/logger';
+
+const liveLogger = createStructuredLogger('LiveDataStream');
 
 import { StreamingResponseDataType } from '../data/utils';
 
@@ -149,7 +152,7 @@ export class LiveDataStream<T = unknown> {
   };
 
   private onError = (err: unknown) => {
-    console.log('LiveQuery [error]', { err }, this.deps.channelId);
+    liveLogger.error('LiveQuery error', { channelId: this.deps.channelId }, err instanceof Error ? err : undefined);
     this.stream.next({
       type: InternalStreamMessageType.Error,
       error: toDataQueryError(err),
@@ -158,7 +161,7 @@ export class LiveDataStream<T = unknown> {
   };
 
   private onComplete = () => {
-    console.log('LiveQuery [complete]', this.deps.channelId);
+    liveLogger.debug('LiveQuery complete', { channelId: this.deps.channelId });
     this.shutdown();
   };
 
