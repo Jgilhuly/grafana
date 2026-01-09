@@ -41,12 +41,15 @@ import { FolderDTO } from 'app/types/folders';
 
 import { ShowModalReactEvent } from '../../types/events';
 import { isContentTypeJson, parseInitFromOptions, parseResponseBody, parseUrlFromOptions } from '../utils/fetch';
+import { loggers } from '../utils/logging';
 import { isDataQuery, isLocalUrl } from '../utils/query';
 
 import { FetchQueue } from './FetchQueue';
 import { FetchQueueWorker } from './FetchQueueWorker';
 import { ResponseQueue } from './ResponseQueue';
 import { ContextSrv, contextSrv } from './context_srv';
+
+const logger = loggers.api;
 
 const CANCEL_ALL_REQUESTS_REQUEST_ID = 'cancel_all_requests_request_id';
 
@@ -111,7 +114,7 @@ export class BackendSrv implements BackendService {
       const result = await fp.get();
       this.deviceID = result.visitorId;
     } catch (error) {
-      console.error(error);
+      logger.error('Failed to initialize device ID', error);
     }
   }
 
@@ -236,7 +239,7 @@ export class BackendSrv implements BackendService {
             observer.complete();
           }) // runs in background
           .catch((e) => {
-            console.log(requestId, 'catch', e);
+            logger.debug('Chunked request caught error', { requestId, error: String(e) });
             observer.error(e);
           }); // from abort
       },

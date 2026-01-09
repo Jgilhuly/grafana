@@ -433,7 +433,8 @@ export { getCanvasContext, measureText, calculateFontSize } from './utils/measur
 export { createPointerDistance, usePointerDistance } from './utils/usePointerDistance';
 export { useForceUpdate } from './utils/useForceUpdate';
 export { SearchFunctionType } from './utils/searchFunctions';
-export { createLogger } from './utils/logger';
+export { createLogger, createThrottledLogger, LogLevel } from './utils/logger';
+export type { StructuredLogger, LogContext, Logger } from './utils/logger';
 export { attachDebugger } from './utils/debug';
 export { NodeGraphDataFrameFieldNames } from './utils/nodeGraph';
 export { fuzzyMatch } from './utils/fuzzy';
