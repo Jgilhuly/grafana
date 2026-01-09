@@ -81,6 +81,7 @@ import { backendSrv } from './core/services/backend_srv';
 import { contextSrv, RedirectToUrlKey } from './core/services/context_srv';
 import { initEchoSrv } from './core/services/echo/init';
 import { KeybindingSrv } from './core/services/keybindingSrv';
+import { appLogger } from './core/utils/logging';
 import { startMeasure, stopMeasure } from './core/utils/metrics';
 import { initAlerting } from './features/alerting/unified/initAlerting';
 import { initAuthConfig } from './features/auth-config';
@@ -144,7 +145,7 @@ export class GrafanaApp {
         try {
           await initOpenFeature();
         } catch (err) {
-          console.error('Failed to initialize OpenFeature provider', err);
+          appLogger.error('Failed to initialize OpenFeature provider', err);
         }
       }
 
@@ -286,7 +287,7 @@ export class GrafanaApp {
       try {
         cleanupOldExpandedFolders();
       } catch (err) {
-        console.warn('Failed to clean up old expanded folders', err);
+        appLogger.warn('Failed to clean up old expanded folders', { error: String(err) });
       }
 
       this.context = {
@@ -320,7 +321,7 @@ export class GrafanaApp {
 
       await postInitTasks();
     } catch (error) {
-      console.error('Failed to start Grafana', error);
+      appLogger.error('Failed to start Grafana', error);
       window.__grafana_load_failed();
     } finally {
       stopMeasure('frontend_app_init');
