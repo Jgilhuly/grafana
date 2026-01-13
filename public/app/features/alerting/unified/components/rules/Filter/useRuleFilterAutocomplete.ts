@@ -7,6 +7,7 @@ import { getDataSourceSrv } from '@grafana/runtime';
 import { ComboboxOption } from '@grafana/ui';
 import { GrafanaPromRuleGroupDTO } from 'app/types/unified-alerting-dto';
 
+import { logError } from '../../../Analytics';
 import { prometheusApi } from '../../../api/prometheusApi';
 import { getRulesDataSources } from '../../../utils/datasource';
 
@@ -161,7 +162,9 @@ export function useNamespaceAndGroupOptions(): {
 
         return options;
       } catch (error) {
-        console.error('Error fetching groups:', error);
+        logError(error instanceof Error ? error : new Error('Error fetching groups', { cause: error }), {
+          search: trimmedInput,
+        });
         return [createInfoOption(t('alerting.rules-filter.group-search-error', 'Error searching groups'))];
       }
     },
