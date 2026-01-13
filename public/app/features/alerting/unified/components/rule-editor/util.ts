@@ -16,6 +16,7 @@ import { ClassicCondition, ExpressionQueryType } from 'app/features/expressions/
 import { AlertQuery } from 'app/types/unified-alerting-dto';
 
 import { logError } from '../../Analytics';
+
 import { createDagFromQueries, getOriginOfRefId } from './dag';
 
 export function queriesWithUpdatedReferences(

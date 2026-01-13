@@ -25,6 +25,7 @@ import {
 } from 'app/features/alerting/unified/types/alerting';
 
 import { logError } from '../../../../Analytics';
+
 import { KeyValueMapInput } from './KeyValueMapInput';
 import { StringArrayInput } from './StringArrayInput';
 import { SubformArrayField } from './SubformArrayField';

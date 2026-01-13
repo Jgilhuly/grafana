@@ -47,7 +47,7 @@ export function useDashboardQuery(dashboardUid?: string) {
 
         logError(new Error('Unexpected dashboard format'), {
           dashboardUid,
-          keys: Object.keys(dashboardDTO as Record<string, unknown>).join(','),
+          keys: Object.keys(dashboardDTO).join(','),
         });
       })
       .catch((error) => {
