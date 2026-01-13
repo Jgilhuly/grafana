@@ -8,6 +8,7 @@ import { isDashboardV2Resource } from 'app/features/dashboard/api/utils';
 import { DashboardDTO } from 'app/types/dashboard';
 
 import { DashboardModel } from '../../../../dashboard/state/DashboardModel';
+import { logError } from '../../Analytics';
 
 export type DashboardResponse = DashboardDTO | DashboardWithAccessInfo<DashboardV2Spec>;
 
@@ -26,21 +27,37 @@ export function useDashboardQuery(dashboardUid?: string) {
   const [dashboard, setDashboard] = useState<DashboardResponse>();
   const [isFetching, setIsFetching] = useState(false);
   useEffect(() => {
-    if (dashboardUid) {
-      setIsFetching(true);
-      getDashboardAPI()
-        .getDashboardDTO(dashboardUid)
-        .then((dashboardDTO) => {
-          if ('dashboard' in dashboardDTO) {
-            setDashboard(ensureV1PanelsHaveIds(dashboardDTO));
-          } else if (isDashboardV2Resource(dashboardDTO)) {
-            setDashboard(dashboardDTO);
-          } else {
-            console.error('Something went wrong, unexpected dashboard format');
-          }
-          setIsFetching(false);
-        });
+    if (!dashboardUid) {
+      return;
     }
+
+    setIsFetching(true);
+    getDashboardAPI()
+      .getDashboardDTO(dashboardUid)
+      .then((dashboardDTO) => {
+        if ('dashboard' in dashboardDTO) {
+          setDashboard(ensureV1PanelsHaveIds(dashboardDTO));
+          return;
+        }
+
+        if (isDashboardV2Resource(dashboardDTO)) {
+          setDashboard(dashboardDTO);
+          return;
+        }
+
+        logError(new Error('Unexpected dashboard format'), {
+          dashboardUid,
+          keys: Object.keys(dashboardDTO as Record<string, unknown>).join(','),
+        });
+      })
+      .catch((error) => {
+        logError(error instanceof Error ? error : new Error('Failed to load dashboard', { cause: error }), {
+          dashboardUid,
+        });
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
   }, [dashboardUid]);
 
   return { dashboard, isFetching };

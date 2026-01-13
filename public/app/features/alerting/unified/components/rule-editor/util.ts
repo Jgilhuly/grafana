@@ -15,6 +15,7 @@ import { isExpressionQuery } from 'app/features/expressions/guards';
 import { ClassicCondition, ExpressionQueryType } from 'app/features/expressions/types';
 import { AlertQuery } from 'app/types/unified-alerting-dto';
 
+import { logError } from '../../Analytics';
 import { createDagFromQueries, getOriginOfRefId } from './dag';
 
 export function queriesWithUpdatedReferences(
@@ -210,7 +211,7 @@ export function getThresholdsForQueries(queries: AlertQuery[], condition: string
           }
         });
       } catch (err) {
-        console.error('Failed to parse thresholds', err);
+        logError(err instanceof Error ? err : new Error('Failed to parse thresholds', { cause: err }));
         return;
       }
     });

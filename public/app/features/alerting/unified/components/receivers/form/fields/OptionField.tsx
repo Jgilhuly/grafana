@@ -24,6 +24,7 @@ import {
   OptionMeta,
 } from 'app/features/alerting/unified/types/alerting';
 
+import { logError } from '../../../../Analytics';
 import { KeyValueMapInput } from './KeyValueMapInput';
 import { StringArrayInput } from './StringArrayInput';
 import { SubformArrayField } from './SubformArrayField';
@@ -292,7 +293,7 @@ const OptionInput: FC<Props & { id: string }> = ({
       );
 
     default:
-      console.error('Element not supported', option.element);
+      logError(new Error('Receiver option element not supported'), { element: String(option.element) });
       return null;
   }
 };
