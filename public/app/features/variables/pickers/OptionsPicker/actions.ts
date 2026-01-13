@@ -1,6 +1,7 @@
 import { debounce, trim } from 'lodash';
 
 import { isEmptyObject, containsSearchFilter, VariableWithOptions, VariableOption } from '@grafana/data';
+import { logError } from '@grafana/runtime';
 import { StoreState, ThunkDispatch, ThunkResult } from 'app/types/store';
 
 import { variableAdapters } from '../../adapters';
@@ -180,7 +181,7 @@ const searchForOptions = async (
 
     dispatch(toKeyedAction(key, updateOptionsFromSearch(updated.options)));
   } catch (error) {
-    console.error(error);
+    logError(error instanceof Error ? error : new Error(String(error)));
   }
 };
 

@@ -1,4 +1,4 @@
-import { logMeasurement, reportInteraction } from '@grafana/runtime';
+import { logMeasurement, logWarning, reportInteraction } from '@grafana/runtime';
 import { performanceUtils } from '@grafana/scenes';
 
 import { SLOW_OPERATION_THRESHOLD_MS } from './performanceConstants';
@@ -108,7 +108,7 @@ export class DashboardAnalyticsAggregator implements performanceUtils.ScenePerfo
     // Aggregate panel metrics without verbose logging (handled by ScenePerformanceLogger)
     const panel = this.panelMetrics.get(data.panelKey);
     if (!panel) {
-      console.warn('Panel not found for operation completion:', data.panelKey);
+      logWarning('Panel not found for operation completion', { panelKey: data.panelKey });
       return;
     }
 
