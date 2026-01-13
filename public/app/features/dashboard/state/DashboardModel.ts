@@ -18,7 +18,7 @@ import {
   UrlQueryValue,
 } from '@grafana/data';
 import { PromQuery } from '@grafana/prometheus';
-import { RefreshEvent, TimeRangeUpdatedEvent, config } from '@grafana/runtime';
+import { RefreshEvent, TimeRangeUpdatedEvent, config, logWarning } from '@grafana/runtime';
 import { Dashboard, DashboardLink, VariableModel } from '@grafana/schema';
 import { DEFAULT_ANNOTATION_COLOR } from '@grafana/ui';
 import { GRID_CELL_HEIGHT, GRID_CELL_VMARGIN, GRID_COLUMN_COUNT, REPEAT_DIR_VERTICAL } from 'app/core/constants';
@@ -1087,13 +1087,13 @@ export class DashboardModel implements TimeModel {
 
   /** @deprecated */
   on<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.on is deprecated use events.subscribe');
+    logWarning('DashboardModel.on is deprecated use events.subscribe');
     this.events.on(event, callback);
   }
 
   /** @deprecated */
   off<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.off is deprecated');
+    logWarning('DashboardModel.off is deprecated');
     this.events.off(event, callback);
   }
 
