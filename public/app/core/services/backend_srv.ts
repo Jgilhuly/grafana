@@ -31,6 +31,7 @@ import { BackendSrv as BackendService, BackendSrvRequest, config, FetchError, Fe
 import { appEvents } from 'app/core/app_events';
 import { getConfig } from 'app/core/config';
 import { getSessionExpiry, hasSessionExpiry } from 'app/core/utils/auth';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import { loadUrlToken } from 'app/core/utils/urlToken';
 import { getDashboardAPI } from 'app/features/dashboard/api/dashboard_api';
 import { DashboardModel } from 'app/features/dashboard/state/DashboardModel';
@@ -49,6 +50,7 @@ import { ResponseQueue } from './ResponseQueue';
 import { ContextSrv, contextSrv } from './context_srv';
 
 const CANCEL_ALL_REQUESTS_REQUEST_ID = 'cancel_all_requests_request_id';
+const log = createStructuredLogger('public.app.core.services.backend_srv');
 
 export interface BackendSrvDependencies {
   fromFetch: (input: string | Request, init?: RequestInit) => Observable<Response>;
@@ -236,7 +238,10 @@ export class BackendSrv implements BackendService {
             observer.complete();
           }) // runs in background
           .catch((e) => {
-            console.log(requestId, 'catch', e);
+            log.debug('Chunked request reader failed', {
+              requestId,
+              error: e instanceof Error ? e.message : String(e),
+            });
             observer.error(e);
           }); // from abort
       },

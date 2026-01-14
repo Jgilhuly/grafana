@@ -8,7 +8,7 @@ import {findPreviousVersion, semverParse} from "./semver.js";
 // newlines and percent signs
 //
 const escapeData = (s) => s.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
-const LOG = (msg) => console.log(`::notice::${escapeData(msg)}`);
+const LOG = (msg) => console.info(`::notice::${escapeData(msg)}`);
 
 
 // Using `git tag -l` output find the tag (version) that goes semantically
@@ -202,7 +202,7 @@ const getChangeLogItems = async (name, owner, from, to) => {
 // ======================================================
 
 LOG(`Changelog action started`);
-console.log(process.argv);
+console.info(process.argv);
 const ghtoken = process.env.GITHUB_TOKEN || process.env.INPUT_GITHUB_TOKEN;
 if (!ghtoken) {
   throw 'GITHUB_TOKEN is not set and "github_token" input is empty';

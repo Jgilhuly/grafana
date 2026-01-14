@@ -4,10 +4,13 @@ import { getLibraryPanel } from 'app/features/library-panels/state/api';
 import { LibraryElementDTO } from 'app/features/library-panels/types';
 import { getPanelPluginNotFound } from 'app/features/panel/components/PanelPluginError';
 import { loadPanelPlugin } from 'app/features/plugins/admin/state/actions';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import { DashboardPanelsChangedEvent, PanelOptionsChangedEvent, PanelQueriesChangedEvent } from 'app/types/events';
 import { ThunkResult } from 'app/types/store';
 
 import { changePanelKey, panelModelAndPluginReady, removePanel } from './reducers';
+
+const log = createStructuredLogger('public.app.features.panel.state.actions');
 
 export function initPanelState(panel: PanelModel): ThunkResult<Promise<void>> {
   return async (dispatch, getStore) => {
@@ -165,7 +168,7 @@ export function loadLibraryPanelAndUpdate(panel: PanelModel): ThunkResult<void> 
 
       await dispatch(initPanelState(panel));
     } catch (ex) {
-      console.log('ERROR: ', ex);
+      log.debug('Failed to load library panel', { error: ex instanceof Error ? ex.message : String(ex), uid });
       dispatch(
         panelModelAndPluginReady({
           key: panel.key,

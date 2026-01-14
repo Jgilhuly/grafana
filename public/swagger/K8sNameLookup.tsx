@@ -46,7 +46,6 @@ export function K8sNameLookup(props: Props) {
           return;
         }
         const table = await response.json();
-        console.log('LIST', url, table);
         const options: Array<SelectableValue<string>> = [];
         if (table.rows?.length) {
           for (const row of table.rows) {

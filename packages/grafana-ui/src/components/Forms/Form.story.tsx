@@ -70,11 +70,11 @@ const renderForm = (defaultValues?: FormDTO) => {
     <Form
       defaultValues={defaultValues}
       onSubmit={(data: FormDTO) => {
-        console.log(data);
+        console.info(data);
       }}
     >
       {({ register, control, errors }) => {
-        console.log(errors);
+        console.info(errors);
         return (
           <>
             <Legend>Edit user</Legend>
@@ -162,7 +162,7 @@ export const AsyncValidation: StoryFn = ({ passAsyncValidation }) => {
         }}
       >
         {({ register, control, errors, formState }) => {
-          console.log(errors);
+          console.info(errors);
           return (
             <>
               <Legend>Edit user</Legend>
@@ -201,7 +201,7 @@ const validateAsync = (shouldPass: boolean) => async () => {
     });
     return true;
   } catch (e) {
-    console.log(e);
+    console.info(e);
     return false;
   }
 };

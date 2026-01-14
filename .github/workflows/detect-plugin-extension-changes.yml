@@ -47,8 +47,8 @@ jobs:
             const baseSha = '${{ github.event.pull_request.base.sha }}';
             const headSha = '${{ github.event.pull_request.head.sha }}';
             
-            console.log('Checking for plugin extension changes...');
-            console.log('Keywords:', keywords);
+            console.info('Checking for plugin extension changes...');
+            console.info('Keywords:', keywords);
             
             // Get changed files in packages/ and public/ directories
             let changedFiles = [];
@@ -66,7 +66,7 @@ jobs:
               });
             }
             
-            console.log('Changed files to check:', changedFiles);
+            console.info('Changed files to check:', changedFiles);
             
             // Check each file for plugin extension keywords
             const filesWithChanges = new Set();
@@ -83,14 +83,14 @@ jobs:
                 // Check if any keywords are in the diff
                 for (const keyword of keywords) {
                   if (fileDiff.includes(keyword)) {
-                    console.log(`Found ${keyword} in ${file}`);
+                    console.info(`Found ${keyword} in ${file}`);
                     filesWithChanges.add(file);
                     hasPluginExtensionChanges = true;
                     break; // Found at least one keyword, move to next file
                   }
                 }
               } catch (error) {
-                console.log(`Error checking file ${file}:`, error.message);
+                console.info(`Error checking file ${file}:`, error.message);
               }
             }
             
@@ -104,10 +104,10 @@ jobs:
             core.setOutput('formatted_changed_files', formattedFiles);
 
             if (hasPluginExtensionChanges) {
-              console.log('The following files have changes that may affect plugin extensions:');
-              console.log(filesArray);
+              console.info('The following files have changes that may affect plugin extensions:');
+              console.info(filesArray);
             } else {
-              console.log('No changes detected in core Grafana extensions or extension points.');
+              console.info('No changes detected in core Grafana extensions or extension points.');
             }
 
       - name: Send Slack Message via Payload

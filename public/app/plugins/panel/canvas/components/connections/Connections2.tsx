@@ -6,6 +6,7 @@ import { CanvasConnection, ConnectionCoordinates, ConnectionPath } from 'app/fea
 import { ElementState } from 'app/features/canvas/runtime/element';
 import { Scene } from 'app/features/canvas/runtime/scene';
 import { findElementByTarget } from 'app/features/canvas/runtime/sceneElementManagement';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 
 import { ConnectionState } from '../../types';
 import {
@@ -33,6 +34,8 @@ export const CONNECTION_VERTEX_ID = 'vertex';
 export const CONNECTION_VERTEX_ADD_ID = 'vertexAdd';
 const CONNECTION_VERTEX_ORTHO_TOLERANCE = 0.05; // Cartesian ratio against vertical or horizontal tolerance
 const CONNECTION_VERTEX_SNAP_TOLERANCE = (5 / 180) * Math.PI; // Multi-segment snapping angle in radians to trigger vertex removal
+
+const log = createStructuredLogger('public.app.plugins.panel.canvas.connections.Connections2');
 
 export class Connections2 {
   scene: Scene;
@@ -126,7 +129,7 @@ export class Connections2 {
     let element: ElementState | undefined = this.findElementTarget(event.target);
 
     if (!element) {
-      console.log('no element');
+      log.debug('No element found for connection hover target');
       return;
     }
 
@@ -135,7 +138,7 @@ export class Connections2 {
     } else {
       this.connectionSource = element;
       if (!this.connectionSource) {
-        console.log('no connection source');
+        log.debug('No connection source element found');
         return;
       }
     }

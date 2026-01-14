@@ -213,7 +213,7 @@ async function main() {
 
 // when running in docker, we catch the needed stop-signal, to shutdown fast
 process.on('SIGTERM', () => {
-  console.log('shutdown requested');
+  console.info('shutdown requested');
   process.exit(0);
 });
 

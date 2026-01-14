@@ -37,4 +37,4 @@ if ((data.removals.length > 0 || data.changes.length > 0) && !isFork) {
   markdown += printAffectedPluginsSection(data);
 }
 
-console.log(markdown);
+console.info(markdown);

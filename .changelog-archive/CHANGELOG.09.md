@@ -2853,7 +2853,7 @@ Migration should just be a matter of going from
 <ClipboardButton
   {/*other props... */}
   onClipboardCopy={(e) => {
-    console.log(`Text "${e.text}" was copied!`);
+    console.info(`Text "${e.text}" was copied!`);
   }}
 />
 ```
@@ -2864,7 +2864,7 @@ to
 <ClipboardButton
   {/* other props... */}
   onClipboardCopy={(copiedText) => {
-    console.log(`Text "${copiedText}" was copied!`);
+    console.info(`Text "${copiedText}" was copied!`);
   }}
 />
 ```

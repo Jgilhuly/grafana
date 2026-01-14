@@ -548,7 +548,7 @@ describe('DashboardScenePageStateManager v1', () => {
 
         // Reset playlist service state
         playlistSrv.state.isPlaying = false;
-        // Mock console.log to prevent test failures
+        // Mock console output to prevent test failures
         jest.spyOn(console, 'log').mockImplementation(() => {});
       });
 
@@ -556,7 +556,7 @@ describe('DashboardScenePageStateManager v1', () => {
         // Restore original location service methods
         locationService.replace = originalReplace;
         locationService.getLocation = originalGetLocation;
-        // Restore console.log
+        // Restore console output
         jest.restoreAllMocks();
       });
 

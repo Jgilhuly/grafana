@@ -81,7 +81,8 @@ function makeStorageService() {
     },
 
     logStorage: (): void => {
-      console.log('logStorage: not implemented');
+      // eslint-disable-next-line no-console
+      console.info('logStorage: not implemented');
     },
 
     migrate: (): Promise<void> => {
