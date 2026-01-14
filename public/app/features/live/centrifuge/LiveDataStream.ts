@@ -14,10 +14,13 @@ import {
 } from '@grafana/data';
 import { getStreamingFrameOptions } from '@grafana/data/internal';
 import { LiveDataStreamOptions, StreamingFrameAction, StreamingFrameOptions, toDataQueryError } from '@grafana/runtime';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 
 import { StreamingResponseDataType } from '../data/utils';
 
 import { DataStreamSubscriptionKey, StreamingDataQueryResponse } from './service';
+
+const log = createStructuredLogger('public.app.features.live.centrifuge.LiveDataStream');
 
 const bufferIfNot =
   (canEmitObservable: Observable<boolean>) =>
@@ -149,7 +152,7 @@ export class LiveDataStream<T = unknown> {
   };
 
   private onError = (err: unknown) => {
-    console.log('LiveQuery [error]', { err }, this.deps.channelId);
+    log.debug('Live query stream error', { channelId: this.deps.channelId, error: err instanceof Error ? err.message : String(err) });
     this.stream.next({
       type: InternalStreamMessageType.Error,
       error: toDataQueryError(err),
@@ -158,7 +161,7 @@ export class LiveDataStream<T = unknown> {
   };
 
   private onComplete = () => {
-    console.log('LiveQuery [complete]', this.deps.channelId);
+    log.debug('Live query stream completed', { channelId: this.deps.channelId });
     this.shutdown();
   };
 

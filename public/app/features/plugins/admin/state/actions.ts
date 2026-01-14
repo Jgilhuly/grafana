@@ -4,6 +4,7 @@ import { from, forkJoin, timeout, lastValueFrom, catchError, of } from 'rxjs';
 import { PanelPlugin, PluginError } from '@grafana/data';
 import { config, getBackendSrv, isFetchError } from '@grafana/runtime';
 import { Settings } from 'app/core/config';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import { importPanelPlugin } from 'app/features/plugins/importPanelPlugin';
 import { StoreState, ThunkResult } from 'app/types/store';
 
@@ -22,6 +23,8 @@ import {
 import { STATE_PREFIX } from '../constants';
 import { mapLocalToCatalog, mergeLocalsAndRemotes } from '../helpers';
 import { CatalogPlugin, RemotePlugin, LocalPlugin, InstancePlugin, ProvisionedPlugin, PluginStatus } from '../types';
+
+const log = createStructuredLogger('public.app.features.plugins.admin.state.actions');
 
 // Fetches
 export const fetchAll = createAsyncThunk(`${STATE_PREFIX}/fetchAll`, async (_, thunkApi) => {
@@ -114,7 +117,7 @@ export const fetchAll = createAsyncThunk(`${STATE_PREFIX}/fetchAll`, async (_, t
           }
         },
         (error) => {
-          console.log(error);
+          log.debug('Failed to fetch plugin catalog data', { error: error instanceof Error ? error.message : String(error) });
           thunkApi.dispatch({ type: `${STATE_PREFIX}/fetchLocal/rejected` });
           thunkApi.dispatch({ type: `${STATE_PREFIX}/fetchRemote/rejected` });
           return thunkApi.rejectWithValue('Unknown error.');

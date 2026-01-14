@@ -17,7 +17,7 @@ export const mockSystemModule = `System.register(['./dependencyA'], function (_e
 
 export const mockAmdModule = `define([], function() {
   return function() {
-    console.log('AMD module loaded');
+    console.info('AMD module loaded');
     var pluginPath = "/public/plugins/";
   }
 });`;

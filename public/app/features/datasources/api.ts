@@ -3,6 +3,9 @@ import { lastValueFrom } from 'rxjs';
 import { DataSourceSettings } from '@grafana/data';
 import { getBackendSrv } from 'app/core/services/backend_srv';
 import { accessControlQueryParam } from 'app/core/utils/accessControl';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
+
+const log = createStructuredLogger('public.app.features.datasources.api');
 
 export const getDataSources = async (): Promise<DataSourceSettings[]> => {
   return await getBackendSrv().get('/api/datasources');
@@ -50,14 +53,14 @@ export const getDataSourceByIdOrUid = async (idOrUid: string) => {
   try {
     return await getDataSourceByUid(idOrUid);
   } catch (err) {
-    console.log(`Failed to lookup data source using UID "${idOrUid}"`);
+    log.debug('Failed to lookup data source using UID', { idOrUid, error: err instanceof Error ? err.message : String(err) });
   }
 
   // Try using ID
   try {
     return await getDataSourceById(idOrUid);
   } catch (err) {
-    console.log(`Failed to lookup data source using ID "${idOrUid}"`);
+    log.debug('Failed to lookup data source using ID', { idOrUid, error: err instanceof Error ? err.message : String(err) });
   }
 
   throw Error('Could not find data source');

@@ -4,6 +4,7 @@ import { PageLayoutType, dateTimeFormat, dateTimeFormatTimeAgo } from '@grafana/
 import { SceneComponentProps, SceneObjectBase, sceneGraph } from '@grafana/scenes';
 import { Spinner, Stack } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 
 import { DashboardScene } from '../scene/DashboardScene';
 import { NavToolbarActions } from '../scene/NavToolbarActions';
@@ -17,6 +18,7 @@ import { VersionHistoryHeader } from './version-history/VersionHistoryHeader';
 import { VersionHistoryTable } from './version-history/VersionHistoryTable';
 
 export const VERSIONS_FETCH_LIMIT = 10;
+const log = createStructuredLogger('public.app.features.dashboardScene.settings.VersionsEditView');
 
 export type DecoratedRevisionModel = RevisionsModel & {
   createdDateString: string;
@@ -119,7 +121,11 @@ export class VersionsEditView extends SceneObjectBase<VersionsEditViewState> imp
         // Update the continueToken for the next request, if available
         this._continueToken = result.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) =>
+        log.debug('Failed to fetch dashboard versions history list', {
+          error: err instanceof Error ? err.message : String(err),
+        })
+      )
       .finally(() => this.setState({ isAppending: false }));
   };
 

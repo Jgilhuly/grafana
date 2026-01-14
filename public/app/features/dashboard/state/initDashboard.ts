@@ -8,6 +8,7 @@ import { backendSrv } from 'app/core/services/backend_srv';
 import { KeybindingSrv } from 'app/core/services/keybindingSrv';
 import store from 'app/core/store';
 import { startMeasure, stopMeasure } from 'app/core/utils/metrics';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import { dashboardLoaderSrv } from 'app/features/dashboard/services/DashboardLoaderSrv';
 import { DashboardSrv, getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
 import { getTimeSrv, TimeSrv } from 'app/features/dashboard/services/TimeSrv';
@@ -42,6 +43,7 @@ import { emitDashboardViewEvent } from './analyticsProcessor';
 import { dashboardInitCompleted, dashboardInitFailed, dashboardInitFetching, dashboardInitServices } from './reducers';
 
 const INIT_DASHBOARD_MEASUREMENT = 'initDashboard';
+const log = createStructuredLogger('public.app.features.dashboard.state.initDashboard');
 
 export interface InitDashboardArgs {
   urlUid?: string;
@@ -110,7 +112,7 @@ async function fetchDashboard(
               ...locationService.getLocation(),
               pathname: dashboardUrl,
             });
-            console.log('not correct url correcting', dashboardUrl, currentPath);
+            log.debug('Dashboard URL mismatch; correcting URL', { dashboardUrl, currentPath });
           }
         }
         return dashDTO;

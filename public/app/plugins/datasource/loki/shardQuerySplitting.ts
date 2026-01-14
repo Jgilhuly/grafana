@@ -375,5 +375,6 @@ function debug(message: string) {
   if (!DEBUG_ENABLED) {
     return;
   }
-  console.log(message);
+  // eslint-disable-next-line no-console
+  console.info(message);
 }

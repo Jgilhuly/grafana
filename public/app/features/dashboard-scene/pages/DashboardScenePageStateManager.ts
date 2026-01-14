@@ -8,6 +8,7 @@ import { StateManagerBase } from 'app/core/services/StateManagerBase';
 import { contextSrv } from 'app/core/services/context_srv';
 import { getMessageFromError, getMessageIdFromError, getStatusFromError } from 'app/core/utils/errors';
 import { startMeasure, stopMeasure } from 'app/core/utils/metrics';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import {
   AnnoKeyEmbedded,
   AnnoKeyFolder,
@@ -69,6 +70,7 @@ export interface DashboardScenePageState {
 export const DASHBOARD_CACHE_TTL = 500;
 
 const LOAD_SCENE_MEASUREMENT = 'loadDashboardScene';
+const log = createStructuredLogger('public.app.features.dashboardScene.pages.DashboardScenePageStateManager');
 
 /** Only used by cache in loading home in DashboardPageProxy and initDashboard (Old arch), can remove this after old dashboard arch is gone */
 export const HOME_DASHBOARD_CACHE_KEY = '__grafana_home_uid__';
@@ -685,7 +687,7 @@ export class DashboardScenePageStateManager extends DashboardScenePageStateManag
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          log.debug('Dashboard URL mismatch; correcting URL', { dashboardUrl, currentPath });
         }
       }
 
@@ -874,7 +876,7 @@ export class DashboardScenePageStateManagerV2 extends DashboardScenePageStateMan
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          log.debug('Dashboard URL mismatch; correcting URL', { dashboardUrl, currentPath });
         }
       }
       // Populate nav model in global store according to the folder

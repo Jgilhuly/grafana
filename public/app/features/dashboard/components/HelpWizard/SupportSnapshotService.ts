@@ -4,6 +4,7 @@ import { dateTimeFormat, formattedValueToString, getValueFormat, SelectableValue
 import { t } from '@grafana/i18n';
 import { SceneObject } from '@grafana/scenes';
 import { StateManagerBase } from 'app/core/services/StateManagerBase';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import { Randomize } from 'app/features/dashboard-scene/inspect/HelpWizard/randomizer';
 import { createDashboardSceneFromDashboardModel } from 'app/features/dashboard-scene/serialization/transformSaveModelToScene';
 
@@ -12,6 +13,8 @@ import { DashboardModel } from '../../state/DashboardModel';
 import { PanelModel } from '../../state/PanelModel';
 
 import { getDebugDashboard, getGithubMarkdown } from './utils';
+
+const log = createStructuredLogger('public.app.features.dashboard.HelpWizard.SupportSnapshotService');
 
 interface SupportSnapshotState {
   currentTab: SnapshotTab;
@@ -88,7 +91,7 @@ export class SupportSnapshotService extends StateManagerBase<SupportSnapshotStat
       const dash = createDashboardSceneFromDashboardModel(oldModel, snapshot);
       scene = dash.state.body; // skip the wrappers
     } catch (ex) {
-      console.log('Error creating scene:', ex);
+      log.debug('Error creating scene from snapshot', { error: ex instanceof Error ? ex.message : String(ex) });
     }
 
     this.setState({ snapshot, snapshotText, markdownText, snapshotSize, snapshotUpdate: snapshotUpdate + 1, scene });

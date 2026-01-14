@@ -592,10 +592,8 @@ function heatmap(xs: number[], ys: number[], opts?: HeatmapOpts) {
     yBinIncr = yIncrs[Math.max(yIncrIdx, 0)];
   }
 
-  // console.log({
-  //   yBinIncr,
-  //   xBinIncr,
-  // });
+  // Debug helper:
+  // { yBinIncr, xBinIncr }
 
   let binX = opts?.xCeil ? (v: number) => incrRoundUp(v, xBinIncr) : (v: number) => incrRoundDn(v, xBinIncr);
   let binY = opts?.yCeil ? (v: number) => incrRoundUp(v, yBinIncr) : (v: number) => incrRoundDn(v, yBinIncr);

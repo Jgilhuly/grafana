@@ -4,6 +4,7 @@ import { notFoundItem } from 'app/features/canvas/elements/notFound';
 import { DimensionContext } from 'app/features/dimensions/context';
 import { HorizontalConstraint, Placement, VerticalConstraint } from 'app/plugins/panel/canvas/panelcfg.gen';
 import { LayerActionID } from 'app/plugins/panel/canvas/types';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 
 import { updateConnectionsForSource } from '../../../plugins/panel/canvas/utils';
 import { CanvasElementItem } from '../element';
@@ -17,6 +18,7 @@ import { initMoveable } from './sceneAbleManagement';
 
 const DEFAULT_OFFSET = 10;
 const HORIZONTAL_OFFSET = 50;
+const log = createStructuredLogger('public.app.features.canvas.runtime.frame');
 
 export const frameItemDummy: CanvasElementItem = {
   id: 'frame',
@@ -129,7 +131,7 @@ export class FrameState extends ElementState {
         break;
       case LayerActionID.Duplicate:
         if (element.item.id === 'frame') {
-          console.log('Can not duplicate frames (yet)', action, element);
+          log.debug('Cannot duplicate frames yet', { action: String(action), elementId: element.options?.id, elementName: element.options?.name });
           return;
         }
         const opts = cloneDeep(element.options);
@@ -239,7 +241,7 @@ export class FrameState extends ElementState {
         break;
 
       default:
-        console.log('DO action', action, element);
+        log.debug('Unhandled layer action', { action: String(action), elementId: element.options?.id, elementName: element.options?.name });
         return;
     }
   };

@@ -221,7 +221,7 @@ describe('GrafanaJavascriptAgentEchoBackend', () => {
   //     const [url, reqInit]: [string, RequestInit] = fetchSpy.mock.calls[0];
   //     expect(url).toEqual('/log-grafana-javascript-agent');
   //     // expect((JSON.parse(reqInit.body as string) as EchoEvent).exception!.values![0].value).toEqual('test error');
-  //     console.log(JSON.parse(reqInit.body as string));
+  //     console.info(JSON.parse(reqInit.body as string));
 
   //     // check that our custom backend got it too
   //     expect(myCustomErrorBackend.addEvent).toHaveBeenCalledTimes(1);

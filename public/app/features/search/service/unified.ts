@@ -9,6 +9,7 @@ import { generatedAPI, ListStarsApiResponse } from 'app/api/clients/collections/
 import { getAPIBaseURL } from 'app/api/utils';
 import { TermCount } from 'app/core/components/TagFilter/TagFilter';
 import { contextSrv } from 'app/core/services/context_srv';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import kbn from 'app/core/utils/kbn';
 import { dispatch } from 'app/store/store';
 
@@ -28,6 +29,7 @@ import { filterSearchResults, replaceCurrentFolderQuery } from './utils';
 const loadingFrameName = 'Loading';
 
 const searchURI = `${v0alphaBaseURL}/search`;
+const log = createStructuredLogger('public.app.features.search.service.unified');
 
 export type SearchHit = {
   resource: string; // dashboards | folders
@@ -189,11 +191,16 @@ export class UnifiedSearcher implements GrafanaSearcher {
         const resp = await this.fetchResponse(nextPageUrl);
         const frame = toDashboardResults(resp, query.sort ?? '');
         if (!frame) {
-          console.log('no results', frame);
+          log.debug('No results frame returned for next page', { offset, nextPageUrl });
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          log.warn('Search response frame shape mismatch', {
+            expectedFields: view.dataFrame.fields.length,
+            actualFields: frame.fields.length,
+            offset,
+            nextPageUrl,
+          });
           return;
         }
 

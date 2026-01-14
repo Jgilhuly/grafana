@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { Spinner, Stack } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import { historySrv, RevisionsModel } from 'app/features/dashboard-scene/settings/version-history/HistorySrv';
 import { VersionsHistoryButtons } from 'app/features/dashboard-scene/settings/version-history/VersionHistoryButtons';
 import { VersionHistoryHeader } from 'app/features/dashboard-scene/settings/version-history/VersionHistoryHeader';
@@ -31,6 +32,7 @@ export type DecoratedRevisionModel = RevisionsModel & {
 };
 
 export const VERSIONS_FETCH_LIMIT = 10;
+const log = createStructuredLogger('public.app.features.dashboard.settings.VersionsSettings');
 
 export class VersionsSettings extends PureComponent<Props, State> {
   limit: number;
@@ -76,7 +78,11 @@ export class VersionsSettings extends PureComponent<Props, State> {
         // Update the continueToken for the next request, if available
         this.continueToken = res.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) =>
+        log.debug('Failed to fetch dashboard versions history list', {
+          error: err instanceof Error ? err.message : String(err),
+        })
+      )
       .finally(() => this.setState({ isAppending: false }));
   };
 

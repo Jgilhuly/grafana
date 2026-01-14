@@ -21,6 +21,7 @@ import {
 import { Trans, t } from '@grafana/i18n';
 import { config, getGrafanaLiveSrv } from '@grafana/runtime';
 import { Alert, stylesFactory, JSONFormatter, CustomScrollbar } from '@grafana/ui';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 
 import { TablePanel } from '../table/TablePanel';
 
@@ -36,6 +37,8 @@ interface State {
   message?: unknown;
   changed: number;
 }
+
+const log = createStructuredLogger('public.app.plugins.panel.live.LivePanel');
 
 export class LivePanel extends PureComponent<Props, State> {
   private readonly isValid: boolean;
@@ -72,7 +75,7 @@ export class LivePanel extends PureComponent<Props, State> {
       } else if (isLiveChannelMessageEvent(event)) {
         this.setState({ message: event.message, changed: Date.now() });
       } else {
-        console.log('ignore', event);
+        log.debug('Ignoring unknown live channel event', { event });
       }
     },
   };
@@ -87,7 +90,7 @@ export class LivePanel extends PureComponent<Props, State> {
   async loadChannel() {
     const addr = this.props.options?.channel;
     if (!isValidLiveChannelAddress(addr)) {
-      console.log('INVALID', addr);
+      log.debug('Invalid live channel address', { addr });
       this.unsubscribe();
       this.setState({
         addr: undefined,
@@ -96,13 +99,13 @@ export class LivePanel extends PureComponent<Props, State> {
     }
 
     if (isEqual(addr, this.state.addr)) {
-      console.log('Same channel', this.state.addr);
+      log.debug('Same live channel; skipping reload', { addr });
       return;
     }
 
     const live = getGrafanaLiveSrv();
     if (!live) {
-      console.log('INVALID', addr);
+      log.debug('Grafana Live service unavailable', { addr });
       this.unsubscribe();
       this.setState({
         addr: undefined,
@@ -111,7 +114,7 @@ export class LivePanel extends PureComponent<Props, State> {
     }
     this.unsubscribe();
 
-    console.log('LOAD', addr);
+    log.debug('Subscribing to live channel', { addr });
 
     // Subscribe to new events
     try {

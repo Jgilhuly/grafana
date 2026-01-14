@@ -26,6 +26,7 @@ import {
   StreamingFrameOptions,
   BackendDataSourceResponse,
 } from '@grafana/runtime';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 
 import { StreamingResponseData } from '../data/utils';
 
@@ -63,6 +64,7 @@ const defaultStreamingFrameOptions: Readonly<StreamingFrameOptions> = {
 };
 
 const dataStreamShutdownDelayInMs = 5000;
+const log = createStructuredLogger('public.app.features.live.centrifuge.service');
 
 export class CentrifugeService implements CentrifugeSrv {
   readonly open = new Map<string, CentrifugeLiveChannel>();
@@ -121,7 +123,7 @@ export class CentrifugeService implements CentrifugeSrv {
   };
 
   private onServerSideMessage = (context: ServerPublicationContext) => {
-    console.log('Publication from server-side channel', context);
+    log.debug('Publication from server-side channel', { channel: context.channel });
   };
 
   /**

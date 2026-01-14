@@ -15,8 +15,11 @@ import { t } from '@grafana/i18n';
 import { VizPanel } from '@grafana/scenes';
 import { PanelModel } from 'app/features/dashboard/state/PanelModel';
 import { dashboardSceneGraph } from 'app/features/dashboard-scene/utils/dashboardSceneGraph';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 
 import { getLinkSrv } from './link_srv';
+
+const log = createStructuredLogger('public.app.features.panel.panellinks.linkSuppliers');
 
 interface SeriesVars {
   name?: string;
@@ -124,7 +127,7 @@ export const getFieldLinksSupplier = (value: FieldDisplay): LinkModelSupplier<Fi
           };
         }
       } else {
-        console.log('VALUE', value);
+        log.debug('FieldDisplay did not include a DataFrameView', { fieldName: value.field.name });
       }
 
       const replace: InterpolateFunction = (value: string, vars: ScopedVars | undefined, fmt?: string | Function) => {

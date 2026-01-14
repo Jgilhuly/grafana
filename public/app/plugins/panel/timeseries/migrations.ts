@@ -35,6 +35,7 @@ import {
   ComparisonOperation,
 } from '@grafana/schema';
 import { TimeRegionConfig } from 'app/core/utils/timeRegions';
+import { createStructuredLogger } from 'app/core/utils/structuredLogging';
 import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
 import { getTimeSrv } from 'app/features/dashboard/services/TimeSrv';
 import { DashboardAnnotationsDataLayer } from 'app/features/dashboard-scene/scene/DashboardAnnotationsDataLayer';
@@ -46,6 +47,7 @@ import { defaultGraphConfig } from './config';
 import { Options } from './panelcfg.gen';
 
 let dashboardRefreshDebouncer: ReturnType<typeof setTimeout> | null = null;
+const log = createStructuredLogger('public.app.plugins.panel.timeseries.migrations');
 
 /**
  * This is called when the panel changes from another panel
@@ -283,7 +285,7 @@ export function graphToTimeseriesOptions(angular: any): {
             });
             break;
           default:
-            console.log('Ignore override migration:', seriesOverride.alias, p, v);
+            log.debug('Ignore override migration', { alias: seriesOverride.alias, key: p, value: v });
         }
       }
       if (dashOverride) {
