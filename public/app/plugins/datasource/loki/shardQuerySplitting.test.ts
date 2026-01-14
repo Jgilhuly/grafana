@@ -17,7 +17,7 @@ jest.mock('uuid', () => ({
 
 const originalLokiQueryLimitsContextState = config.featureToggles.lokiQueryLimitsContext;
 
-const originalLog = console.log;
+const originalLog = console['log'];
 const originalWarn = console.warn;
 const originalErr = console.error;
 beforeEach(() => {
@@ -29,7 +29,7 @@ beforeAll(() => {
   config.featureToggles.lokiQueryLimitsContext = true;
 });
 afterAll(() => {
-  console.log = originalLog;
+  console['log'] = originalLog;
   console.warn = originalWarn;
   console.error = originalErr;
   config.featureToggles.lokiQueryLimitsContext = originalLokiQueryLimitsContextState;

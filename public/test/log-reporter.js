@@ -28,7 +28,7 @@ class LogReporter {
       duration: Date.now() - results.startTime,
     };
     // JestStats suites=1 tests=94 passes=93 pending=0 failures=1 duration=3973
-    console.log(`JestStats ${objToLogAttributes(stats)}`);
+    console.info(`JestStats ${objToLogAttributes(stats)}`);
   }
 }
 
@@ -45,7 +45,7 @@ function printTestFailures(result) {
     };
     // JestFailure file=<...>/public/app/features/dashboard/state/DashboardMigrator.test.ts
     // failures=1 duration=3251 errorMessage="formatted error message"
-    console.log(`JestFailure ${objToLogAttributes(testInfo)}`);
+    console.info(`JestFailure ${objToLogAttributes(testInfo)}`);
   }
 }
 

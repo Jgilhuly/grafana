@@ -28,7 +28,7 @@ export const Basic: StoryFn<typeof FileUpload> = (args) => {
   return (
     <FileUpload
       size={args.size}
-      onFileUpload={({ currentTarget }) => console.log('file', currentTarget?.files && currentTarget.files[0])}
+      onFileUpload={({ currentTarget }) => console.info('file', currentTarget?.files && currentTarget.files[0])}
     />
   );
 };

@@ -58,11 +58,11 @@ const testFiles = teamFiles.filter((file) => {
 });
 
 if (testFiles.length === 0) {
-  console.log(`No test files found for team ${codeownerName}`);
+  console.info(`No test files found for team ${codeownerName}`);
   process.exit(0);
 }
 
-console.log(
+console.info(
   `🧪 Collecting coverage for ${sourceFiles.length} testable files and running ${testFiles.length} test files of ${teamFiles.length} files owned by ${codeownerName}.`
 );
 
@@ -94,7 +94,7 @@ module.exports = {
         cleanCache: true,
         onEnd: (coverageResults) => {
           const reportURL = `file://${path.resolve(outputDir)}/index.html`;
-          console.log(`📄 Coverage report saved to ${reportURL}`);
+          console.info(`📄 Coverage report saved to ${reportURL}`);
 
           if (process.env.SHOULD_OPEN_COVERAGE_REPORT === 'true') {
             openCoverageReport(reportURL);

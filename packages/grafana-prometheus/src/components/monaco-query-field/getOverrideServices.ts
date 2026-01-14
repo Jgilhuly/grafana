@@ -82,7 +82,7 @@ function makeStorageService() {
     },
 
     logStorage: (): void => {
-      console.log('logStorage: not implemented');
+      // no-op (not implemented)
     },
 
     migrate: (): Promise<void> => {

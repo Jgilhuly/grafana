@@ -24,7 +24,7 @@ function MyAlertingPlugin() {
     const result = alertingAlertRuleFormSchema.safeParse(data);
 
     if (result.success) {
-      console.log('Valid navigation data:', result.data);
+      console.info('Valid navigation data:', result.data);
       // Proceed with navigating to the alert form
     } else {
       console.error('Validation failed:', result.error.errors);

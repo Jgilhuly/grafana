@@ -8,7 +8,7 @@ interface Payload {
   time: number;
 }
 
-console.log("Publishing metrics");
+console.info("Publishing metrics");
 
 // Get API key from environment variable
 const key = process.env.GRAFANA_MISC_STATS_API_KEY;
@@ -28,8 +28,8 @@ if (!matches) {
   throw new Error("No metrics found");
 }
 
-console.log('matches[0]', matches[0])
-console.log('matches[1]', matches[1])
+console.info('matches[0]', matches[0])
+console.info('matches[1]', matches[1])
 
 const metrics: Record<string, string> = JSON.parse(matches[1]);
 
@@ -50,7 +50,7 @@ for (const [metricName, valueStr] of Object.entries(metrics)) {
 }
 
 const jsonPayload = JSON.stringify(data);
-console.log(`Publishing metrics to https://graphite-us-central1.grafana.net/metrics, JSON: ${jsonPayload}`);
+console.info(`Publishing metrics to https://graphite-us-central1.grafana.net/metrics, JSON: ${jsonPayload}`);
 
 const url = 'https://graphite-us-central1.grafana.net/metrics';
 const username = '6371';
@@ -69,7 +69,7 @@ try {
     throw new Error(`Metrics publishing failed with status code ${response.status}`);
   }
 
-  console.log("Metrics successfully published");
+  console.info("Metrics successfully published");
 } catch (error) {
   throw new Error(`Metrics publishing failed: ${error instanceof Error ? error.message : String(error)}`);
 }

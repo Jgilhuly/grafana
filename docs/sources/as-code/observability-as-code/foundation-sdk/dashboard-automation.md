@@ -131,7 +131,7 @@ const dashboardWrapper = {
 const dashboardJSON = JSON.stringify(dashboardWrapper, null, 2);
 fs.writeFileSync('dashboard.json', dashboardJSON, 'utf8');
 
-console.log(`Dashboard JSON:\n${}`);
+console.info(`Dashboard JSON:\n${dashboardJSON}`);
 ```
 
 {{< /code >}}

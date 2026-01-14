@@ -76,7 +76,7 @@ if (require.main === module) {
 
       const noOpen = argv['open'] === false;
 
-      console.log(`🧪 Running test coverage for codeowner: ${codeownerName}`);
+      console.info(`🧪 Running test coverage for codeowner: ${codeownerName}`);
       await runTestCoverageByCodeowner(codeownerName, noOpen);
     } catch (e) {
       console.error(e.message);

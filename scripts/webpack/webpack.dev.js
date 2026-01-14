@@ -36,7 +36,7 @@ function scenesModule() {
   try {
     const status = fs.lstatSync(scenesPath);
     if (status.isSymbolicLink()) {
-      console.log(`scenes is linked to local scenes repo`);
+      console.info(`scenes is linked to local scenes repo`);
       return path.resolve(scenesPath + '/src');
     }
   } catch (error) {

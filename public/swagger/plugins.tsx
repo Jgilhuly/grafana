@@ -42,7 +42,6 @@ export const WrappedPlugins = function () {
             if (info.namespaced) {
               info.resource = path[6];
             }
-            // console.log('NAME (in path)', path, info);
             return (
               <ResourceContext.Provider value={info}>
                 <Original {...props} />
@@ -63,9 +62,7 @@ export const WrappedPlugins = function () {
           if (mime) {
             v = mime.get('schema').toJS();
           }
-          console.log('RequestBody', v, mime, props);
         }
-        // console.log('RequestBody PROPS', props);
         return (
           <SchemaContext.Provider value={v}>
             <Original {...props} />
@@ -75,7 +72,6 @@ export const WrappedPlugins = function () {
 
       modelExample: (Original: React.ElementType) => (props: UntypedProps) => {
         if (props.isExecute && props.schema) {
-          console.log('modelExample PROPS', props);
           return (
             <SchemaContext.Provider value={props.schema.toJS()}>
               <Original {...props} />
@@ -119,7 +115,6 @@ export const WrappedPlugins = function () {
             {(schema) => {
               if (schema) {
                 const val = props.value ?? props.defaultValue ?? '';
-                //console.log('JSON TextArea', props, info);
                 // Return a synthetic text area event
                 const cb = (txt: string) => {
                   props.onChange({
@@ -128,7 +123,6 @@ export const WrappedPlugins = function () {
                     },
                   });
                 };
-                console.log('CodeEditor', schema);
 
                 return (
                   <CodeEditor
