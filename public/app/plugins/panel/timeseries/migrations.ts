@@ -283,7 +283,7 @@ export function graphToTimeseriesOptions(angular: any): {
             });
             break;
           default:
-            console.log('Ignore override migration:', seriesOverride.alias, p, v);
+            console.debug('Ignore override migration:', seriesOverride.alias, p, v);
         }
       }
       if (dashOverride) {

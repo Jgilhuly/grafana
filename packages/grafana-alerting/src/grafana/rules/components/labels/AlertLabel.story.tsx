@@ -42,7 +42,7 @@ export const Clickable: StoryObj<typeof AlertLabel> = {
       {...args}
       labelKey="region"
       value="eu-central-1"
-      onClick={([value, key]) => console.log('clicked', key, value)}
+      onClick={([value, key]) => console.debug('clicked', key, value)}
     />
   ),
 };

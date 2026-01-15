@@ -41,7 +41,7 @@ export const LocalStorageValueProvider = <T,>(props: Props<T>) => {
     try {
       store.delete(storageKey);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setState({ value: defaultValue });
   };

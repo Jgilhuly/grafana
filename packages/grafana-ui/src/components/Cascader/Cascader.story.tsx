@@ -6,7 +6,7 @@ import { Field } from '../Forms/Field';
 import { Cascader, CascaderOption } from './Cascader';
 import mdx from './Cascader.mdx';
 
-const onSelect = (val: string) => console.log(val);
+const onSelect = (val: string) => console.debug(val);
 const options = [
   {
     label: 'First',

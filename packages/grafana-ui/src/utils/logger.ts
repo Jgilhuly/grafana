@@ -1,12 +1,12 @@
 import { throttle } from 'lodash';
 
-type Args = Parameters<typeof console.log>;
+type Args = Parameters<typeof console.debug>;
 
 /**
  * @internal
  * */
 const throttledLog = throttle((...t: Args) => {
-  console.log(...t);
+  console.debug(...t);
 }, 500);
 
 /**
@@ -32,8 +32,9 @@ export const createLogger = (name: string): Logger => {
       if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test' || !loggingEnabled) {
         return;
       }
-      const fn = throttle ? throttledLog : console.log;
-      fn(`[${name}: ${id}]:`, ...t);
+      const fn = throttle ? throttledLog : console.debug;
+      // Keep logs machine-parseable for easier debugging.
+      fn({ source: name, id, args: t });
     },
     enable: () => (loggingEnabled = true),
     disable: () => (loggingEnabled = false),

@@ -86,10 +86,10 @@ export function writePerformanceGroupLog(logger: string, message: string, data?:
   if (isPerformanceLoggingEnabled()) {
     if (data) {
       // eslint-disable-next-line no-console
-      console.log(message, data);
+      console.debug(message, data);
     } else {
       // eslint-disable-next-line no-console
-      console.log(message);
+      console.debug(message);
     }
   }
 }

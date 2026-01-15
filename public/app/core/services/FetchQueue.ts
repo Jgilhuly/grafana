@@ -1,6 +1,6 @@
 import { Observable, Subject } from 'rxjs';
 
-import { BackendSrvRequest } from '@grafana/runtime';
+import { BackendSrvRequest, createMonitoringLogger } from '@grafana/runtime';
 
 export interface QueueState extends Record<string, { state: FetchStatus; options: BackendSrvRequest }> {}
 
@@ -26,6 +26,7 @@ export class FetchQueue {
   private state: QueueState = {}; // internal queue state
   private queue: Subject<QueueStateEntry> = new Subject<QueueStateEntry>(); // internal stream for requests that are to be queued
   private updates: Subject<FetchQueueUpdate> = new Subject<FetchQueueUpdate>(); // external stream with updates to the queue state
+  private logger = createMonitoringLogger('core.fetchQueue');
 
   constructor(debug = false) {
     // This will create an implicit live subscription for as long as this class lives.
@@ -90,8 +91,10 @@ export class FetchQueue {
       []
     );
 
-    console.log('FetchQueue noOfStarted', update.noOfInProgress);
-    console.log('FetchQueue noOfNotStarted', update.noOfPending);
-    console.log('FetchQueue state', entriesWithoutOptions);
+    this.logger.logDebug('FetchQueue state update', {
+      noOfInProgress: update.noOfInProgress,
+      noOfPending: update.noOfPending,
+      state: JSON.stringify(entriesWithoutOptions),
+    });
   };
 }

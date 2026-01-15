@@ -7,7 +7,7 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { t } from '@grafana/i18n';
-import { config, getBackendSrv } from '@grafana/runtime';
+import { config, createMonitoringLogger, getBackendSrv } from '@grafana/runtime';
 import { TermCount } from 'app/core/components/TagFilter/TagFilter';
 
 import { DashboardQueryResult, GrafanaSearcher, QueryResponse, SearchQuery, SearchResultMeta } from './types';
@@ -18,6 +18,7 @@ import { replaceCurrentFolderQuery } from './utils';
 const loadingFrameName = 'Loading';
 
 const searchURI = 'api/search-v2';
+const logger = createMonitoringLogger('features.search.bluge');
 
 type SearchAPIResponse = {
   frames: DataFrameJSON[];
@@ -174,11 +175,16 @@ export class BlugeSearcher implements GrafanaSearcher {
         const frame = toDataFrame(resp.frames[0]);
 
         if (!frame) {
-          console.log('no results', frame);
+          logger.logWarning('Search results frame missing', { from, limit: nextPageSizes });
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          logger.logWarning('Search results frame shape mismatch', {
+            from,
+            limit: nextPageSizes,
+            expectedFields: view.dataFrame.fields.length,
+            gotFields: frame.fields.length,
+          });
           return;
         }
 
