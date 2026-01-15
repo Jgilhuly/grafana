@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash';
 
+import { createMonitoringLogger } from '@grafana/runtime';
+
 import { notFoundItem } from 'app/features/canvas/elements/notFound';
 import { DimensionContext } from 'app/features/dimensions/context';
 import { HorizontalConstraint, Placement, VerticalConstraint } from 'app/plugins/panel/canvas/panelcfg.gen';
@@ -17,6 +19,7 @@ import { initMoveable } from './sceneAbleManagement';
 
 const DEFAULT_OFFSET = 10;
 const HORIZONTAL_OFFSET = 50;
+const logger = createMonitoringLogger('features.canvas.frameRuntime');
 
 export const frameItemDummy: CanvasElementItem = {
   id: 'frame',
@@ -129,7 +132,11 @@ export class FrameState extends ElementState {
         break;
       case LayerActionID.Duplicate:
         if (element.item.id === 'frame') {
-          console.log('Can not duplicate frames (yet)', action, element);
+          logger.logWarning('Can not duplicate frames (yet)', {
+            action,
+            elementId: element.item.id,
+            elementName: element.options.name,
+          });
           return;
         }
         const opts = cloneDeep(element.options);
@@ -239,7 +246,7 @@ export class FrameState extends ElementState {
         break;
 
       default:
-        console.log('DO action', action, element);
+        logger.logDebug('Unhandled layer action', { action, elementId: element.item.id, elementName: element.options.name });
         return;
     }
   };

@@ -375,5 +375,5 @@ function debug(message: string) {
   if (!DEBUG_ENABLED) {
     return;
   }
-  console.log(message);
+  console.debug(message);
 }

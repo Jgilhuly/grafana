@@ -140,7 +140,7 @@ function distortConsole(distortions: DistortionMap) {
       const pluginId = meta.id;
 
       function sandboxLog(...args: unknown[]) {
-        console.log(`[plugin ${pluginId}]`, ...args);
+        console.info(`[plugin ${pluginId}]`, ...args);
       }
       return {
         log: sandboxLog,
@@ -170,7 +170,7 @@ function distortAlert(distortions: DistortionMap) {
     });
 
     return function (...args: unknown[]) {
-      console.log(`[plugin ${pluginId}]`, ...args);
+      console.info(`[plugin ${pluginId}]`, ...args);
     };
   }
   const descriptor = Object.getOwnPropertyDescriptor(window, 'alert');

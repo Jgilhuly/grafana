@@ -8,7 +8,7 @@ const PORT = 7777;
 const initialize = (on, config) => {
   // starts the SMTP server at localhost:7777
   const mailServer = ms.init(PORT);
-  console.log('mail server at port %d', PORT);
+  console.info('mail server at port %d', PORT);
 
   let lastEmail = {};
 
@@ -20,10 +20,10 @@ const initialize = (on, config) => {
   on('task', {
     resetEmails(recipient) {
       if (recipient) {
-        console.log('reset all emails for recipient %s', recipient);
+        console.info('reset all emails for recipient %s', recipient);
         delete lastEmail[recipient];
       } else {
-        console.log('reset all emails');
+        console.info('reset all emails');
         lastEmail = {};
       }
     },
@@ -92,14 +92,14 @@ const initialize = (on, config) => {
       removePDFGeneratedOnDate(expectedDoc);
 
       if (inputDoc.numpages !== expectedDoc.numpages) {
-        console.log('PDFs do not contain the same number of pages');
+        console.info('PDFs do not contain the same number of pages');
         return false;
       }
 
       if (inputDoc.text !== expectedDoc.text) {
-        console.log('PDFs do not contain the same text');
-        console.log('PDF expected text: ', expectedDoc.text);
-        console.log('PDF input text: ', inputDoc.text);
+        console.info('PDFs do not contain the same text');
+        console.info('PDF expected text: ', expectedDoc.text);
+        console.info('PDF input text: ', inputDoc.text);
         return false;
       }
 

@@ -38,7 +38,6 @@ function useElasticVersion(datasource: ElasticDatasource): SemVer | null {
       },
       (error) => {
         // we do nothing
-        console.log(error);
       }
     );
 

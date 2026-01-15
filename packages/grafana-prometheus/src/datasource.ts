@@ -174,7 +174,7 @@ export class PrometheusDatasource
         this.ruleMappings = extractRuleMappingFromGroups(ruleGroups);
       }
     } catch (err) {
-      console.log('Rules API is experimental. Ignore next error.');
+      console.info('Rules API is experimental. Ignore next error.');
       console.error(err);
     }
   }

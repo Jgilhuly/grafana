@@ -2,6 +2,7 @@ import saveAs from 'file-saver';
 
 import { dateTimeFormat, formattedValueToString, getValueFormat, SelectableValue } from '@grafana/data';
 import { t } from '@grafana/i18n';
+import { createMonitoringLogger } from '@grafana/runtime';
 import { sceneGraph, SceneObject, VizPanel } from '@grafana/scenes';
 import { StateManagerBase } from 'app/core/services/StateManagerBase';
 
@@ -9,6 +10,8 @@ import { transformSaveModelToScene } from '../../serialization/transformSaveMode
 
 import { Randomize } from './randomizer';
 import { getDebugDashboard, getGithubMarkdown } from './utils';
+
+const logger = createMonitoringLogger('features.dashboardScene.supportSnapshotService');
 
 interface SupportSnapshotState {
   currentTab: SnapshotTab;
@@ -84,7 +87,8 @@ export class SupportSnapshotService extends StateManagerBase<SupportSnapshotStat
         const dash = transformSaveModelToScene({ dashboard: snapshot, meta: { isEmbedded: true } });
         scene = dash.state.body; // skip the wrappers
       } catch (ex) {
-        console.log('Error creating scene:', ex);
+        const err = ex instanceof Error ? ex : new Error(String(ex));
+        logger.logError(err);
       }
     }
 

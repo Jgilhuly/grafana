@@ -84,5 +84,5 @@ function eachMessage(value, callback) {
 function logStat(name, value) {
   // Note that this output format must match the parsing in ci-frontend-metrics.sh
   // which expects the two values to be separated by a space
-  console.log(`${name} ${value}`);
+  process.stdout.write(`${name} ${value}\n`);
 }

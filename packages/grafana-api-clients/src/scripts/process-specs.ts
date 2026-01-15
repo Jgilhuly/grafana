@@ -154,7 +154,7 @@ function processDirectory(sourceDir: string, outputDir: string) {
     const inputPath = path.join(sourceDir, file);
     const outputPath = path.join(outputDir, file);
 
-    console.log(`Processing file "${file}"...`);
+    console.info(`Processing file "${file}"...`);
 
     const fileContent = fs.readFileSync(inputPath, 'utf-8');
 
@@ -168,7 +168,7 @@ function processDirectory(sourceDir: string, outputDir: string) {
 
     const outputSpec = processOpenAPISpec(inputSpec);
     fs.writeFileSync(outputPath, JSON.stringify(outputSpec, null, 2), 'utf-8');
-    console.log(`Processing completed for file "${file}".`);
+    console.info(`Processing completed for file "${file}".`);
   }
 }
 

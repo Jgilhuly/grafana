@@ -34,7 +34,7 @@ export const Basic: StoryFn<typeof FieldSet> = (args: Props) => {
   const colorId = useId();
   const fontSizeId = useId();
   return (
-    <Form onSubmit={() => console.log('Submit')}>
+    <Form onSubmit={() => console.debug('Submit')}>
       {() => (
         <>
           <FieldSet {...args}>

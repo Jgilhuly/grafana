@@ -49,7 +49,7 @@ export default function SearchEditor({ value, onChange }: Props) {
       onChange(searchQuery);
       setQuery(searchQuery.query ?? '');
     } catch (ex) {
-      console.log('UNABLE TO parse search', rawSearchJSON, ex);
+      console.warn('Unable to parse search', rawSearchJSON, ex);
     }
   };
 
