@@ -249,6 +249,9 @@ export const versionedPages = {
           exportAsImage: {
             '12.1.0': 'data-testid new export button export as image',
           },
+          exportAsPdf: {
+            '12.1.0': 'data-testid new export button export as pdf',
+          },
         },
       },
       playlistControls: {

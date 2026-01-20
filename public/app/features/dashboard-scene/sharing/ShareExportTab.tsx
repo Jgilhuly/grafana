@@ -1,6 +1,7 @@
 import saveAs from 'file-saver';
 import yaml from 'js-yaml';
 import { cloneDeep } from 'lodash';
+import { useState } from 'react';
 import { useAsync } from 'react-use';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
@@ -30,6 +31,7 @@ import { DashboardInteractions } from '../utils/interactions';
 import { getDashboardSceneFor, hasLibraryPanelsInV1Dashboard } from '../utils/utils';
 
 import { ExportMode, ResourceExport } from './ExportButton/ResourceExport';
+import { ExportToRepository, useIsRepositoryExportAvailable } from './ExportButton/ExportToRepository';
 import { SceneShareTabState, ShareView } from './types';
 
 export interface ExportableResource {
@@ -369,6 +371,8 @@ function getMetadata(
 
 function ShareExportTabRenderer({ model }: SceneComponentProps<ShareExportTab>) {
   const { isSharingExternally, isViewingJSON, modalRef, exportMode, isViewingYAML } = model.useState();
+  const [isExportToRepoOpen, setIsExportToRepoOpen] = useState(false);
+  const isRepositoryExportAvailable = useIsRepositoryExportAvailable();
 
   const dashboardJson = useAsync(async () => {
     const json = await model.getExportableDashboardJson();
@@ -382,6 +386,11 @@ function ShareExportTabRenderer({ model }: SceneComponentProps<ShareExportTab>) 
   const stringifiedDashboard = isViewingYAML ? stringifiedDashboardYAML : stringifiedDashboardJson;
 
   const exportExternallyTranslation = t('share-modal.export.share-externally-label', `Export for sharing externally`);
+
+  const exportToRepoModel = new ExportToRepository({
+    isOpen: isExportToRepoOpen,
+    onDismiss: () => setIsExportToRepoOpen(false),
+  });
 
   return (
     <>
@@ -431,10 +440,20 @@ function ShareExportTabRenderer({ model }: SceneComponentProps<ShareExportTab>) 
                 <Trans i18nKey="share-modal.export.view-button">View JSON</Trans>
               </Button>
             )}
+            {isRepositoryExportAvailable && (
+              <Button
+                variant="secondary"
+                icon="upload"
+                onClick={() => setIsExportToRepoOpen(true)}
+              >
+                <Trans i18nKey="share-modal.export.export-to-repo-button">Export to repository</Trans>
+              </Button>
+            )}
             <Button variant="primary" icon="save" onClick={() => model.onSaveAsFile()}>
               <Trans i18nKey="share-modal.export.save-button">Save to file</Trans>
             </Button>
           </Modal.ButtonRow>
+          {isExportToRepoOpen && <ExportToRepository.Component model={exportToRepoModel} />}
         </>
       )}
       {isViewingJSON && (

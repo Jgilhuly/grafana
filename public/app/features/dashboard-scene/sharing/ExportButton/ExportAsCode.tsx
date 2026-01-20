@@ -1,5 +1,6 @@
 import { css } from '@emotion/css';
 import yaml from 'js-yaml';
+import { useState } from 'react';
 import { useAsync } from 'react-use';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
@@ -16,6 +17,7 @@ import { dispatch } from 'app/store/store';
 import { ShareExportTab } from '../ShareExportTab';
 
 import { ExportMode, ResourceExport } from './ResourceExport';
+import { ExportToRepository, useIsRepositoryExportAvailable } from './ExportToRepository';
 
 const selector = e2eSelectors.pages.ExportDashboardDrawer.ExportAsJson;
 
@@ -30,6 +32,8 @@ export class ExportAsCode extends ShareExportTab {
 function ExportAsCodeRenderer({ model }: SceneComponentProps<ExportAsCode>) {
   const styles = useStyles2(getStyles);
   const { isSharingExternally, isViewingYAML, exportMode } = model.useState();
+  const [isExportToRepoOpen, setIsExportToRepoOpen] = useState(false);
+  const isRepositoryExportAvailable = useIsRepositoryExportAvailable();
 
   const dashboardJson = useAsync(async () => {
     const json = await model.getExportableDashboardJson();
@@ -50,6 +54,11 @@ function ExportAsCodeRenderer({ model }: SceneComponentProps<ExportAsCode>) {
   };
 
   const switchExportLabel = t('export.json.export-externally-label', 'Export the dashboard to use in another instance');
+
+  const exportToRepoModel = new ExportToRepository({
+    isOpen: isExportToRepoOpen,
+    onDismiss: () => setIsExportToRepoOpen(false),
+  });
 
   return (
     <div data-testid={selector.container} className={styles.container}>
@@ -123,6 +132,15 @@ function ExportAsCodeRenderer({ model }: SceneComponentProps<ExportAsCode>) {
           >
             <Trans i18nKey="export.json.copy-button">Copy to clipboard</Trans>
           </ClipboardButton>
+          {isRepositoryExportAvailable && (
+            <Button
+              variant="secondary"
+              icon="upload"
+              onClick={() => setIsExportToRepoOpen(true)}
+            >
+              <Trans i18nKey="export.json.push-to-repo-button">Push to repository</Trans>
+            </Button>
+          )}
           <Button
             data-testid={selector.cancelButton}
             variant="secondary"
@@ -133,6 +151,7 @@ function ExportAsCodeRenderer({ model }: SceneComponentProps<ExportAsCode>) {
           </Button>
         </Stack>
       </div>
+      {isExportToRepoOpen && <ExportToRepository.Component model={exportToRepoModel} />}
     </div>
   );
 }

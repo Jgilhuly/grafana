@@ -247,6 +247,14 @@ export const DashboardInteractions = {
   copyImageUrlClicked: (properties?: Record<string, unknown>) => {
     reportDashboardInteraction('dashboard_image_url_copied', properties);
   },
+
+  // PDF export interactions
+  generateDashboardPDFClicked: (properties?: Record<string, unknown>) => {
+    reportDashboardInteraction('dashboard_pdf_generated', properties);
+  },
+  downloadDashboardPDFClicked: (properties?: Record<string, unknown>) => {
+    reportDashboardInteraction('dashboard_pdf_downloaded', properties);
+  },
 };
 
 const reportDashboardInteraction = (
