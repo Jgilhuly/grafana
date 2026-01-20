@@ -66,6 +66,7 @@ export function installStructuredConsole(): void {
   for (const method of methods) {
     structuredConsole[method] = (...args: unknown[]) => {
       handleConsoleEntry({ method, args, timestamp: Date.now() });
+      baseConsole[method](...args);
     };
   }
 

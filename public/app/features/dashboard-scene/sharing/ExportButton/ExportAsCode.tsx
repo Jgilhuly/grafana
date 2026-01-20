@@ -59,6 +59,7 @@ function ExportAsCodeRenderer({ model }: SceneComponentProps<ExportAsCode>) {
     isOpen: isExportToRepoOpen,
     onDismiss: () => setIsExportToRepoOpen(false),
   });
+  exportToRepoModel.parent = model.parent;
 
   return (
     <div data-testid={selector.container} className={styles.container}>

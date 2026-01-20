@@ -391,6 +391,7 @@ function ShareExportTabRenderer({ model }: SceneComponentProps<ShareExportTab>) 
     isOpen: isExportToRepoOpen,
     onDismiss: () => setIsExportToRepoOpen(false),
   });
+  exportToRepoModel.parent = model.parent;
 
   return (
     <>
