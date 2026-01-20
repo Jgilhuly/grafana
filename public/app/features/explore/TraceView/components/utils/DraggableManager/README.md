@@ -63,9 +63,11 @@ To use a DraggableManager instance, relevant mouse events should be piped to the
       const { clientX, target } = event;
       const { left, width } = target.getBoundingClientRect();
       const localX = clientX - left;
-      console.log('within the client area, x:', clientX);
-      console.log('within the div, x:        ', localX);
-      console.log('position along the width: ', localX / width);
+      console.info(JSON.stringify({ level: 'debug', message: 'Within the client area', context: { clientX } }));
+      console.info(JSON.stringify({ level: 'debug', message: 'Within the div', context: { localX } }));
+      console.info(
+        JSON.stringify({ level: 'debug', message: 'Position along the width', context: { ratio: localX / width } })
+      );
     }}
   />
 </div>

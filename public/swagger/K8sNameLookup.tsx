@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { SelectableValue } from '@grafana/data';
+import { createMonitoringLogger } from '@grafana/runtime';
 import { Select } from '@grafana/ui';
 
 import { NamespaceContext, ResourceContext } from './plugins';
+
+const logger = createMonitoringLogger('swagger.k8s-name-lookup');
 
 type Props = {
   value?: string;
@@ -46,7 +49,7 @@ export function K8sNameLookup(props: Props) {
           return;
         }
         const table = await response.json();
-        console.log('LIST', url, table);
+        logger.logDebug('Kubernetes names fetched', { url, itemCount: table?.rows?.length });
         const options: Array<SelectableValue<string>> = [];
         if (table.rows?.length) {
           for (const row of table.rows) {

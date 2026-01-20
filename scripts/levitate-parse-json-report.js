@@ -1,10 +1,12 @@
 const fs = require('fs');
 
 const printAffectedPluginsSection = require('./levitate-show-affected-plugins');
+const { createStructuredLogger } = require('./structuredLogger');
 
 const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 
 const isFork = Boolean(process.env.IS_FORK || false);
+const logger = createStructuredLogger('scripts.levitate-parse-json-report');
 
 function stripAnsi(str) {
   return str.replace(/\x1b\[[0-9;]*m/g, '');
@@ -37,4 +39,9 @@ if ((data.removals.length > 0 || data.changes.length > 0) && !isFork) {
   markdown += printAffectedPluginsSection(data);
 }
 
-console.log(markdown);
+logger.info('Levitate report generated', {
+  hasRemovals: data.removals.length > 0,
+  hasChanges: data.changes.length > 0,
+  isFork,
+});
+process.stdout.write(markdown);

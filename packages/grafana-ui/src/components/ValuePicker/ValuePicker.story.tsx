@@ -39,11 +39,14 @@ const meta: Meta<typeof ValuePicker> = {
   },
 };
 const options = generateOptions();
+const logSelection = (value: unknown) => {
+  console.info(JSON.stringify({ level: 'info', message: 'ValuePicker selection', context: { value } }));
+};
 
 export const Simple: StoryFn<typeof ValuePicker> = (args) => {
   return (
     <div style={{ width: '200px' }}>
-      <ValuePicker {...args} options={options} onChange={(v) => console.log(v)} />
+      <ValuePicker {...args} options={options} onChange={logSelection} />
     </div>
   );
 };

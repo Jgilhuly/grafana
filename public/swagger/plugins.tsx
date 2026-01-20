@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 
 import { CodeEditor, Monaco } from '@grafana/ui';
+import { createMonitoringLogger } from '@grafana/runtime';
 
 import { K8sNameLookup } from './K8sNameLookup';
 
@@ -22,6 +23,8 @@ export const SchemaContext = createContext<SchemaType>(undefined);
 export const NamespaceContext = createContext<string | undefined>(undefined);
 export const ResourceContext = createContext<ResourceInfo | undefined>(undefined);
 
+const logger = createMonitoringLogger('swagger.plugins');
+
 /* eslint-disable react/display-name */
 export const WrappedPlugins = function () {
   return {
@@ -42,7 +45,6 @@ export const WrappedPlugins = function () {
             if (info.namespaced) {
               info.resource = path[6];
             }
-            // console.log('NAME (in path)', path, info);
             return (
               <ResourceContext.Provider value={info}>
                 <Original {...props} />
@@ -63,9 +65,11 @@ export const WrappedPlugins = function () {
           if (mime) {
             v = mime.get('schema').toJS();
           }
-          console.log('RequestBody', v, mime, props);
+          logger.logDebug('Swagger request body schema resolved', {
+            hasSchema: Boolean(v),
+            schemaKeys: v ? Object.keys(v) : undefined,
+          });
         }
-        // console.log('RequestBody PROPS', props);
         return (
           <SchemaContext.Provider value={v}>
             <Original {...props} />
@@ -75,7 +79,10 @@ export const WrappedPlugins = function () {
 
       modelExample: (Original: React.ElementType) => (props: UntypedProps) => {
         if (props.isExecute && props.schema) {
-          console.log('modelExample PROPS', props);
+          logger.logDebug('Swagger model example rendered', {
+            isExecute: props.isExecute,
+            hasSchema: Boolean(props.schema),
+          });
           return (
             <SchemaContext.Provider value={props.schema.toJS()}>
               <Original {...props} />
@@ -119,7 +126,6 @@ export const WrappedPlugins = function () {
             {(schema) => {
               if (schema) {
                 const val = props.value ?? props.defaultValue ?? '';
-                //console.log('JSON TextArea', props, info);
                 // Return a synthetic text area event
                 const cb = (txt: string) => {
                   props.onChange({
@@ -128,7 +134,10 @@ export const WrappedPlugins = function () {
                     },
                   });
                 };
-                console.log('CodeEditor', schema);
+                logger.logDebug('Swagger code editor schema applied', {
+                  schemaRef: schema['$$ref'],
+                  schemaKeys: Object.keys(schema),
+                });
 
                 return (
                   <CodeEditor

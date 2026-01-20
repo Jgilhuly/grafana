@@ -20,7 +20,7 @@ import {
   SupplementaryQueryType,
 } from '@grafana/data';
 import { combinePanelData } from '@grafana/o11y-ds-frontend';
-import { config, getDataSourceSrv } from '@grafana/runtime';
+import { config, createMonitoringLogger, getDataSourceSrv } from '@grafana/runtime';
 import { DataQuery } from '@grafana/schema';
 import {
   buildQueryTransaction,
@@ -70,6 +70,8 @@ import {
   getDatasourceUIDs,
   getResultsFromCache,
 } from './utils';
+
+const logger = createMonitoringLogger('explore.query-state');
 
 /**
  * Derives from explore state if a given Explore pane is waiting for more data to be received
@@ -664,7 +666,7 @@ export const runQueries = createAsyncThunk<void, RunQueriesOptions>(
 
           // Keep scanning for results if this was the last scanning transaction
           if (exploreState!.scanning) {
-            console.log(data.series);
+            logger.logDebug('Explore scanning data series', { series: data.series });
             if (data.state === LoadingState.Done && data.series.length === 0) {
               const range = getShiftedTimeRange(-1, exploreState!.range);
               dispatch(updateTime({ exploreId, absoluteRange: range }));

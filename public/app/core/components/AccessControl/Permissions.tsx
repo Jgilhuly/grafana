@@ -6,6 +6,7 @@ import useAsyncFn from 'react-use/lib/useAsyncFn';
 
 import { GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
+import { createMonitoringLogger } from '@grafana/runtime';
 import { Text, Box, Button, useStyles2, LoadingPlaceholder } from '@grafana/ui';
 import { SlideDown } from 'app/core/components/Animations/SlideDown';
 import { getBackendSrv } from 'app/core/services/backend_srv';
@@ -29,6 +30,7 @@ const INITIAL_DESCRIPTION: Description = {
 
 type ResourceId = string | number;
 type Type = 'users' | 'teams' | 'serviceAccounts' | 'builtInRoles';
+const logger = createMonitoringLogger('access-control.permissions');
 
 export type Props = {
   buttonLabel?: string;
@@ -101,7 +103,7 @@ export const Permissions = ({
   };
 
   const onChange = (item: ResourcePermission, permission: string) => {
-    console.log('onChange', item, permission);
+    logger.logDebug('Permission change requested', { item, permission });
     if (item.permission === permission) {
       return;
     }

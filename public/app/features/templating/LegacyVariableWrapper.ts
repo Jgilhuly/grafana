@@ -1,7 +1,10 @@
 import { VariableValue, FormatVariable } from '@grafana/scenes';
+import { createMonitoringLogger } from '@grafana/runtime';
 import { VariableModel, VariableType } from '@grafana/schema';
 
 import { ALL_VARIABLE_TEXT, ALL_VARIABLE_VALUE } from '../variables/constants';
+
+const logger = createMonitoringLogger('templating.legacy-variable-wrapper');
 
 export class LegacyVariableWrapper implements FormatVariable {
   state: { name: string; value: VariableValue; text: VariableValue; type: VariableType };
@@ -31,7 +34,7 @@ export class LegacyVariableWrapper implements FormatVariable {
       return text.join(' + ');
     }
 
-    console.log('value', text);
+    logger.logDebug('Unexpected variable text value', { text });
     return String(text);
   }
 }

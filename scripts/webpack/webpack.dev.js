@@ -13,6 +13,8 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { merge } = require('webpack-merge');
 const WebpackBar = require('webpackbar');
 
+const { createStructuredLogger } = require('../structuredLogger');
+
 const getEnvConfig = require('./env-util.js');
 const common = require('./webpack.common.js');
 const esbuildTargets = resolveToEsbuildTarget(browserslist(), { printUnknownTargets: false });
@@ -30,13 +32,15 @@ function getDecoupledPlugins() {
   return packages.filter((pkg) => pkg.dir.includes('plugins/datasource')).map((pkg) => `${pkg.dir}/**`);
 }
 
+const logger = createStructuredLogger('scripts.webpack.dev');
+
 // When linking scenes for development, resolve the path to the src directory for sourcemaps
 function scenesModule() {
   const scenesPath = path.resolve('./node_modules/@grafana/scenes');
   try {
     const status = fs.lstatSync(scenesPath);
     if (status.isSymbolicLink()) {
-      console.log(`scenes is linked to local scenes repo`);
+      logger.info('Scenes is linked to local scenes repo', { scenesPath });
       return path.resolve(scenesPath + '/src');
     }
   } catch (error) {

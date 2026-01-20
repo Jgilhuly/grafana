@@ -31,12 +31,16 @@ const meta: Meta = {
 
 export default meta;
 
+const logSubmit = (values: FieldValues) => {
+  console.info(JSON.stringify({ level: 'info', message: 'FieldArray submit', context: { values } }));
+};
+
 export const Simple: StoryFn = (args) => {
   const defaultValues: FieldValues = {
     people: [{ firstName: 'Janis', lastName: 'Joplin' }],
   };
   return (
-    <Form onSubmit={(values) => console.log(values)} defaultValues={defaultValues}>
+    <Form onSubmit={logSubmit} defaultValues={defaultValues}>
       {({ control, register }) => (
         <div>
           <FieldArray control={control} name="people">

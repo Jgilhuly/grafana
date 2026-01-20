@@ -11,7 +11,15 @@ A button-styled input that triggers file upload popup. Button text and accepted 
 import { FileUpload } from '@grafana/ui';
 
 <FileUpload
-  onFileUpload={({ currentTarget }) => console.log('file', currentTarget?.files && currentTarget.files[0])}
+  onFileUpload={({ currentTarget }) =>
+    console.info(
+      JSON.stringify({
+        level: 'info',
+        message: 'File upload',
+        context: { file: currentTarget?.files && currentTarget.files[0] },
+      })
+    )
+  }
 />;
 ```
 

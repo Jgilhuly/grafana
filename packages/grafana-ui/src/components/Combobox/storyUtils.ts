@@ -1,5 +1,9 @@
 import { ComboboxOption } from './types';
 
+const logStructured = (message: string, context: Record<string, unknown>) => {
+  console.info(JSON.stringify({ level: 'debug', message, context }));
+};
+
 let fakeApiOptions: Array<ComboboxOption<string>>;
 export async function fakeSearchAPI(urlString: string): Promise<Array<ComboboxOption<string>>> {
   const searchParams = new URL(urlString).searchParams;
@@ -13,7 +17,7 @@ export async function fakeSearchAPI(urlString: string): Promise<Array<ComboboxOp
 
   if (!fakeApiOptions) {
     fakeApiOptions = await generateOptions(1000);
-    console.log('fakeApiOptions', fakeApiOptions);
+    logStructured('Generated fake combobox options', { optionCount: fakeApiOptions.length });
   }
 
   if (!searchQuery || searchQuery.length === 0) {

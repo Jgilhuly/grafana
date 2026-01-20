@@ -6,7 +6,9 @@ import { Field } from '../Forms/Field';
 import { Cascader, CascaderOption } from './Cascader';
 import mdx from './Cascader.mdx';
 
-const onSelect = (val: string) => console.log(val);
+const logSelection = (value: string) => {
+  console.info(JSON.stringify({ level: 'info', message: 'Cascader selection', context: { value } }));
+};
 const options = [
   {
     label: 'First',
@@ -53,7 +55,7 @@ const meta: Meta<typeof Cascader> = {
     },
   },
   args: {
-    onSelect,
+    onSelect: logSelection,
     options,
   },
   argTypes: {
@@ -106,7 +108,7 @@ export const WithOptionsStateUpdate = () => {
 
   return (
     <Field label="Cascader field with updated options">
-      <Cascader options={updatedOptions} onSelect={onSelect} id={id} />
+      <Cascader options={updatedOptions} onSelect={logSelection} id={id} />
     </Field>
   );
 };

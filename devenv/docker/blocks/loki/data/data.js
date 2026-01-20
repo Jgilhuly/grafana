@@ -1,5 +1,9 @@
 const http = require('http');
 
+const { createStructuredLogger } = require('../../../../../scripts/structuredLogger');
+
+const logger = createStructuredLogger('devenv.loki.data');
+
 if (process.argv.length !== 3) {
   throw new Error('invalid command line: use node sendLogs.js LOKIC_BASE_URL');
 }
@@ -213,7 +217,7 @@ async function main() {
 
 // when running in docker, we catch the needed stop-signal, to shutdown fast
 process.on('SIGTERM', () => {
-  console.log('shutdown requested');
+  logger.info('Shutdown requested');
   process.exit(0);
 });
 

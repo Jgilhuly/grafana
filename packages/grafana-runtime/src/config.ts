@@ -27,6 +27,15 @@ import {
   GrafanaConfig,
   CurrentUserDTO,
 } from '@grafana/data';
+import { faro, LogLevel } from '@grafana/faro-web-sdk';
+
+const logConfigUpdate = (message: string, context: Record<string, unknown>) => {
+  if (faro?.api?.pushLog) {
+    faro.api.pushLog([message], { level: LogLevel.DEBUG, context });
+  } else {
+    console.info(JSON.stringify({ level: 'debug', message, context }));
+  }
+};
 
 /**
  * @deprecated Use the type from `@grafana/data`
@@ -307,7 +316,7 @@ function overrideFeatureTogglesFromLocalStorage(config: GrafanaBootConfig) {
       const toggleState = featureValue === 'true' || featureValue === '1';
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       featureToggles[featureName as keyof FeatureToggles] = toggleState;
-      console.log(`Setting feature toggle ${featureName} = ${toggleState} via localstorage`);
+      logConfigUpdate('Feature toggle overridden from local storage', { featureName, toggleState });
     }
   }
 }
@@ -333,9 +342,9 @@ function overrideFeatureTogglesFromUrl(config: GrafanaBootConfig) {
       if (toggleState !== featureToggles[key]) {
         if (isDevelopment || safeRuntimeFeatureFlags.has(featureName)) {
           featureToggles[featureName] = toggleState;
-          console.log(`Setting feature toggle ${featureName} = ${toggleState} via url`);
+          logConfigUpdate('Feature toggle overridden from url', { featureName, toggleState });
         } else {
-          console.log(`Unable to change feature toggle ${featureName} via url in production.`);
+          logConfigUpdate('Feature toggle override blocked in production', { featureName, toggleState });
         }
       }
     }

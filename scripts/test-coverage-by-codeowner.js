@@ -5,9 +5,11 @@ const cp = require('node:child_process');
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs/yargs');
 
+const { createStructuredLogger } = require('./structuredLogger');
 const { getCodeowners } = require('./codeowners-manifest/utils.js');
 
 const JEST_CONFIG_PATH = 'jest.config.codeowner.js';
+const logger = createStructuredLogger('scripts.test-coverage-by-codeowner');
 
 async function promptCodeownerName() {
   const teams = await getCodeowners();
@@ -76,7 +78,7 @@ if (require.main === module) {
 
       const noOpen = argv['open'] === false;
 
-      console.log(`🧪 Running test coverage for codeowner: ${codeownerName}`);
+      logger.info('Running test coverage for codeowner', { codeownerName, noOpen });
       await runTestCoverageByCodeowner(codeownerName, noOpen);
     } catch (e) {
       console.error(e.message);

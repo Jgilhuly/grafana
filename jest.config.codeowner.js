@@ -3,6 +3,9 @@ const open = require('open').default;
 const path = require('path');
 
 const baseConfig = require('./jest.config.js');
+const { createStructuredLogger } = require('./scripts/structuredLogger');
+
+const logger = createStructuredLogger('jest.config.codeowner');
 
 const CODEOWNERS_MANIFEST_FILENAMES_BY_TEAM_PATH = 'codeowners-manifest/filenames-by-team.json';
 
@@ -58,13 +61,16 @@ const testFiles = teamFiles.filter((file) => {
 });
 
 if (testFiles.length === 0) {
-  console.log(`No test files found for team ${codeownerName}`);
+  logger.info('No test files found for team', { codeownerName });
   process.exit(0);
 }
 
-console.log(
-  `🧪 Collecting coverage for ${sourceFiles.length} testable files and running ${testFiles.length} test files of ${teamFiles.length} files owned by ${codeownerName}.`
-);
+logger.info('Collecting codeowner coverage', {
+  codeownerName,
+  sourceFileCount: sourceFiles.length,
+  testFileCount: testFiles.length,
+  teamFileCount: teamFiles.length,
+});
 
 module.exports = {
   ...baseConfig,
@@ -94,7 +100,7 @@ module.exports = {
         cleanCache: true,
         onEnd: (coverageResults) => {
           const reportURL = `file://${path.resolve(outputDir)}/index.html`;
-          console.log(`📄 Coverage report saved to ${reportURL}`);
+          logger.info('Coverage report saved', { reportURL });
 
           if (process.env.SHOULD_OPEN_COVERAGE_REPORT === 'true') {
             openCoverageReport(reportURL);

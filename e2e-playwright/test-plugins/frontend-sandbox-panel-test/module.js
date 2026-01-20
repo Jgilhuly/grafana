@@ -4,6 +4,10 @@
  * This file doesn't require any compilation
  */
 define(['react', '@grafana/data'], function (React, grafanaData) {
+  const logStructured = (message, context = {}) => {
+    console.info(JSON.stringify({ level: 'info', message, context }));
+  };
+
   // This would be a custom editor component
   function Editor() {
     const onChangeInternal = (event) => {
@@ -127,20 +131,29 @@ define(['react', '@grafana/data'], function (React, grafanaData) {
     const globalTests = [
       function () {
         try {
-          console.log(window.Prism.languages);
+          logStructured('Sandbox global access', {
+            globalName: 'Prism',
+            available: Boolean(window.Prism && window.Prism.languages),
+          });
           return 'Prism';
         } catch (e) {}
       },
       function () {
         try {
-          console.log(window.jQuery.fn.jquery);
-          console.log(window.$.fn.jquery);
+          logStructured('Sandbox global access', {
+            globalName: 'jQuery',
+            jqueryVersion: window.jQuery?.fn?.jquery,
+            dollarVersion: window.$?.fn?.jquery,
+          });
           return 'jQuery';
         } catch (e) {}
       },
       function () {
         try {
-          console.log(window.locationSandbox);
+          logStructured('Sandbox global access', {
+            globalName: 'locationSandbox',
+            available: Boolean(window.locationSandbox),
+          });
           return 'location';
         } catch (e) {}
       },

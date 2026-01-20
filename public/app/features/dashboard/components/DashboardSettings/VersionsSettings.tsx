@@ -1,6 +1,7 @@
 import { PureComponent } from 'react';
 import * as React from 'react';
 
+import { createMonitoringLogger } from '@grafana/runtime';
 import { Spinner, Stack } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
 import { historySrv, RevisionsModel } from 'app/features/dashboard-scene/settings/version-history/HistorySrv';
@@ -31,6 +32,7 @@ export type DecoratedRevisionModel = RevisionsModel & {
 };
 
 export const VERSIONS_FETCH_LIMIT = 10;
+const logger = createMonitoringLogger('dashboard.versions-settings');
 
 export class VersionsSettings extends PureComponent<Props, State> {
   limit: number;
@@ -76,7 +78,9 @@ export class VersionsSettings extends PureComponent<Props, State> {
         // Update the continueToken for the next request, if available
         this.continueToken = res.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) =>
+        logger.logError(err instanceof Error ? err : new Error(String(err)), { location: 'getVersions' })
+      )
       .finally(() => this.setState({ isAppending: false }));
   };
 

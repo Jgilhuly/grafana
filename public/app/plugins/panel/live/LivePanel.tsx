@@ -19,13 +19,15 @@ import {
   StreamingDataFrame,
 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
-import { config, getGrafanaLiveSrv } from '@grafana/runtime';
+import { config, createMonitoringLogger, getGrafanaLiveSrv } from '@grafana/runtime';
 import { Alert, stylesFactory, JSONFormatter, CustomScrollbar } from '@grafana/ui';
 
 import { TablePanel } from '../table/TablePanel';
 
 import { LivePublish } from './LivePublish';
 import { LivePanelOptions, MessageDisplayMode, MessagePublishMode } from './types';
+
+const logger = createMonitoringLogger('panel.live');
 
 interface Props extends PanelProps<LivePanelOptions> {}
 
@@ -72,7 +74,7 @@ export class LivePanel extends PureComponent<Props, State> {
       } else if (isLiveChannelMessageEvent(event)) {
         this.setState({ message: event.message, changed: Date.now() });
       } else {
-        console.log('ignore', event);
+        logger.logDebug('Ignored live channel event', { eventType: event.type });
       }
     },
   };
@@ -87,7 +89,7 @@ export class LivePanel extends PureComponent<Props, State> {
   async loadChannel() {
     const addr = this.props.options?.channel;
     if (!isValidLiveChannelAddress(addr)) {
-      console.log('INVALID', addr);
+      logger.logWarning('Invalid live channel address', { addr });
       this.unsubscribe();
       this.setState({
         addr: undefined,
@@ -96,13 +98,13 @@ export class LivePanel extends PureComponent<Props, State> {
     }
 
     if (isEqual(addr, this.state.addr)) {
-      console.log('Same channel', this.state.addr);
+      logger.logDebug('Live channel unchanged', { addr: this.state.addr });
       return;
     }
 
     const live = getGrafanaLiveSrv();
     if (!live) {
-      console.log('INVALID', addr);
+      logger.logWarning('Live service unavailable for channel', { addr });
       this.unsubscribe();
       this.setState({
         addr: undefined,
@@ -111,7 +113,7 @@ export class LivePanel extends PureComponent<Props, State> {
     }
     this.unsubscribe();
 
-    console.log('LOAD', addr);
+    logger.logInfo('Subscribing to live channel', { addr });
 
     // Subscribe to new events
     try {

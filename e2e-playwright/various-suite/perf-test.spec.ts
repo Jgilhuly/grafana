@@ -1,11 +1,15 @@
 import fs from 'fs';
 import * as prom from 'prom-client';
+import { createRequire } from 'module';
 
 import { test, expect } from '@grafana/plugin-e2e';
 
 import { RequestsRecorder } from '../utils/RequestsRecorder';
 
 const DASH_PATH = '/d/bds35fot3cv7kb/mostly-blank-dashboard';
+const require = createRequire(import.meta.url);
+const { createStructuredLogger } = require('../../scripts/structuredLogger');
+const logger = createStructuredLogger('e2e.playwright.perf-test');
 
 test('payload-size', { tag: '@performance' }, async ({ page }) => {
   const promRegistry = new prom.Registry();
@@ -50,8 +54,10 @@ test('payload-size', { tag: '@performance' }, async ({ page }) => {
   const instance = new URL(process.env.GRAFANA_URL || 'http://undefined').host;
   promRegistry.setDefaultLabels({ instance });
   const metricsText = await promRegistry.metrics();
-  console.log(metricsText);
-  fs.writeFileSync(process.env.METRICS_OUTPUT_PATH || '/tmp/asset-metrics.txt', metricsText);
+  const metricsPath = process.env.METRICS_OUTPUT_PATH || '/tmp/asset-metrics.txt';
+  logger.info('Performance metrics collected', { metricsPath, metricsLength: metricsText.length });
+  process.stdout.write(metricsText);
+  fs.writeFileSync(metricsPath, metricsText);
 
   await stopListening();
   page.close();

@@ -12,6 +12,8 @@ const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const { merge } = require('webpack-merge');
 const { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
+const { createStructuredLogger } = require('../structuredLogger');
+
 const getEnvConfig = require('./env-util.js');
 const FeatureFlaggedSRIPlugin = require('./plugins/FeatureFlaggedSriPlugin');
 const common = require('./webpack.common.js');
@@ -24,6 +26,8 @@ const esbuildOptions = {
   format: undefined,
   jsx: 'automatic',
 };
+
+const logger = createStructuredLogger('scripts.webpack.prod');
 
 const envConfig = getEnvConfig();
 
@@ -112,7 +116,12 @@ module.exports = (env = {}) =>
       function () {
         this.hooks.done.tap('Done', function (stats) {
           if (stats.compilation.errors && stats.compilation.errors.length) {
-            console.log(stats.compilation.errors);
+            const errors = stats.compilation.errors.map((error) => ({
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            }));
+            logger.error('Webpack compilation errors', { errorCount: errors.length, errors });
             process.exit(1);
           }
         });

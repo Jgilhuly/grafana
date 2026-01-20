@@ -28,13 +28,17 @@ const meta: Meta<typeof FieldSet> = {
   },
 };
 
+const logSubmit = () => {
+  console.info(JSON.stringify({ level: 'info', message: 'FieldSet submit' }));
+};
+
 export const Basic: StoryFn<typeof FieldSet> = (args: Props) => {
   const nameId = useId();
   const emailId = useId();
   const colorId = useId();
   const fontSizeId = useId();
   return (
-    <Form onSubmit={() => console.log('Submit')}>
+    <Form onSubmit={logSubmit}>
       {() => (
         <>
           <FieldSet {...args}>

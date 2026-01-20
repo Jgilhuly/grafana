@@ -4,6 +4,9 @@ const { execSync } = require('node:child_process');
 const { writeFile, mkdir, access } = require('node:fs/promises');
 
 const { CODEOWNERS_FILE_PATH, CODEOWNERS_MANIFEST_DIR, METADATA_JSON_PATH } = require('./constants.js');
+const { createStructuredLogger } = require('../structuredLogger');
+
+const logger = createStructuredLogger('scripts.codeowners-manifest.metadata');
 
 /**
  * @typedef {Object} CodeownersMetadata
@@ -38,7 +41,10 @@ function generateCodeownersMetadata(codeownersFilePath, manifestDir, metadataFil
 if (require.main === module) {
   (async () => {
     try {
-      console.log('⚙️ Generating codeowners-manifest metadata ...');
+      logger.info('Generating codeowners manifest metadata', {
+        codeownersFilePath: CODEOWNERS_FILE_PATH,
+        manifestDir: CODEOWNERS_MANIFEST_DIR,
+      });
 
       try {
         await access(CODEOWNERS_MANIFEST_DIR);
@@ -49,8 +55,7 @@ if (require.main === module) {
       const metadata = generateCodeownersMetadata(CODEOWNERS_FILE_PATH, CODEOWNERS_MANIFEST_DIR, METADATA_JSON_PATH);
 
       await writeFile(METADATA_JSON_PATH, JSON.stringify(metadata, null, 2), 'utf8');
-      console.log('✅ Metadata generated:');
-      console.log(`   • ${METADATA_JSON_PATH}`);
+      logger.info('Metadata generated', { metadataPath: METADATA_JSON_PATH });
     } catch (error) {
       console.error('❌ Error generating codeowners metadata:', error.message);
       process.exit(1);

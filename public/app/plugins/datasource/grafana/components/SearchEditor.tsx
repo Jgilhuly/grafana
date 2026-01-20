@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 
+import { createMonitoringLogger } from '@grafana/runtime';
 import { InlineField, Input, InlineFieldRow, CodeEditor } from '@grafana/ui';
 import { SearchQuery } from 'app/features/search/service/types';
 
@@ -8,6 +9,8 @@ interface Props {
   value: SearchQuery;
   onChange: (value: SearchQuery) => void;
 }
+
+const logger = createMonitoringLogger('datasource.grafana.search-editor');
 
 export default function SearchEditor({ value, onChange }: Props) {
   const [json, setJSON] = useState('');
@@ -49,7 +52,7 @@ export default function SearchEditor({ value, onChange }: Props) {
       onChange(searchQuery);
       setQuery(searchQuery.query ?? '');
     } catch (ex) {
-      console.log('UNABLE TO parse search', rawSearchJSON, ex);
+      logger.logWarning('Unable to parse search', { rawSearchJSON, error: String(ex) });
     }
   };
 

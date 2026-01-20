@@ -1,5 +1,10 @@
 import { Page, Response, Request } from '@playwright/test';
 import * as prom from 'prom-client';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { createStructuredLogger } = require('../../scripts/structuredLogger');
+const logger = createStructuredLogger('e2e.playwright.requests-recorder');
 
 /**
  * Records and tracks network request body sizes.
@@ -60,7 +65,7 @@ export class RequestsRecorder {
         return Promise.resolve();
       }
 
-      console.log('waiting for', this.#requestsInFlight, 'requests to finish');
+      logger.info('Waiting for requests to finish', { requestsInFlight: this.#requestsInFlight });
 
       return new Promise<void>((resolve) => {
         this.#resolve = resolve;
