@@ -82,6 +82,7 @@ import { contextSrv, RedirectToUrlKey } from './core/services/context_srv';
 import { initEchoSrv } from './core/services/echo/init';
 import { KeybindingSrv } from './core/services/keybindingSrv';
 import { startMeasure, stopMeasure } from './core/utils/metrics';
+import { initializeStructuredConsoleLogging } from './core/utils/structuredConsoleRuntime';
 import { initAlerting } from './features/alerting/unified/initAlerting';
 import { initAuthConfig } from './features/auth-config';
 import { getTimeSrv } from './features/dashboard/services/TimeSrv';
@@ -131,6 +132,7 @@ export class GrafanaApp {
 
   async init() {
     try {
+      initializeStructuredConsoleLogging();
       await preInitTasks();
 
       // Let iframe container know grafana has started loading
