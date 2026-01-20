@@ -2,6 +2,10 @@
 // Since much of Grafana depends on it in includes side effects at import time,
 // we delay loading the rest of the app using import() until the boot data is ready.
 
+import { installStructuredConsole } from './core/utils/structuredConsole';
+
+installStructuredConsole();
+
 // Check if we are hosting files on cdn and set webpack public path
 if (window.public_cdn_path) {
   __webpack_public_path__ = window.public_cdn_path;

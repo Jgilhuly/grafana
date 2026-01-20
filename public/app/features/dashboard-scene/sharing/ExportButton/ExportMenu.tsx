@@ -59,6 +59,15 @@ export default function ExportMenu({ dashboard }: { dashboard: DashboardScene })
       onClick: () => onMenuItemClick(shareDashboardType.image),
     });
 
+    menuItems.push({
+      shareId: shareDashboardType.pdf,
+      testId: newExportButtonSelector.exportAsPdf,
+      icon: 'file-pdf',
+      label: t('share-dashboard.menu.export-pdf-title', 'Export as PDF'),
+      renderCondition: Boolean(config.rendererAvailable),
+      onClick: () => onMenuItemClick(shareDashboardType.pdf),
+    });
+
     return menuItems.filter((item) => item.renderCondition);
   }, []);
 
