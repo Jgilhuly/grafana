@@ -2,6 +2,12 @@
 // Semver utils: parse, compare, sort etc (using official regexp)
 // https://regex101.com/r/Ly7O1x/3/
 //
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { createStructuredLogger } = require('../../../scripts/structuredLogger');
+
+const logger = createStructuredLogger('github.actions.changelog.semver');
 const semverRegExp =
   /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
@@ -82,7 +88,12 @@ function test(version, expected) {
 
   const failureMessage = `FAIILED. Expected ${expected}, but was ${prev[5]}`;
 
-  console.log(`Test ${version}, ${prev[5] === expected ? 'PASSED' : failureMessage}`);
+  logger.info('Semver test result', {
+    version,
+    expected,
+    actual: prev[5],
+    result: prev[5] === expected ? 'PASSED' : 'FAILED',
+  });
 }
 
 test("v11.5.4+security-01", "v11.5.4");

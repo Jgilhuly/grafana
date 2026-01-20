@@ -3,6 +3,16 @@ import * as React from 'react';
 
 import { store } from './store';
 
+const logStorageError = (message: string, error: unknown) => {
+  console.error(
+    JSON.stringify({
+      level: 'error',
+      message,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  );
+};
+
 export interface Props<T> {
   storageKey: string;
   defaultValue: T;
@@ -32,7 +42,7 @@ export const LocalStorageValueProvider = <T,>(props: Props<T>) => {
     try {
       store.setObject(storageKey, value);
     } catch (error) {
-      console.error(error);
+      logStorageError('Failed to save value to storage', error);
     }
     setState({ value });
   };
@@ -41,7 +51,7 @@ export const LocalStorageValueProvider = <T,>(props: Props<T>) => {
     try {
       store.delete(storageKey);
     } catch (error) {
-      console.log(error);
+      logStorageError('Failed to delete value from storage', error);
     }
     setState({ value: defaultValue });
   };

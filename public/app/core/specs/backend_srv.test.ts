@@ -883,8 +883,6 @@ describe('backendSrv', () => {
 
   describe('chunked', () => {
     beforeEach(() => {
-      // we do a bunch of console.log in the chunked function
-      jest.spyOn(console, 'log').mockImplementation(() => {});
     });
 
     afterEach(() => {

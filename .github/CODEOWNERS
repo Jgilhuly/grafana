@@ -1063,6 +1063,7 @@ playwright.storybook.config.ts @grafana/grafana-frontend-platform
 /scripts/prepare-npm-package.js @grafana/frontend-ops
 /scripts/protobuf-check.sh @grafana/plugins-platform-backend
 /scripts/stripnulls.sh @grafana/grafana-as-code
+/scripts/structuredLogger.js @grafana/frontend-ops
 /scripts/tag_release.sh @grafana/grafana-developer-enablement-squad
 /scripts/trigger_docker_build.sh @grafana/grafana-developer-enablement-squad
 /scripts/trigger_grafana_packer.sh @grafana/grafana-developer-enablement-squad

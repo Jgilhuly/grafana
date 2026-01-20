@@ -56,6 +56,12 @@ interface FormDTO {
   };
 }
 
+const logStructured = (level: 'info' | 'debug' | 'warn', message: string, context: Record<string, unknown>) => {
+  const payload = { level, message, context };
+  const sink = level === 'warn' ? console.warn : console.info;
+  sink(JSON.stringify(payload));
+};
+
 const renderForm = (defaultValues?: FormDTO) => {
   const nameId = useId();
   const emailId = useId();
@@ -70,11 +76,11 @@ const renderForm = (defaultValues?: FormDTO) => {
     <Form
       defaultValues={defaultValues}
       onSubmit={(data: FormDTO) => {
-        console.log(data);
+        logStructured('info', 'Form submitted', { data });
       }}
     >
       {({ register, control, errors }) => {
-        console.log(errors);
+        logStructured('debug', 'Form validation errors', { errors });
         return (
           <>
             <Legend>Edit user</Legend>
@@ -162,7 +168,7 @@ export const AsyncValidation: StoryFn = ({ passAsyncValidation }) => {
         }}
       >
         {({ register, control, errors, formState }) => {
-          console.log(errors);
+          logStructured('debug', 'Async validation errors', { errors });
           return (
             <>
               <Legend>Edit user</Legend>
@@ -201,7 +207,7 @@ const validateAsync = (shouldPass: boolean) => async () => {
     });
     return true;
   } catch (e) {
-    console.log(e);
+    logStructured('warn', 'Async validation error', { error: String(e) });
     return false;
   }
 };

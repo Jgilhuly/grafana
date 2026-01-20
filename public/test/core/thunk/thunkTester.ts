@@ -16,6 +16,9 @@ export const thunkTester = (initialState: unknown, debug?: boolean): ThunkGiven 
   const store = mockStore(initialState);
   let thunkUnderTest: any = null;
   let dispatchedActions: PayloadAction[] = [];
+  const logDebug = (message: string, context: Record<string, unknown>) => {
+    process.stdout.write(`${JSON.stringify({ level: 'debug', message, context })}\n`);
+  };
 
   const givenThunk = (thunkFunction: any): ThunkWhen => {
     thunkUnderTest = thunkFunction;
@@ -28,7 +31,7 @@ export const thunkTester = (initialState: unknown, debug?: boolean): ThunkGiven 
 
     dispatchedActions = store.getActions();
     if (debug) {
-      console.log('resultingActions:', JSON.stringify(dispatchedActions, null, 2));
+      logDebug('Thunk dispatched actions', { actions: dispatchedActions });
     }
 
     return dispatchedActions;

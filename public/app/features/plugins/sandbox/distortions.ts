@@ -2,6 +2,7 @@ import { ProxyTarget } from '@locker/near-membrane-shared';
 import DOMPurify from 'dompurify';
 import { cloneDeep, isFunction } from 'lodash';
 
+import { createMonitoringLogger } from '@grafana/runtime';
 import { Monaco } from '@grafana/ui';
 
 import { loadScriptIntoSandbox } from './codeLoader';
@@ -9,6 +10,8 @@ import { forbiddenElements } from './constants';
 import { recursivePatchObjectAsLiveTarget } from './documentSandbox';
 import { SandboxEnvironment, SandboxPluginMeta } from './types';
 import { logWarning, unboxRegexesFromMembraneProxy } from './utils';
+
+const logger = createMonitoringLogger('plugins.sandbox');
 
 /**
  * Distortions are near-membrane mechanisms to altert JS instrics and DOM APIs.
@@ -140,7 +143,7 @@ function distortConsole(distortions: DistortionMap) {
       const pluginId = meta.id;
 
       function sandboxLog(...args: unknown[]) {
-        console.log(`[plugin ${pluginId}]`, ...args);
+        logger.logInfo('Plugin console log', { pluginId, args });
       }
       return {
         log: sandboxLog,
@@ -170,7 +173,7 @@ function distortAlert(distortions: DistortionMap) {
     });
 
     return function (...args: unknown[]) {
-      console.log(`[plugin ${pluginId}]`, ...args);
+      logger.logInfo('Plugin console log', { pluginId, args });
     };
   }
   const descriptor = Object.getOwnPropertyDescriptor(window, 'alert');

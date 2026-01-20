@@ -12,6 +12,7 @@ import {
   TransformerCategory,
 } from '@grafana/data';
 import { t } from '@grafana/i18n';
+import { createMonitoringLogger } from '@grafana/runtime';
 import { FrameGeometrySourceMode } from '@grafana/schema';
 import { useTheme2 } from '@grafana/ui';
 import { addLocationFields } from 'app/features/geo/editor/locationEditor';
@@ -23,6 +24,8 @@ import lightImage from '../images/light/spatial.svg';
 import { SpatialCalculation, SpatialOperation, SpatialAction, SpatialTransformOptions } from './models.gen';
 import { getDefaultOptions, getTransformerOptionPane } from './optionsHelper';
 import { isLineBuilderOption, getSpatialTransformer } from './spatialTransformer';
+
+const logger = createMonitoringLogger('transformers.spatial');
 
 // Nothing defined in state
 const supplier = (
@@ -138,7 +141,7 @@ export const SetGeometryTransformerEditor = (props: Props) => {
     if (!props.options.source?.mode) {
       const opts = getDefaultOptions(supplier);
       props.onChange({ ...opts, ...props.options });
-      console.log('geometry useEffect', opts);
+      logger.logDebug('Spatial transformer default geometry applied', { options: opts });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

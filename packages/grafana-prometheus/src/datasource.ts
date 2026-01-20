@@ -31,6 +31,7 @@ import {
 import {
   BackendSrvRequest,
   config,
+  createMonitoringLogger,
   DataSourceWithBackend,
   FetchResponse,
   getBackendSrv,
@@ -70,6 +71,8 @@ import {
 } from './types';
 import { utf8Support, wrapUtf8Filters } from './utf8_support';
 import { PrometheusVariableSupport } from './variables';
+
+const logger = createMonitoringLogger('prometheus.datasource');
 
 export class PrometheusDatasource
   extends DataSourceWithBackend<PromQuery, PromOptions>
@@ -174,7 +177,7 @@ export class PrometheusDatasource
         this.ruleMappings = extractRuleMappingFromGroups(ruleGroups);
       }
     } catch (err) {
-      console.log('Rules API is experimental. Ignore next error.');
+      logger.logWarning('Rules API is experimental. Ignore next error.', { location: 'loadRules' });
       console.error(err);
     }
   }

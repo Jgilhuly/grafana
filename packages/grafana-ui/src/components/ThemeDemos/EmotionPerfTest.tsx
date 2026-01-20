@@ -11,7 +11,13 @@ import { Button } from '../Button/Button';
 import { Stack } from '../Layout/Stack/Stack';
 
 export function EmotionPerfTest() {
-  console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+  console.info(
+    JSON.stringify({
+      level: 'info',
+      message: 'Emotion perf test env',
+      context: { env: process.env.NODE_ENV },
+    })
+  );
 
   return (
     <Stack direction="column">
@@ -39,6 +45,30 @@ export const TestScenario: FC<{ name: string; Component: FC<TestComponentProps> 
 };
 
 TestScenario.displayName = 'TestScenario';
+
+const logProfile = (
+  id: string,
+  phase: string,
+  actualDuration: number,
+  baseDuration: number,
+  startTime: number,
+  commitTime: number
+) => {
+  console.info(
+    JSON.stringify({
+      level: 'debug',
+      message: 'Emotion render profile',
+      context: {
+        id,
+        phase,
+        actualDuration,
+        baseDuration,
+        startTime,
+        commitTime,
+      },
+    })
+  );
+};
 
 function renderManyComponents(Component: FC<TestComponentProps>) {
   const elements: React.ReactNode[] = [];
@@ -126,7 +156,7 @@ function NoStyles({ index }: TestComponentProps) {
 
 function MeasureRender({ children, id }: { children: React.ReactNode; id: string }) {
   const onRender: ProfilerOnRenderCallback = (id, phase, actualDuration, baseDuration, startTime, commitTime) => {
-    console.log('Profile ' + id, actualDuration);
+    logProfile(id, phase, actualDuration, baseDuration, startTime, commitTime);
   };
 
   return (

@@ -4,7 +4,7 @@ import { BASE_URL as v0alphaBaseURL } from '@grafana/api-clients/rtkq/dashboard/
 import { generatedAPI as legacyUserAPI } from '@grafana/api-clients/rtkq/legacy/user';
 import { DataFrame, DataFrameView, getDisplayProcessor, SelectableValue, toDataFrame } from '@grafana/data';
 import { t } from '@grafana/i18n';
-import { config, getBackendSrv } from '@grafana/runtime';
+import { config, createMonitoringLogger, getBackendSrv } from '@grafana/runtime';
 import { generatedAPI, ListStarsApiResponse } from 'app/api/clients/collections/v1alpha1';
 import { getAPIBaseURL } from 'app/api/utils';
 import { TermCount } from 'app/core/components/TagFilter/TagFilter';
@@ -26,6 +26,7 @@ import { filterSearchResults, replaceCurrentFolderQuery } from './utils';
 // The backend returns an empty frame with a special name to indicate that the indexing engine is being rebuilt,
 // and that it can not serve any search requests. We are temporarily using the old SQL Search API as a fallback when that happens.
 const loadingFrameName = 'Loading';
+const logger = createMonitoringLogger('search.unified');
 
 const searchURI = `${v0alphaBaseURL}/search`;
 
@@ -189,11 +190,14 @@ export class UnifiedSearcher implements GrafanaSearcher {
         const resp = await this.fetchResponse(nextPageUrl);
         const frame = toDashboardResults(resp, query.sort ?? '');
         if (!frame) {
-          console.log('no results', frame);
+          logger.logWarning('No results frame returned', { frame });
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          logger.logWarning('Search results frame shape mismatch', {
+            frameFieldCount: frame.fields.length,
+            expectedFieldCount: view.dataFrame.fields.length,
+          });
           return;
         }
 

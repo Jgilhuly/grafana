@@ -57,6 +57,9 @@ export const reducerTester = <State>(): Given<State> => {
   let resultingState: State;
   let initialState: State;
   let showDebugOutput = false;
+  const logDebug = (message: string, context: Record<string, unknown>) => {
+    process.stdout.write(`${JSON.stringify({ level: 'debug', message, context })}\n`);
+  };
 
   const givenReducer = (
     reducer: GrafanaReducer<State, AnyAction>,
@@ -82,7 +85,7 @@ export const reducerTester = <State>(): Given<State> => {
 
   const thenStateShouldEqual = (state: State): When<State> => {
     if (showDebugOutput) {
-      console.log(JSON.stringify(resultingState, null, 2));
+      logDebug('Reducer resulting state', { state: resultingState });
     }
     expect(resultingState).toEqual(state);
 
@@ -91,7 +94,7 @@ export const reducerTester = <State>(): Given<State> => {
 
   const thenStatePredicateShouldEqual = (predicate: (resultingState: State) => boolean): When<State> => {
     if (showDebugOutput) {
-      console.log(JSON.stringify(resultingState, null, 2));
+      logDebug('Reducer resulting state', { state: resultingState });
     }
     expect(predicate(resultingState)).toBe(true);
 

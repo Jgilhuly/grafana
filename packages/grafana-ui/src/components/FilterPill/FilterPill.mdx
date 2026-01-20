@@ -10,7 +10,10 @@ A component used for quick toggling on/off filters. Mostly used in inline form c
 ```jsx
 import { FilterPill } from '@grafana/ui';
 
-<FilterPill label={'Test'} onClick={() => console.log('toggle')} />;
+<FilterPill
+  label={'Test'}
+  onClick={() => console.info(JSON.stringify({ level: 'info', message: 'Filter pill toggled' }))}
+/>;
 ```
 
 ### Props

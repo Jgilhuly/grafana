@@ -27,8 +27,10 @@ import { TimeRangeInput } from '@grafana/ui';
 
 <TimeRangeInput
   value={timeRange}
-  onChange={(range) => console.log('range', range)}
-  onChangeTimeZone={(tz) => console.log('timezone', tz)}
+  onChange={(range) => console.info(JSON.stringify({ level: 'info', message: 'Time range changed', context: { range } }))}
+  onChangeTimeZone={(tz) =>
+    console.info(JSON.stringify({ level: 'info', message: 'Time zone changed', context: { tz } }))
+  }
 />;
 ```
 

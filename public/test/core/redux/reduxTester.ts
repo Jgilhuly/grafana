@@ -47,6 +47,9 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
   const preloadedState = args?.preloadedState ?? ({} as unknown as Partial<NoInfer<State>>);
   const debug = args?.debug ?? false;
   let store: EnhancedStore<State, AnyAction, []> | null = null;
+  const logDebug = (message: string, context: Record<string, unknown>) => {
+    process.stdout.write(`${JSON.stringify({ level: 'debug', message, context })}\n`);
+  };
 
   const givenRootReducer = (
     rootReducer: Reducer<State, UnknownAction, Partial<NoInfer<State>>>
@@ -118,7 +121,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
 
   const thenDispatchedActionsShouldEqual = (...actions: AnyAction[]): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logDebug('Dispatched actions', { actions: dispatchedActions });
     }
 
     if (!actions.length) {
@@ -133,7 +136,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
     predicate: (dispatchedActions: AnyAction[]) => boolean
   ): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logDebug('Dispatched actions', { actions: dispatchedActions });
     }
 
     expect(predicate(dispatchedActions)).toBe(true);
@@ -142,7 +145,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
 
   const thenNoActionsWhereDispatched = (): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logDebug('Dispatched actions', { actions: dispatchedActions });
     }
 
     expect(dispatchedActions.length).toBe(0);

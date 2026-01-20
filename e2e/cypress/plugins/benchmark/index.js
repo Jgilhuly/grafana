@@ -3,6 +3,9 @@ const { fromPairs } = require('lodash');
 
 const { CDPDataCollector } = require('./CDPDataCollector');
 const { formatResults } = require('./formatting');
+const { createStructuredLogger } = require('../../../../scripts/structuredLogger');
+
+const logger = createStructuredLogger('e2e.cypress.benchmark');
 
 const remoteDebuggingPortOptionPrefix = '--remote-debugging-port=';
 
@@ -54,7 +57,7 @@ const initialize = (on, config) => {
 
   if (!fs.existsSync(resultsFolder)) {
     fs.mkdirSync(resultsFolder, { recursive: true });
-    console.log(`Created folder for benchmark results ${resultsFolder}`);
+    logger.info('Created folder for benchmark results', { resultsFolder });
   }
 
   on('before:browser:launch', async (browser, options) => {
@@ -69,11 +72,10 @@ const initialize = (on, config) => {
 
     args.push('--start-fullscreen');
 
-    console.log(
-      `initialized benchmarking plugin with ${collectors.length} collectors: ${collectors
-        .map((col) => col.getName())
-        .join(', ')}`
-    );
+    logger.info('Initialized benchmarking plugin', {
+      collectorCount: collectors.length,
+      collectorNames: collectors.map((col) => col.getName()),
+    });
 
     return options;
   });

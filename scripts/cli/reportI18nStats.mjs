@@ -3,6 +3,12 @@
 import { readdir, stat, readFile } from 'fs/promises';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { createStructuredLogger } = require('../structuredLogger');
+
+const logger = createStructuredLogger('scripts.cli.reportI18nStats');
 
 const LOCALES_DIR = path.resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'public', 'locales');
 
@@ -84,5 +90,6 @@ function eachMessage(value, callback) {
 function logStat(name, value) {
   // Note that this output format must match the parsing in ci-frontend-metrics.sh
   // which expects the two values to be separated by a space
-  console.log(`${name} ${value}`);
+  logger.info('I18n stat reported', { name, value });
+  process.stdout.write(`${name} ${value}\n`);
 }

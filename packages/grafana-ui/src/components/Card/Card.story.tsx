@@ -9,6 +9,10 @@ import { Card } from './Card';
 
 const logo = 'https://grafana.com/static/assets/img/apple-touch-icon.png';
 
+const logTagClick = (tag: string) => {
+  console.info(JSON.stringify({ level: 'info', message: 'Card tag clicked', context: { tag } }));
+};
+
 const meta: Meta<typeof Card> = {
   title: 'Layout/Card',
   component: Card,
@@ -93,7 +97,7 @@ export const Tags: StoryFn<typeof Card> = (args) => {
       <Card.Heading>Test dashboard</Card.Heading>
       <Card.Description>Card with a list of tags</Card.Description>
       <Card.Tags>
-        <TagList tags={['tag1', 'tag2', 'tag3']} onClick={(tag) => console.log(tag)} />
+        <TagList tags={['tag1', 'tag2', 'tag3']} onClick={logTagClick} />
       </Card.Tags>
     </Card>
   );

@@ -14,7 +14,7 @@ import { FieldArray } from './FieldArray';
 ```jsx
 import { Form, FieldArray } from '@grafana/ui';
 
-<Form onSubmit={() => console.log('form submitted')}>
+<Form onSubmit={() => console.info(JSON.stringify({ level: 'info', message: 'Form submitted' }))}>
   ({control, register}) => (
     <FieldArray control={control} name="People">
       {({ fields, append }) => (

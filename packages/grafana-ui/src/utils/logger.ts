@@ -1,12 +1,25 @@
+import { faro, LogContext, LogLevel } from '@grafana/faro-web-sdk';
 import { throttle } from 'lodash';
 
-type Args = Parameters<typeof console.log>;
+type Args = Array<unknown>;
 
 /**
  * @internal
  * */
-const throttledLog = throttle((...t: Args) => {
-  console.log(...t);
+const pushStructuredLog = (message: string, context: LogContext) => {
+  if (faro?.api?.pushLog) {
+    faro.api.pushLog([message], {
+      level: LogLevel.DEBUG,
+      context,
+    });
+    return;
+  }
+
+  console.info(JSON.stringify({ level: 'debug', message, context }));
+};
+
+const throttledLog = throttle((message: string, context: LogContext) => {
+  pushStructuredLog(message, context);
 }, 500);
 
 /**
@@ -32,8 +45,14 @@ export const createLogger = (name: string): Logger => {
       if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test' || !loggingEnabled) {
         return;
       }
-      const fn = throttle ? throttledLog : console.log;
-      fn(`[${name}: ${id}]:`, ...t);
+      const message = `[${name}: ${id}]`;
+      const context = {
+        source: `grafana-ui.${name}`,
+        loggerId: id,
+        args: t,
+      };
+      const fn = throttle ? throttledLog : pushStructuredLog;
+      fn(message, context);
     },
     enable: () => (loggingEnabled = true),
     disable: () => (loggingEnabled = false),

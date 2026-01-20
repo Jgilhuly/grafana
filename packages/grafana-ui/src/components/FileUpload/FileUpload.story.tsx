@@ -24,11 +24,25 @@ const meta: Meta<typeof FileUpload> = {
   },
 };
 
+const logUpload = (file?: File) => {
+  console.info(
+    JSON.stringify({
+      level: 'info',
+      message: 'File upload',
+      context: {
+        name: file?.name,
+        size: file?.size,
+        type: file?.type,
+      },
+    })
+  );
+};
+
 export const Basic: StoryFn<typeof FileUpload> = (args) => {
   return (
     <FileUpload
       size={args.size}
-      onFileUpload={({ currentTarget }) => console.log('file', currentTarget?.files && currentTarget.files[0])}
+      onFileUpload={({ currentTarget }) => logUpload(currentTarget?.files && currentTarget.files[0])}
     />
   );
 };

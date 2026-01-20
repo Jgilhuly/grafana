@@ -1,6 +1,11 @@
 import fs from 'fs';
 import { OpenAPIV3 } from 'openapi-types';
 import path from 'path';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { createStructuredLogger } = require('../../../scripts/structuredLogger');
+const logger = createStructuredLogger('packages.api-clients.process-specs');
 
 /**
  * Process an OpenAPI spec to remove k8s metadata from names and paths:
@@ -154,7 +159,7 @@ function processDirectory(sourceDir: string, outputDir: string) {
     const inputPath = path.join(sourceDir, file);
     const outputPath = path.join(outputDir, file);
 
-    console.log(`Processing file "${file}"...`);
+    logger.info('Processing OpenAPI file', { file });
 
     const fileContent = fs.readFileSync(inputPath, 'utf-8');
 
@@ -168,7 +173,7 @@ function processDirectory(sourceDir: string, outputDir: string) {
 
     const outputSpec = processOpenAPISpec(inputSpec);
     fs.writeFileSync(outputPath, JSON.stringify(outputSpec, null, 2), 'utf-8');
-    console.log(`Processing completed for file "${file}".`);
+    logger.info('Processing completed for OpenAPI file', { file });
   }
 }
 
