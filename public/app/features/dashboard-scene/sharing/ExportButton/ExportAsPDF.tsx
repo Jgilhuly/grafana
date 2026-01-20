@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { saveAs } from 'file-saver';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAsyncFn } from 'react-use';
 
 import { GrafanaTheme2 } from '@grafana/data';
@@ -70,15 +70,6 @@ function ExportAsPDFRenderer({ model }: SceneComponentProps<ExportAsPDF>) {
       throw error;
     }
   }, [dashboard, orientation, layout, zoom]);
-
-  // Clean up object URLs when component unmounts
-  useEffect(() => {
-    return () => {
-      if (pdfBlob) {
-        URL.revokeObjectURL(URL.createObjectURL(pdfBlob));
-      }
-    };
-  }, [pdfBlob]);
 
   const onDownload = () => {
     if (!pdfBlob) {
