@@ -2,7 +2,6 @@ package annotation
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -167,6 +166,60 @@ func (s *legacyStorage) List(ctx context.Context, options *internalversion.ListO
 					return nil, fmt.Errorf("unsupported operator %s for spec.dashboardUID (only = supported)", r.Operator)
 				}
 
+			case "spec.tags":
+				if r.Operator == selection.Equals || r.Operator == selection.DoubleEquals {
+					opts.Tags = append(opts.Tags, r.Value)
+				} else {
+					return nil, fmt.Errorf("unsupported operator %s for spec.tags (only = supported)", r.Operator)
+				}
+
+			case "spec.matchAny":
+				if r.Operator == selection.Equals || r.Operator == selection.DoubleEquals {
+					matchAny, err := strconv.ParseBool(r.Value)
+					if err != nil {
+						return nil, fmt.Errorf("invalid matchAny value %q: %w", r.Value, err)
+					}
+					opts.MatchAny = matchAny
+				} else {
+					return nil, fmt.Errorf("unsupported operator %s for spec.matchAny (only = supported)", r.Operator)
+				}
+
+			case "spec.type":
+				if r.Operator == selection.Equals || r.Operator == selection.DoubleEquals {
+					opts.Type = r.Value
+				} else {
+					return nil, fmt.Errorf("unsupported operator %s for spec.type (only = supported)", r.Operator)
+				}
+
+			case "spec.userId":
+				if r.Operator == selection.Equals || r.Operator == selection.DoubleEquals {
+					userID, err := strconv.ParseInt(r.Value, 10, 64)
+					if err != nil {
+						return nil, fmt.Errorf("invalid userId value %q: %w", r.Value, err)
+					}
+					opts.UserID = userID
+				} else {
+					return nil, fmt.Errorf("unsupported operator %s for spec.userId (only = supported)", r.Operator)
+				}
+
+			case "spec.alertId":
+				if r.Operator == selection.Equals || r.Operator == selection.DoubleEquals {
+					alertID, err := strconv.ParseInt(r.Value, 10, 64)
+					if err != nil {
+						return nil, fmt.Errorf("invalid alertId value %q: %w", r.Value, err)
+					}
+					opts.AlertID = alertID
+				} else {
+					return nil, fmt.Errorf("unsupported operator %s for spec.alertId (only = supported)", r.Operator)
+				}
+
+			case "spec.alertUID":
+				if r.Operator == selection.Equals || r.Operator == selection.DoubleEquals {
+					opts.AlertUID = r.Value
+				} else {
+					return nil, fmt.Errorf("unsupported operator %s for spec.alertUID (only = supported)", r.Operator)
+				}
+
 			case "spec.panelID":
 				if r.Operator == selection.Equals || r.Operator == selection.DoubleEquals {
 					panelID, err := strconv.ParseInt(r.Value, 10, 64)
@@ -257,7 +310,34 @@ func (s *legacyStorage) Update(ctx context.Context,
 	forceAllowCreate bool,
 	options *metav1.UpdateOptions,
 ) (runtime.Object, bool, error) {
-	return nil, false, errors.New("not implemented")
+	current, err := s.Get(ctx, name, &metav1.GetOptions{})
+	if err != nil {
+		return nil, false, err
+	}
+
+	obj, err := objInfo.UpdatedObject(ctx, current)
+	if err != nil {
+		return nil, false, err
+	}
+
+	resource, ok := obj.(*annotationV0.Annotation)
+	if !ok {
+		return nil, false, fmt.Errorf("expected annotation")
+	}
+
+	if resource.Name == "" {
+		resource.Name = name
+	}
+	if resource.Namespace == "" {
+		resource.Namespace = request.NamespaceValue(ctx)
+	}
+
+	updated, err := s.store.Update(ctx, resource)
+	if err != nil {
+		return nil, false, err
+	}
+
+	return updated, false, nil
 }
 
 func (s *legacyStorage) Delete(ctx context.Context, name string, deleteValidation rest.ValidateObjectFunc, options *metav1.DeleteOptions) (runtime.Object, bool, error) {

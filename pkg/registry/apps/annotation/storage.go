@@ -19,6 +19,12 @@ type ListOptions struct {
 	PanelID      int64
 	From         int64
 	To           int64
+	Tags         []string
+	MatchAny     bool
+	Type         string
+	UserID       int64
+	AlertID      int64
+	AlertUID     string
 	Limit        int64
 	Continue     string
 }

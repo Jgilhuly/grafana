@@ -51,7 +51,6 @@ func (a *sqlAdapter) Get(ctx context.Context, namespace, name string) (*annotati
 		SignedInUser: user,
 		OrgID:        orgID,
 		Limit:        1000,
-		AlertID:      -1,
 	}
 
 	items, err := a.repo.Find(ctx, query)
@@ -87,7 +86,12 @@ func (a *sqlAdapter) List(ctx context.Context, namespace string, opts ListOption
 		From:         opts.From,
 		To:           opts.To,
 		Limit:        opts.Limit,
-		AlertID:      -1,
+		Tags:         opts.Tags,
+		MatchAny:     opts.MatchAny,
+		Type:         opts.Type,
+		UserID:       opts.UserID,
+		AlertID:      opts.AlertID,
+		AlertUID:     opts.AlertUID,
 	}
 
 	items, err := a.repo.Find(ctx, query)
@@ -211,6 +215,49 @@ func (a *sqlAdapter) toK8sResource(item *annotations.ItemDTO, namespace string) 
 	}
 	if item.TimeEnd != 0 {
 		anno.Spec.TimeEnd = &item.TimeEnd
+	}
+
+	additionalFields := map[string]interface{}{}
+	if item.UserID != 0 {
+		additionalFields["userId"] = item.UserID
+	}
+	if item.Login != "" {
+		additionalFields["login"] = item.Login
+	}
+	if item.Email != "" {
+		additionalFields["email"] = item.Email
+	}
+	if item.AvatarURL != "" {
+		additionalFields["avatarUrl"] = item.AvatarURL
+	}
+	if item.AlertID != 0 {
+		additionalFields["alertId"] = item.AlertID
+	}
+	if item.AlertName != "" {
+		additionalFields["alertName"] = item.AlertName
+	}
+	if item.NewState != "" {
+		additionalFields["newState"] = item.NewState
+	}
+	if item.PrevState != "" {
+		additionalFields["prevState"] = item.PrevState
+	}
+	if item.DashboardID != 0 { // nolint:staticcheck
+		additionalFields["dashboardId"] = item.DashboardID
+	}
+	if item.Created != 0 {
+		additionalFields["created"] = item.Created
+	}
+	if item.Updated != 0 {
+		additionalFields["updated"] = item.Updated
+	}
+	if item.Data != nil {
+		additionalFields["data"] = item.Data.Interface()
+	}
+	if len(additionalFields) > 0 {
+		anno.Status = annotationV0.AnnotationStatus{
+			AdditionalFields: additionalFields,
+		}
 	}
 
 	return anno

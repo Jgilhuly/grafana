@@ -17,6 +17,7 @@ import { config, getBackendSrv, locationService } from '@grafana/runtime';
 import { Button, ScrollContainer, stylesFactory, TagList } from '@grafana/ui';
 import { AbstractList } from '@grafana/ui/internal';
 import { appEvents } from 'app/core/app_events';
+import { annotationServer } from 'app/features/annotations/api';
 import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
 
 import { AnnotationListItem } from './AnnotationListItem';
@@ -128,7 +129,7 @@ export class AnnoListPanel extends PureComponent<Props, State> {
       params.tags = params.tags ? [...params.tags, ...queryTags] : queryTags;
     }
 
-    const annotations = await getBackendSrv().get('/api/annotations', params, this.state.requestId);
+    const annotations = await annotationServer().list(params, this.state.requestId);
 
     this.setState({
       annotations,
