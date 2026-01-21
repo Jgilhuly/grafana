@@ -3,12 +3,16 @@ import { RefObject, useMemo } from 'react';
 
 import { config } from '@grafana/runtime';
 import { LazyLoader, SceneComponentProps, VizPanel } from '@grafana/scenes';
+import { css, cx } from '@emotion/css';
+import { useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
 import { GRID_CELL_HEIGHT, GRID_CELL_VMARGIN } from 'app/core/constants';
 
 import { useDashboardState } from '../../utils/utils';
 import { SoloPanelContextValueWithSearchStringFilter } from '../PanelSearchLayout';
 import { renderMatchingSoloPanels, useSoloPanelContext } from '../SoloPanelContext';
 import { getIsLazy } from '../layouts-shared/utils';
+import { usePanelSearchContext } from '../../edit-pane/PanelSearchContext';
 
 import { DashboardGridItem, RepeatDirection } from './DashboardGridItem';
 
@@ -19,15 +23,25 @@ interface PanelWrapperProps {
 }
 
 function PanelWrapper({ panel, isLazy, containerRef }: PanelWrapperProps) {
+  const searchContext = usePanelSearchContext();
+  const styles = useStyles2(getPanelStyles);
+  const isMatch = searchContext?.isMatch(panel) ?? false;
+  const hasSearchQuery = Boolean(searchContext?.searchQuery);
+
+  const wrapperClassName = cx(panelWrapper, {
+    [styles.panelMatch]: isMatch && hasSearchQuery,
+    [styles.panelNoMatch]: !isMatch && hasSearchQuery,
+  });
+
   if (isLazy) {
     return (
-      <LazyLoader key={panel.state.key!} ref={containerRef} className={panelWrapper}>
+      <LazyLoader key={panel.state.key!} ref={containerRef} className={wrapperClassName}>
         <panel.Component model={panel} />
       </LazyLoader>
     );
   }
   return (
-    <div className={panelWrapper} ref={containerRef}>
+    <div className={wrapperClassName} ref={containerRef}>
       <panel.Component model={panel} />
     </div>
   );
@@ -116,3 +130,18 @@ const panelWrapper = css({
   width: '100%',
   height: '100%',
 });
+
+function getPanelStyles(theme: GrafanaTheme2) {
+  return {
+    panelMatch: css({
+      outline: `2px solid ${theme.colors.success.border}`,
+      outlineOffset: '2px',
+      borderRadius: theme.shape.radius.default,
+      transition: 'outline 0.2s ease-in-out',
+    }),
+    panelNoMatch: css({
+      opacity: 0.4,
+      transition: 'opacity 0.2s ease-in-out',
+    }),
+  };
+}
