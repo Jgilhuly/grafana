@@ -29,7 +29,7 @@ export function PanelSearchContextProvider({
 
     const isMatch = (panel: VizPanel): boolean => {
       if (!query) {
-        return false;
+        return true;
       }
       const lowerQuery = query.toLowerCase();
       const title = panel.state.title?.toLowerCase() ?? '';
