@@ -3,6 +3,7 @@ import React, { createContext, useContext, useMemo } from 'react';
 import { VizPanel } from '@grafana/scenes';
 
 import { DashboardEditPane } from './DashboardEditPane';
+import { panelMatchesSearch } from './panelSearchUtils';
 
 export interface PanelSearchContextValue {
   searchQuery: string;
@@ -28,14 +29,7 @@ export function PanelSearchContextProvider({
     const query = panelSearchQuery ?? '';
 
     const isMatch = (panel: VizPanel): boolean => {
-      if (!query) {
-        return true;
-      }
-      const lowerQuery = query.toLowerCase();
-      const title = panel.state.title?.toLowerCase() ?? '';
-      const type = panel.state.pluginId?.toLowerCase() ?? '';
-      
-      return title.includes(lowerQuery) || type.includes(lowerQuery);
+      return panelMatchesSearch(panel, query);
     };
 
     return {

@@ -78,13 +78,14 @@ export function PanelQuickActionsRenderer({ model }: SceneComponentProps<PanelQu
 
   // Get the parent panel
   const panel = model.parent;
+  
+  // Get dashboard state to check if we're in edit mode (must be called before any conditional returns)
+  const dashboard = panel instanceof VizPanel ? getDashboardSceneFor(panel) : null;
+  const { isEditing } = dashboard?.useState() ?? { isEditing: false };
+
   if (!(panel instanceof VizPanel)) {
     return null;
   }
-
-  // Get dashboard state to check if we're in edit mode
-  const dashboard = getDashboardSceneFor(panel);
-  const { isEditing } = dashboard.useState();
 
   // Check if this is a repeat clone (should not show actions)
   const isReadOnlyRepeat = isRepeatCloneOrChildOf(panel);

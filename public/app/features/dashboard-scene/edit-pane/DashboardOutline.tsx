@@ -12,6 +12,7 @@ import { DashboardInteractions } from '../utils/interactions';
 import { getDashboardSceneFor } from '../utils/utils';
 
 import { DashboardEditPane } from './DashboardEditPane';
+import { panelMatchesSearch } from './panelSearchUtils';
 import { getEditableElementFor } from './shared';
 import { useOutlineRename } from './useOutlineRename';
 
@@ -49,17 +50,6 @@ interface DashboardOutlineNodeProps {
   isEditing: boolean | undefined;
   depth: number;
   index: number;
-}
-
-function panelMatchesSearch(panel: VizPanel, query: string): boolean {
-  if (!query) {
-    return true;
-  }
-  const lowerQuery = query.toLowerCase();
-  const title = panel.state.title?.toLowerCase() ?? '';
-  const type = panel.state.pluginId?.toLowerCase() ?? '';
-  
-  return title.includes(lowerQuery) || type.includes(lowerQuery);
 }
 
 function hasMatchingDescendant(sceneObject: SceneObject, query: string, isEditing: boolean): boolean {
