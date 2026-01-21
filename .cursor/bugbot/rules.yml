@@ -1,0 +1,138 @@
+---
+# Bugbot Rules for Grafana Dashboard Scene
+# These rules help catch common issues in the codebase
+
+rules:
+  - id: scene-usestate-unnecessary-rerenders
+    name: Scene useState causing unnecessary re-renders
+    severity: medium
+    description: |
+      Components that call .useState() on Scene objects will re-render whenever ANY state in that object changes,
+      not just the specific properties being accessed. This can cause unnecessary re-renders and performance issues.
+      
+      Issue: When a component calls `dashboard.useState()` or similar Scene object state subscriptions, 
+      it subscribes to all state changes on that object, even if only using one or two properties.
+      
+      Solution: Consider one of the following approaches:
+      1. Use selective state subscriptions if available (e.g., specific state slices)
+      2. Move the state subscription to a more specific child component
+      3. Ensure the component truly needs to re-render when any of the subscribed state changes
+      4. Use memoization or other optimization techniques if the component is expensive to render
+    pattern:
+      - type: regex
+        match: '\.useState\(\)'
+        files:
+          include:
+            - 'public/app/features/dashboard-scene/**/*.tsx'
+            - 'public/app/features/dashboard-scene/**/*.ts'
+          exclude:
+            - '**/*.test.tsx'
+            - '**/*.test.ts'
+    checks:
+      - name: Check if component returns null conditionally after useState
+        description: |
+          If a component calls useState() and then conditionally returns null, 
+          it will still re-render on every state change even when not visible.
+        severity: high
+        
+      - name: Check if useState is called on parent/dashboard object
+        description: |
+          Calling useState() on parent or dashboard objects is particularly prone to 
+          causing unnecessary re-renders because these objects have many state properties.
+        severity: medium
+        
+      - name: Check if component uses only 1-2 properties from state
+        description: |
+          If a component only uses 1-2 properties from a large state object,
+          consider if there's a more targeted way to subscribe to just those properties.
+        severity: low
+
+  - id: scene-usestate-before-conditionals
+    name: React hook called after conditional return
+    severity: high
+    description: |
+      React hooks must be called in the same order on every render. Calling useState() 
+      or other hooks after a conditional return violates React's Rules of Hooks.
+      
+      This can cause runtime errors like "Rendered more hooks than during the previous render"
+      if the condition ever changes during the component lifecycle.
+    pattern:
+      - type: regex
+        match: 'return\s+(null|<[^>]+/>);\s*\n\s*(?:\/\/.*\n\s*)*(?:\/\*[\s\S]*?\*\/\s*\n\s*)*const.*\.useState\(\)'
+        files:
+          include:
+            - 'public/app/features/dashboard-scene/**/*.tsx'
+
+  - id: scene-state-subscriptions-in-conditionally-rendered-components
+    name: State subscriptions in conditionally rendered components
+    severity: medium  
+    description: |
+      Components that are conditionally rendered but subscribe to state changes can cause
+      unnecessary computation and re-renders even when they're not visible in the UI.
+      
+      Example: A component that checks `if (!isEditing) return null;` but still calls
+      `dashboard.useState()` will re-render on every dashboard state change even when hidden.
+      
+      Solution:
+      1. Move the state subscription below the conditional check if possible
+      2. Extract the conditional rendering to a parent component
+      3. Use React.memo or useMemo to prevent unnecessary re-computation
+    pattern:
+      - type: ast
+        language: typescript
+        query: |
+          (function_declaration
+            (jsx_self_closing_element) @return
+            (#match? @return "null")
+          )
+
+  - id: dashboard-state-in-frequently-rendered-components  
+    name: Dashboard state subscription in frequently rendered components
+    severity: medium
+    description: |
+      Components that render frequently (like panel components, grid items, etc.) 
+      should avoid subscribing to dashboard-level state unless absolutely necessary.
+      
+      Dashboard state changes can be frequent (on every edit action, selection change, etc.)
+      and subscribing to it in frequently-rendered components can cause performance issues.
+      
+      Solution:
+      1. Move state management to a more specific, less frequently updated context
+      2. Use prop drilling for specific values instead of subscribing to entire state
+      3. Consider using React Context for specific pieces of state
+    pattern:
+      - type: regex
+        match: 'getDashboardSceneFor\([^)]+\)\.useState\(\)'
+        files:
+          include:
+            - 'public/app/features/dashboard-scene/scene/**/*Renderer.tsx'
+            - 'public/app/features/dashboard-scene/scene/**/*GridItem*.tsx'
+            - 'public/app/features/dashboard-scene/scene/**/*Panel*.tsx'
+
+  - id: missing-state-cleanup
+    name: Missing state cleanup when component unmounts or mode changes
+    severity: medium
+    description: |
+      State that affects visual rendering (like search highlighting, selection states, etc.)
+      should be properly cleaned up when the component unmounts or when the mode changes
+      (e.g., exiting edit mode).
+      
+      Example: Panel search highlighting should be cleared when exiting edit mode, otherwise
+      the visual effects (green outlines, reduced opacity) will persist incorrectly.
+      
+      Solution:
+      1. Clear relevant state in cleanup methods (like disableSelection)
+      2. Add useEffect cleanup functions in React components
+      3. Reset visual state when transitioning between modes
+    pattern:
+      - type: manual
+        description: Check if visual state is properly cleared when mode changes
+
+settings:
+  # Run these checks on all PRs
+  run_on_pr: true
+  # Also run on commit
+  run_on_commit: true
+  # Focus on dashboard-scene features
+  scope:
+    - 'public/app/features/dashboard-scene/**'
