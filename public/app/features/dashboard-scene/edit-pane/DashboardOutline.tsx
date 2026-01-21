@@ -4,8 +4,8 @@ import React, { useMemo, useState } from 'react';
 import { GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans, t } from '@grafana/i18n';
-import { SceneObject } from '@grafana/scenes';
-import { Box, Icon, Sidebar, Text, useElementSelection, useStyles2 } from '@grafana/ui';
+import { SceneObject, VizPanel } from '@grafana/scenes';
+import { Box, FilterInput, Icon, Sidebar, Text, useElementSelection, useStyles2 } from '@grafana/ui';
 
 import { isRepeatCloneOrChildOf } from '../utils/clone';
 import { DashboardInteractions } from '../utils/interactions';
@@ -22,12 +22,22 @@ export interface Props {
 
 export function DashboardOutline({ editPane, isEditing }: Props) {
   const dashboard = getDashboardSceneFor(editPane);
+  const { panelSearchQuery } = editPane.useState();
+  const styles = useStyles2(getStyles);
 
   return (
     <>
       <Sidebar.PaneHeader title={t('dashboard.outline.pane-header', 'Content outline')} />
-      <Box padding={1} gap={0} display="flex" direction="column" element="ul" role="tree" position="relative">
-        <DashboardOutlineNode sceneObject={dashboard} isEditing={isEditing} editPane={editPane} depth={0} index={0} />
+      <Box padding={1} gap={1} display="flex" direction="column">
+        <FilterInput
+          placeholder={t('dashboard.outline.search-placeholder', 'Search panels by name or type...')}
+          value={panelSearchQuery ?? ''}
+          onChange={(value) => editPane.setPanelSearchQuery(value)}
+          className={styles.searchInput}
+        />
+        <Box gap={0} display="flex" direction="column" element="ul" role="tree" position="relative">
+          <DashboardOutlineNode sceneObject={dashboard} isEditing={isEditing} editPane={editPane} depth={0} index={0} />
+        </Box>
       </Box>
     </>
   );
@@ -41,6 +51,37 @@ interface DashboardOutlineNodeProps {
   index: number;
 }
 
+function panelMatchesSearch(panel: VizPanel, query: string): boolean {
+  if (!query) {
+    return true;
+  }
+  const lowerQuery = query.toLowerCase();
+  const title = panel.state.title?.toLowerCase() ?? '';
+  const type = panel.state.pluginId?.toLowerCase() ?? '';
+  
+  return title.includes(lowerQuery) || type.includes(lowerQuery);
+}
+
+function hasMatchingDescendant(sceneObject: SceneObject, query: string, isEditing: boolean): boolean {
+  const editableElement = getEditableElementFor(sceneObject);
+  if (!editableElement) {
+    return false;
+  }
+
+  // Check if this object itself is a matching panel
+  if (sceneObject instanceof VizPanel) {
+    return panelMatchesSearch(sceneObject, query);
+  }
+
+  // Check children recursively
+  const children = editableElement.getOutlineChildren?.(isEditing) ?? [];
+  const visibleChildren = isEditing
+    ? children
+    : children.filter((child) => !getEditableElementFor(child)?.getEditableElementInfo().isHidden);
+
+  return visibleChildren.some((child) => hasMatchingDescendant(child, query, isEditing));
+}
+
 function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }: DashboardOutlineNodeProps) {
   const styles = useStyles2(getStyles);
   const key = sceneObject.state.key;
@@ -48,6 +89,7 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
   const { isSelected, onSelect } = useElementSelection(key);
   const isCloned = useMemo(() => isRepeatCloneOrChildOf(sceneObject), [sceneObject]);
   const editableElement = useMemo(() => getEditableElementFor(sceneObject)!, [sceneObject]);
+  const { panelSearchQuery } = editPane.useState();
 
   const noTitleText = t('dashboard.outline.tree-item.no-title', '<no title>');
 
@@ -55,12 +97,41 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
   const instanceName = elementInfo.instanceName === '' ? noTitleText : elementInfo.instanceName;
   const outlineRename = useOutlineRename(editableElement, isEditing);
   const isContainer = editableElement.getOutlineChildren ? true : false;
+  
+  // Filter children based on search query
   const visibleChildren = useMemo(() => {
     const children = editableElement.getOutlineChildren?.(isEditing) ?? [];
-    return isEditing
+    const filtered = isEditing
       ? children
       : children.filter((child) => !getEditableElementFor(child)?.getEditableElementInfo().isHidden);
-  }, [editableElement, isEditing]);
+    
+    // If there's a search query, filter by it
+    if (panelSearchQuery) {
+      return filtered.filter((child) => hasMatchingDescendant(child, panelSearchQuery, isEditing ?? false));
+    }
+    
+    return filtered;
+  }, [editableElement, isEditing, panelSearchQuery]);
+
+  // Hide this node if it doesn't match search and has no matching descendants
+  const shouldShow = useMemo(() => {
+    if (!panelSearchQuery) {
+      return true;
+    }
+    
+    // Always show root (dashboard)
+    if (depth === 0) {
+      return true;
+    }
+    
+    // Show if this panel matches
+    if (sceneObject instanceof VizPanel) {
+      return panelMatchesSearch(sceneObject, panelSearchQuery);
+    }
+    
+    // Show if it has matching descendants
+    return hasMatchingDescendant(sceneObject, panelSearchQuery, isEditing ?? false);
+  }, [sceneObject, panelSearchQuery, depth, isEditing]);
 
   const onNodeClicked = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -80,6 +151,10 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
   };
 
   if (elementInfo.isHidden && !isEditing) {
+    return null;
+  }
+
+  if (!shouldShow) {
     return null;
   }
 
@@ -178,6 +253,9 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
 
 function getStyles(theme: GrafanaTheme2) {
   return {
+    searchInput: css({
+      marginBottom: theme.spacing(1),
+    }),
     container: css({
       display: 'flex',
       gap: theme.spacing(0.5),

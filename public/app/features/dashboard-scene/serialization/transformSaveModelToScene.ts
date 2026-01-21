@@ -46,6 +46,7 @@ import { LibraryPanelBehavior } from '../scene/LibraryPanelBehavior';
 import { VizPanelLinks, VizPanelLinksMenu } from '../scene/PanelLinks';
 import { panelLinksBehavior, panelMenuBehavior } from '../scene/PanelMenuBehavior';
 import { PanelNotices } from '../scene/PanelNotices';
+import { PanelQuickActions } from '../scene/PanelQuickActions';
 import { VizPanelHeaderActions } from '../scene/VizPanelHeaderActions';
 import { VizPanelSubHeader } from '../scene/VizPanelSubHeader';
 import { DashboardGridItem, RepeatDirection } from '../scene/layout-default/DashboardGridItem';
@@ -431,6 +432,7 @@ export function buildGridItemForPanel(panel: PanelModel): DashboardGridItem {
   );
 
   titleItems.push(new PanelNotices());
+  titleItems.push(new PanelQuickActions());
 
   const timeOverrideShown = (panel.timeFrom || panel.timeShift) && !panel.hideTimeOverride;
 

@@ -28,6 +28,7 @@ export interface DashboardEditPaneState extends SceneObjectState {
   redoStack: DashboardEditActionEventPayload[];
   openPane?: DashboardSidebarPaneName;
   isDocked?: boolean;
+  panelSearchQuery?: string;
 }
 
 export type DashboardSidebarPaneName = 'element' | 'outline' | 'filters';
@@ -314,6 +315,10 @@ export class DashboardEditPane extends SceneObjectBase<DashboardEditPaneState> {
   private newObjectAddedToCanvas(obj: SceneObject) {
     this.selectObject(obj, obj.state.key!);
     this.state.selection?.markAsNewElement();
+  }
+
+  public setPanelSearchQuery(query: string) {
+    this.setState({ panelSearchQuery: query || undefined });
   }
 }
 

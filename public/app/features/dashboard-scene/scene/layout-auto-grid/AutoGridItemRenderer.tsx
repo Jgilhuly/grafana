@@ -11,6 +11,7 @@ import { useDashboardState } from '../../utils/utils';
 import { SoloPanelContextValueWithSearchStringFilter } from '../PanelSearchLayout';
 import { renderMatchingSoloPanels, useSoloPanelContext } from '../SoloPanelContext';
 import { getIsLazy } from '../layouts-shared/utils';
+import { usePanelSearchContext } from '../../edit-pane/PanelSearchContext';
 
 import { AutoGridItem } from './AutoGridItem';
 import { DRAGGED_ITEM_HEIGHT, DRAGGED_ITEM_LEFT, DRAGGED_ITEM_TOP, DRAGGED_ITEM_WIDTH } from './const';
@@ -44,6 +45,9 @@ export function AutoGridItemRenderer({ model }: SceneComponentProps<AutoGridItem
         }) => {
           const [isConditionallyHidden, conditionalRenderingClass, conditionalRenderingOverlay, renderHidden] =
             useIsConditionallyHidden(conditionalRendering);
+          const searchContext = usePanelSearchContext();
+          const isMatch = searchContext?.isMatch(item) ?? false;
+          const hasSearchQuery = Boolean(searchContext?.searchQuery);
 
           return isConditionallyHidden && !isEditing && !renderHidden ? null : (
             <div
@@ -62,7 +66,9 @@ export function AutoGridItemRenderer({ model }: SceneComponentProps<AutoGridItem
                       conditionalRenderingClass,
                       styles.wrapper,
                       isDragged && !isRepeat && styles.draggedWrapper,
-                      isDragged && isRepeat && styles.draggedRepeatWrapper
+                      isDragged && isRepeat && styles.draggedRepeatWrapper,
+                      isMatch && hasSearchQuery && styles.panelMatch,
+                      !isMatch && hasSearchQuery && styles.panelNoMatch
                     )}
                   >
                     <item.Component model={item} />
@@ -74,7 +80,9 @@ export function AutoGridItemRenderer({ model }: SceneComponentProps<AutoGridItem
                       conditionalRenderingClass,
                       styles.wrapper,
                       isDragged && !isRepeat && styles.draggedWrapper,
-                      isDragged && isRepeat && styles.draggedRepeatWrapper
+                      isDragged && isRepeat && styles.draggedRepeatWrapper,
+                      isMatch && hasSearchQuery && styles.panelMatch,
+                      !isMatch && hasSearchQuery && styles.panelNoMatch
                     )}
                   >
                     <item.Component model={item} />
@@ -154,5 +162,15 @@ const getStyles = (theme: GrafanaTheme2) => ({
   }),
   hidden: css({
     display: 'none',
+  }),
+  panelMatch: css({
+    outline: `2px solid ${theme.colors.success.border}`,
+    outlineOffset: '2px',
+    borderRadius: theme.shape.radius.default,
+    transition: 'outline 0.2s ease-in-out',
+  }),
+  panelNoMatch: css({
+    opacity: 0.4,
+    transition: 'opacity 0.2s ease-in-out',
   }),
 });

@@ -19,6 +19,7 @@ import { StarButton } from '../scene/new-toolbar/actions/StarButton';
 import { dynamicDashNavActions } from '../utils/registerDynamicDashNavAction';
 
 import { DashboardEditPaneRenderer } from './DashboardEditPaneRenderer';
+import { PanelSearchContextProvider } from './PanelSearchContext';
 
 interface Props {
   dashboard: DashboardScene;
@@ -97,6 +98,10 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
   function renderBody() {
     const renderWithoutSidebar = isPlaying || kioskMode === KioskMode.Full;
 
+    const bodyContent = (
+      <PanelSearchContextProvider editPane={editPane}>{body}</PanelSearchContextProvider>
+    );
+
     // In kiosk mode the full document body scrolls so we don't need to wrap in our own scrollbar
     if (renderWithoutSidebar) {
       return (
@@ -104,7 +109,7 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
           className={cx(styles.bodyWrapper, styles.bodyWrapperKiosk)}
           data-testid={selectors.components.DashboardEditPaneSplitter.primaryBody}
         >
-          <NativeScrollbar onSetScrollRef={dashboard.onSetScrollRef}>{body}</NativeScrollbar>
+          <NativeScrollbar onSetScrollRef={dashboard.onSetScrollRef}>{bodyContent}</NativeScrollbar>
         </div>
       );
     }
@@ -116,7 +121,7 @@ export function DashboardEditPaneSplitter({ dashboard, isEditing, body, controls
         {...sidebarContext.outerWrapperProps}
       >
         <div className={styles.scrollContainer} ref={onBodyRef} onPointerDown={onClearSelection}>
-          {body}
+          {bodyContent}
         </div>
 
         <Sidebar contextValue={sidebarContext}>
