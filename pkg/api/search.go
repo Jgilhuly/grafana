@@ -126,6 +126,12 @@ func (hs *HTTPServer) Search(c *contextmodel.ReqContext) response.Response {
 
 // searchViaK8sAPI delegates search requests to the K8s API and transforms the response
 func (hs *HTTPServer) searchViaK8sAPI(c *contextmodel.ReqContext) response.Response {
+	// Check admin authorization for deleted dashboard queries (Bug 1 fix)
+	deleted := c.Query("deleted")
+	if deleted == "true" && c.GetOrgRole() != org.RoleAdmin {
+		return response.Error(http.StatusUnauthorized, "Unauthorized", nil)
+	}
+
 	user, err := identity.GetRequester(c.Req.Context())
 	if err != nil {
 		return response.Error(http.StatusUnauthorized, "Unauthorized", err)
@@ -206,8 +212,36 @@ func (hs *HTTPServer) addLegacySearchParamsToK8sRequest(req *rest.Request, c *co
 	}
 
 	// Dashboard UIDs (mapped to "name" parameter in K8s API)
-	for _, dashboardUID := range c.QueryStrings("dashboardUIDs") {
-		req.Param("name", dashboardUID)
+	// Bug 5 fix: Add backward compatibility for singular dashboardUID parameter
+	dbUIDs := c.QueryStrings("dashboardUIDs")
+	if len(dbUIDs) == 0 {
+		// To keep it for now backward compatible for grafana 9
+		dbUIDs = c.QueryStrings("dashboardUID")
+	}
+
+	// Bug 4 fix: Handle starred filter before pagination
+	// If starred filter is requested, get starred UIDs and pass them as name filters
+	if c.Query("starred") == "true" {
+		starredUIDs := hs.getStarredDashboardUIDs(c)
+		
+		// If explicit dashboard UIDs are provided, use intersection
+		if len(dbUIDs) > 0 {
+			for _, uid := range dbUIDs {
+				if starredUIDs[uid] {
+					req.Param("name", uid)
+				}
+			}
+		} else {
+			// No explicit UIDs, use all starred
+			for uid := range starredUIDs {
+				req.Param("name", uid)
+			}
+		}
+	} else {
+		// Not filtering by starred, just add the explicit UIDs if any
+		for _, dashboardUID := range dbUIDs {
+			req.Param("name", dashboardUID)
+		}
 	}
 
 	// Handle deprecated folderIds - need to convert to UIDs
@@ -257,25 +291,17 @@ func (hs *HTTPServer) addLegacySearchParamsToK8sRequest(req *rest.Request, c *co
 func (hs *HTTPServer) transformK8sSearchResultsToLegacy(k8sResults dashboardv0alpha1.SearchResults, c *contextmodel.ReqContext) model.HitList {
 	hits := make(model.HitList, 0, len(k8sResults.Hits))
 
-	// Get starred dashboards if starred filter is requested
-	var starredUIDs map[string]bool
-	if c.Query("starred") == "true" {
-		starredUIDs = hs.getStarredDashboardUIDs(c)
-	}
+	// Bug 3 fix: Always get starred dashboards to populate IsStarred field
+	starredUIDs := hs.getStarredDashboardUIDs(c)
 
 	for _, k8sHit := range k8sResults.Hits {
-		// Filter by starred if requested
-		if starredUIDs != nil && !starredUIDs[k8sHit.Name] {
-			continue
-		}
-
 		hit := &model.Hit{
 			UID:       k8sHit.Name,
 			Title:     k8sHit.Title,
 			Tags:      k8sHit.Tags,
 			Type:      hs.mapResourceTypeToHitType(k8sHit.Resource),
 			FolderUID: k8sHit.Folder,
-			IsStarred: starredUIDs != nil && starredUIDs[k8sHit.Name],
+			IsStarred: starredUIDs[k8sHit.Name],
 		}
 
 		// Set description if available
