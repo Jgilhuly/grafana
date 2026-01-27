@@ -73,6 +73,7 @@ import { initializeCrashDetection } from './core/crash';
 import { NAMESPACES, GRAFANA_NAMESPACE } from './core/internationalization/constants';
 import { loadTranslations } from './core/internationalization/loadTranslations';
 import { postInitTasks, preInitTasks } from './core/lifecycle-hooks';
+import { registerStructuredLogger } from './core/logging/registerStructuredLogger';
 import { setMonacoEnv } from './core/monacoEnv';
 import { interceptLinkClicks } from './core/navigation/patch/interceptLinkClicks';
 import { CorrelationsService } from './core/services/CorrelationsService';
@@ -131,6 +132,7 @@ export class GrafanaApp {
 
   async init() {
     try {
+      registerStructuredLogger();
       await preInitTasks();
 
       // Let iframe container know grafana has started loading

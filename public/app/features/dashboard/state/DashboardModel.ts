@@ -17,6 +17,7 @@ import {
   TypedVariableModel,
   UrlQueryValue,
 } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { PromQuery } from '@grafana/prometheus';
 import { RefreshEvent, TimeRangeUpdatedEvent, config } from '@grafana/runtime';
 import { Dashboard, DashboardLink, VariableModel } from '@grafana/schema';
@@ -51,6 +52,8 @@ import { DashboardMigrator } from './DashboardMigrator';
 import { PanelModel } from './PanelModel';
 import { TimeModel } from './TimeModel';
 import { deleteScopeVars, isOnTheSameGridRow } from './utils';
+
+const logger = createStructuredLogger('features.dashboard.model');
 
 export interface CloneOptions {
   saveVariables?: boolean;
@@ -1087,13 +1090,13 @@ export class DashboardModel implements TimeModel {
 
   /** @deprecated */
   on<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.on is deprecated use events.subscribe');
+    logger.logWarning('DashboardModel.on is deprecated; use events.subscribe');
     this.events.on(event, callback);
   }
 
   /** @deprecated */
   off<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.off is deprecated');
+    logger.logWarning('DashboardModel.off is deprecated');
     this.events.off(event, callback);
   }
 

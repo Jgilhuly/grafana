@@ -2,8 +2,11 @@ import { AnyAction, configureStore, EnhancedStore, Reducer, Tuple } from '@redux
 import { Middleware, Store, StoreEnhancer, UnknownAction } from 'redux';
 import { thunk, ThunkDispatch, ThunkMiddleware } from 'redux-thunk';
 
+import { createStructuredLogger } from '@grafana/data/internal';
 import { setStore } from '../../../app/store/store';
 import { StoreState } from '../../../app/types/store';
+
+const logger = createStructuredLogger('public.test.reduxTester');
 
 export interface ReduxTesterGiven<State> {
   givenRootReducer: (rootReducer: Reducer<State, UnknownAction, Partial<NoInfer<State>>>) => ReduxTesterWhen<State>;
@@ -118,7 +121,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
 
   const thenDispatchedActionsShouldEqual = (...actions: AnyAction[]): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logger.logDebug('Dispatched actions', { actions: dispatchedActions });
     }
 
     if (!actions.length) {
@@ -133,7 +136,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
     predicate: (dispatchedActions: AnyAction[]) => boolean
   ): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logger.logDebug('Dispatched actions', { actions: dispatchedActions });
     }
 
     expect(predicate(dispatchedActions)).toBe(true);
@@ -142,7 +145,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
 
   const thenNoActionsWhereDispatched = (): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logger.logDebug('Dispatched actions', { actions: dispatchedActions });
     }
 
     expect(dispatchedActions.length).toBe(0);

@@ -12,6 +12,17 @@ const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const { merge } = require('webpack-merge');
 const { SubresourceIntegrityPlugin } = require('webpack-subresource-integrity');
 
+const logError = (message, context = {}) => {
+  const payload = {
+    level: 'error',
+    message,
+    context,
+    source: 'scripts.webpack.prod',
+    timestamp: new Date().toISOString(),
+  };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+};
+
 const getEnvConfig = require('./env-util.js');
 const FeatureFlaggedSRIPlugin = require('./plugins/FeatureFlaggedSriPlugin');
 const common = require('./webpack.common.js');
@@ -112,7 +123,7 @@ module.exports = (env = {}) =>
       function () {
         this.hooks.done.tap('Done', function (stats) {
           if (stats.compilation.errors && stats.compilation.errors.length) {
-            console.log(stats.compilation.errors);
+            logError('Webpack compilation errors', { errors: stats.compilation.errors });
             process.exit(1);
           }
         });

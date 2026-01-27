@@ -7,6 +7,18 @@ const readProvisions = require('./e2e/cypress/plugins/readProvisions');
 const smtpTester = require('./e2e/cypress/plugins/smtpTester');
 const typescriptPreprocessor = require('./e2e/cypress/plugins/typescriptPreprocessor');
 
+const LOG_SOURCE = 'cypress.config';
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: LOG_SOURCE,
+    timestamp: new Date().toISOString(),
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+};
+
 module.exports = defineConfig({
   projectId: 'zb7k1c',
   videoCompression: 20,
@@ -22,7 +34,7 @@ module.exports = defineConfig({
       on('file:preprocessor', typescriptPreprocessor);
       on('task', {
         log({ message, optional }) {
-          optional ? console.log(message, optional) : console.log(message);
+          logInfo(message, optional ? { optional } : {});
           return null;
         },
       });
@@ -55,14 +67,14 @@ module.exports = defineConfig({
       });
 
       on('before:browser:launch', (browser = {}, launchOptions) => {
-        console.log('launching browser %s is headless? %s', browser.name, browser.isHeadless);
+        logInfo('Launching browser', { name: browser.name, isHeadless: browser.isHeadless });
 
         // the browser width and height we want to get
         // our screenshots and videos will be of that resolution
         const width = 1920;
         const height = 1080;
 
-        console.log('setting the browser window size to %d x %d', width, height);
+        logInfo('Setting browser window size', { width, height });
 
         if (browser.name === 'chrome' && browser.isHeadless) {
           launchOptions.args.push(`--window-size=${width},${height}`);

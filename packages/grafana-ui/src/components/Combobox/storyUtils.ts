@@ -1,4 +1,8 @@
+import { createStructuredLogger } from '@grafana/data/internal';
+
 import { ComboboxOption } from './types';
+
+const logger = createStructuredLogger('grafana-ui.combobox.story-utils');
 
 let fakeApiOptions: Array<ComboboxOption<string>>;
 export async function fakeSearchAPI(urlString: string): Promise<Array<ComboboxOption<string>>> {
@@ -13,7 +17,7 @@ export async function fakeSearchAPI(urlString: string): Promise<Array<ComboboxOp
 
   if (!fakeApiOptions) {
     fakeApiOptions = await generateOptions(1000);
-    console.log('fakeApiOptions', fakeApiOptions);
+    logger.logDebug('fakeApiOptions', { options: fakeApiOptions });
   }
 
   if (!searchQuery || searchQuery.length === 0) {

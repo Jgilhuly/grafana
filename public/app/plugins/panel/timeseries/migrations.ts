@@ -16,6 +16,7 @@ import {
   Threshold,
   ThresholdsMode,
 } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import {
   LegendDisplayMode,
   TooltipDisplayMode,
@@ -46,6 +47,7 @@ import { defaultGraphConfig } from './config';
 import { Options } from './panelcfg.gen';
 
 let dashboardRefreshDebouncer: ReturnType<typeof setTimeout> | null = null;
+const logger = createStructuredLogger('plugins.panel.timeseries.migrations');
 
 /**
  * This is called when the panel changes from another panel
@@ -283,7 +285,7 @@ export function graphToTimeseriesOptions(angular: any): {
             });
             break;
           default:
-            console.log('Ignore override migration:', seriesOverride.alias, p, v);
+            logger.logDebug('Ignoring override migration', { alias: seriesOverride.alias, property: p, value: v });
         }
       }
       if (dashOverride) {

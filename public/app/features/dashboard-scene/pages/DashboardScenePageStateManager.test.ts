@@ -548,15 +548,12 @@ describe('DashboardScenePageStateManager v1', () => {
 
         // Reset playlist service state
         playlistSrv.state.isPlaying = false;
-        // Mock console.log to prevent test failures
-        jest.spyOn(console, 'log').mockImplementation(() => {});
       });
 
       afterEach(() => {
         // Restore original location service methods
         locationService.replace = originalReplace;
         locationService.getLocation = originalGetLocation;
-        // Restore console.log
         jest.restoreAllMocks();
       });
 
@@ -1001,7 +998,6 @@ describe('DashboardScenePageStateManager v2', () => {
 
         // Reset playlist service state
         playlistSrv.state.isPlaying = false;
-        jest.spyOn(console, 'log').mockImplementation(() => {});
       });
 
       afterEach(() => {

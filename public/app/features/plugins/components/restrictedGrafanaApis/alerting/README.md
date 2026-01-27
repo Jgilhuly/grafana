@@ -11,12 +11,45 @@ The `alertingAlertRuleFormSchema` API provides a Zod schema for navigating to th
 ```ts
 import { useRestrictedGrafanaApis } from "@grafana/data";
 
+const logInfo = (message: string, context: Record<string, unknown> = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'restricted-apis.alerting',
+    timestamp: new Date().toISOString(),
+  };
+  console.info(JSON.stringify(payload));
+};
+
+const logWarning = (message: string, context: Record<string, unknown> = {}) => {
+  const payload = {
+    level: 'warning',
+    message,
+    context,
+    source: 'restricted-apis.alerting',
+    timestamp: new Date().toISOString(),
+  };
+  console.warn(JSON.stringify(payload));
+};
+
+const logError = (message: string, context: Record<string, unknown> = {}) => {
+  const payload = {
+    level: 'error',
+    message,
+    context,
+    source: 'restricted-apis.alerting',
+    timestamp: new Date().toISOString(),
+  };
+  console.error(JSON.stringify(payload));
+};
+
 function MyAlertingPlugin() {
   const { alertingAlertRuleFormSchema } = useRestrictedGrafanaApis();
 
   const validateAndNavigateToAlertForm = (data: unknown) => {
     if (!alertingAlertRuleFormSchema) {
-      console.warn('Navigate to alert form schema API not available');
+      logWarning('Navigate to alert form schema API not available');
       return;
     }
 
@@ -24,10 +57,10 @@ function MyAlertingPlugin() {
     const result = alertingAlertRuleFormSchema.safeParse(data);
 
     if (result.success) {
-      console.log('Valid navigation data:', result.data);
+      logInfo('Valid navigation data', { data: result.data });
       // Proceed with navigating to the alert form
     } else {
-      console.error('Validation failed:', result.error.errors);
+      logError('Validation failed', { errors: result.error.errors });
     }
   };
 

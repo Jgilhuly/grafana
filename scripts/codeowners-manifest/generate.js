@@ -11,6 +11,17 @@ const {
   CODEOWNERS_JSON_PATH,
 } = require('./constants.js');
 
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'scripts.codeowners-manifest.generate',
+    timestamp: new Date().toISOString(),
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+};
+
 /**
  * Generate codeowners manifest files from raw audit data
  * @param {string} rawAuditPath - Path to the raw audit JSONL file
@@ -79,17 +90,16 @@ async function generateCodeownersManifest(
 if (require.main === module) {
   (async () => {
     try {
-      console.log(`📋 Generating files ↔ teams manifests from ${RAW_AUDIT_JSONL_PATH} ...`);
+      logInfo('Generating codeowners manifests', { rawAuditPath: RAW_AUDIT_JSONL_PATH });
       await generateCodeownersManifest(
         RAW_AUDIT_JSONL_PATH,
         CODEOWNERS_JSON_PATH,
         CODEOWNERS_BY_FILENAME_JSON_PATH,
         FILENAMES_BY_CODEOWNER_JSON_PATH
       );
-      console.log('✅ Manifest files generated:');
-      console.log(`   • ${CODEOWNERS_JSON_PATH}`);
-      console.log(`   • ${CODEOWNERS_BY_FILENAME_JSON_PATH}`);
-      console.log(`   • ${FILENAMES_BY_CODEOWNER_JSON_PATH}`);
+      logInfo('Manifest files generated', {
+        files: [CODEOWNERS_JSON_PATH, CODEOWNERS_BY_FILENAME_JSON_PATH, FILENAMES_BY_CODEOWNER_JSON_PATH],
+      });
     } catch (e) {
       console.error(e);
       process.exit(1);

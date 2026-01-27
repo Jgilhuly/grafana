@@ -1,4 +1,5 @@
 import { store } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { performanceUtils, writePerformanceLog } from '@grafana/scenes';
 
 /**
@@ -14,6 +15,8 @@ export function registerPerformanceObserver(
 
   writePerformanceLog(loggerName, 'Initialized globally and registered as performance observer');
 }
+
+const logger = createStructuredLogger('features.dashboard.performance');
 
 /**
  * Chrome-specific performance.memory interface (non-standard)
@@ -84,13 +87,7 @@ export function writePerformanceGroupStart(logger: string, message: string): voi
  */
 export function writePerformanceGroupLog(logger: string, message: string, data?: unknown): void {
   if (isPerformanceLoggingEnabled()) {
-    if (data) {
-      // eslint-disable-next-line no-console
-      console.log(message, data);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(message);
-    }
+    logger.logDebug(message, data ? { logger, data } : { logger });
   }
 }
 

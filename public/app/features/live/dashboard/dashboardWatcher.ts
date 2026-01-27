@@ -10,6 +10,7 @@ import {
   LiveChannelEvent,
   LiveChannelScope,
 } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { getGrafanaLiveSrv, locationService } from '@grafana/runtime';
 import { appEvents } from 'app/core/app_events';
 import { contextSrv } from 'app/core/services/context_srv';
@@ -23,6 +24,7 @@ import { DashboardEvent, DashboardEventAction } from './types';
 // sessionId is not a security-sensitive value.
 // It is used for filtering out dashboard edit events from the same browsing session
 const sessionId = uuidv4();
+const logger = createStructuredLogger('features.live.dashboardWatcher');
 
 class DashboardWatcher {
   private static readonly IGNORE_SAVE_WINDOW_MS = 5000;
@@ -127,7 +129,10 @@ class DashboardWatcher {
 
             const dash = getDashboardSrv().getCurrent();
             if (dash?.uid !== event.message.uid) {
-              console.log('dashboard event for different dashboard?', event, dash);
+              logger.logWarning('Dashboard event for different dashboard', {
+                event,
+                currentDashboardUid: dash?.uid,
+              });
               return;
             }
 

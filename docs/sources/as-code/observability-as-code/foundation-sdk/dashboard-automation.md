@@ -119,19 +119,26 @@ const dashboard = new DashboardBuilder('My Dashboard')
 
 // Convert to Kubernetes-style format
 const dashboardWrapper = {
-  apiVersion: "dashboard.grafana.app/v1beta1",
-  kind: "Dashboard",
+  apiVersion: 'dashboard.grafana.app/v1beta1',
+  kind: 'Dashboard',
   metadata: {
-    name: dashboard.uid!
+    name: dashboard.uid!,
   },
-  spec: dashboard
+  spec: dashboard,
 };
 
 // Save the formatted JSON to a file
 const dashboardJSON = JSON.stringify(dashboardWrapper, null, 2);
 fs.writeFileSync('dashboard.json', dashboardJSON, 'utf8');
 
-console.log(`Dashboard JSON:\n${}`);
+const logPayload = {
+  level: 'info',
+  message: 'Dashboard JSON',
+  context: { dashboardJSON },
+  source: 'foundation-sdk',
+  timestamp: new Date().toISOString(),
+};
+process.stdout.write(`${JSON.stringify(logPayload)}\n`);
 ```
 
 {{< /code >}}

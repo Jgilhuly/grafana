@@ -1,4 +1,5 @@
 import { locationUtil, UrlQueryMap } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { t } from '@grafana/i18n';
 import { config, getBackendSrv, getDataSourceSrv, isFetchError, locationService } from '@grafana/runtime';
 import { sceneGraph } from '@grafana/scenes';
@@ -69,6 +70,7 @@ export interface DashboardScenePageState {
 export const DASHBOARD_CACHE_TTL = 500;
 
 const LOAD_SCENE_MEASUREMENT = 'loadDashboardScene';
+const logger = createStructuredLogger('features.dashboardScene.pageStateManager');
 
 /** Only used by cache in loading home in DashboardPageProxy and initDashboard (Old arch), can remove this after old dashboard arch is gone */
 export const HOME_DASHBOARD_CACHE_KEY = '__grafana_home_uid__';
@@ -685,7 +687,7 @@ export class DashboardScenePageStateManager extends DashboardScenePageStateManag
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          logger.logInfo('Correcting dashboard URL', { dashboardUrl, currentPath });
         }
       }
 
@@ -874,7 +876,7 @@ export class DashboardScenePageStateManagerV2 extends DashboardScenePageStateMan
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          logger.logInfo('Correcting dashboard URL', { dashboardUrl, currentPath });
         }
       }
       // Populate nav model in global store according to the folder

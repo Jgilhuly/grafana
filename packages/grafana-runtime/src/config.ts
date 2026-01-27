@@ -27,6 +27,9 @@ import {
   GrafanaConfig,
   CurrentUserDTO,
 } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
+
+const logger = createStructuredLogger('grafana.runtime.config');
 
 /**
  * @deprecated Use the type from `@grafana/data`
@@ -307,7 +310,7 @@ function overrideFeatureTogglesFromLocalStorage(config: GrafanaBootConfig) {
       const toggleState = featureValue === 'true' || featureValue === '1';
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       featureToggles[featureName as keyof FeatureToggles] = toggleState;
-      console.log(`Setting feature toggle ${featureName} = ${toggleState} via localstorage`);
+      logger.logDebug('Setting feature toggle via local storage', { featureName, toggleState });
     }
   }
 }
@@ -333,9 +336,9 @@ function overrideFeatureTogglesFromUrl(config: GrafanaBootConfig) {
       if (toggleState !== featureToggles[key]) {
         if (isDevelopment || safeRuntimeFeatureFlags.has(featureName)) {
           featureToggles[featureName] = toggleState;
-          console.log(`Setting feature toggle ${featureName} = ${toggleState} via url`);
+          logger.logDebug('Setting feature toggle via url', { featureName, toggleState });
         } else {
-          console.log(`Unable to change feature toggle ${featureName} via url in production.`);
+          logger.logWarning('Unable to change feature toggle via url in production', { featureName, toggleState });
         }
       }
     }
@@ -346,7 +349,7 @@ let bootData = window.grafanaBootData;
 
 if (!bootData) {
   if (process.env.NODE_ENV !== 'test') {
-    console.error('window.grafanaBootData was not set by the time config was initialized');
+    logger.logError(new Error('window.grafanaBootData was not set by the time config was initialized'));
   }
 
   bootData = {

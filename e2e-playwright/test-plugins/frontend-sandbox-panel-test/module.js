@@ -4,6 +4,15 @@
  * This file doesn't require any compilation
  */
 define(['react', '@grafana/data'], function (React, grafanaData) {
+  const logInfo = (message, context) => {
+    const factory = window.__grafanaStructuredLogger__;
+    if (typeof factory === 'function') {
+      const logger = factory('e2e.frontend-sandbox-panel-test', { pluginId: 'frontend-sandbox-panel-test' });
+      if (logger && typeof logger.logInfo === 'function') {
+        logger.logInfo(message, context);
+      }
+    }
+  };
   // This would be a custom editor component
   function Editor() {
     const onChangeInternal = (event) => {
@@ -127,20 +136,20 @@ define(['react', '@grafana/data'], function (React, grafanaData) {
     const globalTests = [
       function () {
         try {
-          console.log(window.Prism.languages);
+          logInfo('Sandbox global access', { global: 'Prism', hasValue: Boolean(window.Prism?.languages) });
           return 'Prism';
         } catch (e) {}
       },
       function () {
         try {
-          console.log(window.jQuery.fn.jquery);
-          console.log(window.$.fn.jquery);
+          logInfo('Sandbox global access', { global: 'jQuery', version: window.jQuery?.fn?.jquery });
+          logInfo('Sandbox global access', { global: '$', version: window.$?.fn?.jquery });
           return 'jQuery';
         } catch (e) {}
       },
       function () {
         try {
-          console.log(window.locationSandbox);
+          logInfo('Sandbox global access', { global: 'locationSandbox', hasValue: Boolean(window.locationSandbox) });
           return 'location';
         } catch (e) {}
       },

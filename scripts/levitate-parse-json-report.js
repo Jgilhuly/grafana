@@ -2,6 +2,17 @@ const fs = require('fs');
 
 const printAffectedPluginsSection = require('./levitate-show-affected-plugins');
 
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'scripts.levitate-parse-json-report',
+    timestamp: new Date().toISOString(),
+  };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+};
+
 const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 
 const isFork = Boolean(process.env.IS_FORK || false);
@@ -37,4 +48,5 @@ if ((data.removals.length > 0 || data.changes.length > 0) && !isFork) {
   markdown += printAffectedPluginsSection(data);
 }
 
-console.log(markdown);
+process.stdout.write(`${markdown}\n`);
+logInfo('Generated levitate report', { hasContent: markdown.length > 0, length: markdown.length });

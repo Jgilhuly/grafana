@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { SelectableValue } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { Select } from '@grafana/ui';
 
 import { NamespaceContext, ResourceContext } from './plugins';
@@ -13,6 +14,8 @@ type Props = {
   Original: React.ElementType;
   props: Record<string, unknown>;
 };
+
+const logger = createStructuredLogger('swagger.k8sNameLookup');
 
 export function K8sNameLookup(props: Props) {
   const [focused, setFocus] = useState(false);
@@ -46,7 +49,7 @@ export function K8sNameLookup(props: Props) {
           return;
         }
         const table = await response.json();
-        console.log('LIST', url, table);
+        logger.logDebug('Loaded kubernetes name list', { url, rowCount: table?.rows?.length ?? 0 });
         const options: Array<SelectableValue<string>> = [];
         if (table.rows?.length) {
           for (const row of table.rows) {

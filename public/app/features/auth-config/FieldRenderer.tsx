@@ -3,11 +3,14 @@ import { useEffect, useState } from 'react';
 import { UseFormReturn, Controller } from 'react-hook-form';
 
 import { SelectableValue } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { Checkbox, Field, Input, SecretInput, Select, Switch, useTheme2 } from '@grafana/ui';
 
 import { fieldMap } from './fields';
 import { SSOProviderDTO, SSOSettingsField } from './types';
 import { isSelectableValueArray } from './utils/guards';
+
+const logger = createStructuredLogger('features.authConfig.fieldRenderer');
 
 interface FieldRendererProps
   extends Pick<
@@ -78,7 +81,7 @@ export const FieldRenderer = ({
   }, [isDisabled, disabledWhen?.disabledValue, name, setValue]);
 
   if (!field) {
-    console.log('missing field:', name);
+    logger.logWarning('Missing auth config field definition', { fieldName: name, provider });
     return null;
   }
 

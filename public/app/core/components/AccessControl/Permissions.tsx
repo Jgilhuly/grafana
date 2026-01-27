@@ -5,6 +5,7 @@ import * as React from 'react';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 
 import { GrafanaTheme2 } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { Trans, t } from '@grafana/i18n';
 import { Text, Box, Button, useStyles2, LoadingPlaceholder } from '@grafana/ui';
 import { SlideDown } from 'app/core/components/Animations/SlideDown';
@@ -26,6 +27,8 @@ const INITIAL_DESCRIPTION: Description = {
     builtInRoles: false,
   },
 };
+
+const logger = createStructuredLogger('core.accessControl.permissions');
 
 type ResourceId = string | number;
 type Type = 'users' | 'teams' | 'serviceAccounts' | 'builtInRoles';
@@ -101,7 +104,7 @@ export const Permissions = ({
   };
 
   const onChange = (item: ResourcePermission, permission: string) => {
-    console.log('onChange', item, permission);
+    logger.logDebug('Access control permission change requested', { item, permission });
     if (item.permission === permission) {
       return;
     }

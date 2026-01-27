@@ -1,4 +1,5 @@
 import { Meta, ArgTypes } from '@storybook/blocks';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { ClickOutsideWrapper } from './ClickOutsideWrapper';
 
 <Meta title="MDX|ClickOutsideWrapper" component={ClickOutsideWrapper} />
@@ -11,9 +12,13 @@ Useful for components that require an action being triggered when a click outsid
 # Usage
 
 ```jsx
-<ClickOutsideWrapper onClick={() => console.log('Clicked outside')}>
+import { createStructuredLogger } from '@grafana/data/internal';
+
+const logger = createStructuredLogger('grafana-ui.docs.click-outside-wrapper');
+
+<ClickOutsideWrapper onClick={() => logger.logInfo('Clicked outside')}>
   <div style={{ width: '300px' }}>Container</div>
-</ClickOutsideWrapper>
+</ClickOutsideWrapper>;
 ```
 
 <ArgTypes of={ClickOutsideWrapper} />

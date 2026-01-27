@@ -591,6 +591,7 @@ i18next.config.ts @grafana/grafana-frontend-platform
 /packages/grafana-data/src/utils/selectUtils.ts @grafana/grafana-frontend-platform
 /packages/grafana-data/src/utils/series* @grafana/dataviz-squad
 /packages/grafana-data/src/utils/store* @grafana/grafana-frontend-platform
+/packages/grafana-data/src/utils/structuredLogging.ts @grafana/grafana-frontend-platform
 /packages/grafana-data/src/utils/testdata/ @grafana/dataviz-squad
 /packages/grafana-data/src/utils/tests/ @grafana/grafana-frontend-platform
 /packages/grafana-data/src/utils/throwIfAngular* @grafana/plugins-platform-frontend
@@ -857,6 +858,7 @@ playwright.storybook.config.ts @grafana/grafana-frontend-platform
 /public/app/core/icons/ @grafana/grafana-frontend-platform
 /public/app/core/lifecycle-hooks.ts @grafana/grafana-frontend-platform
 /public/app/core/log_events.ts @grafana/dashboards-squad
+/public/app/core/logging/ @grafana/grafana-frontend-platform
 /public/app/core/monacoEnv.ts @grafana/grafana-frontend-platform @grafana/plugins-platform-frontend
 /public/app/core/navigation/ @grafana/grafana-search-navigate-organise
 /public/app/core/profiler.ts @grafana/dashboards-squad

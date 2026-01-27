@@ -167,7 +167,14 @@ const builder = new dashboard.DashboardBuilder('My Dashboard')
 const dashboard = builder.build();
 
 // Output the generated dashboard as JSON
-console.log(JSON.stringify(dashboard, null, 2));
+const logPayload = {
+  level: 'info',
+  message: 'Dashboard JSON',
+  context: { dashboard },
+  source: 'foundation-sdk',
+  timestamp: new Date().toISOString(),
+};
+process.stdout.write(`${JSON.stringify(logPayload)}\n`);
 ```
 
 {{< /code >}}

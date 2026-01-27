@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import { BASE_URL as v0alphaBaseURL } from '@grafana/api-clients/rtkq/dashboard/v0alpha1';
 import { generatedAPI as legacyUserAPI } from '@grafana/api-clients/rtkq/legacy/user';
 import { DataFrame, DataFrameView, getDisplayProcessor, SelectableValue, toDataFrame } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { t } from '@grafana/i18n';
 import { config, getBackendSrv } from '@grafana/runtime';
 import { generatedAPI, ListStarsApiResponse } from 'app/api/clients/collections/v1alpha1';
@@ -28,6 +29,7 @@ import { filterSearchResults, replaceCurrentFolderQuery } from './utils';
 const loadingFrameName = 'Loading';
 
 const searchURI = `${v0alphaBaseURL}/search`;
+const logger = createStructuredLogger('features.search.unified');
 
 export type SearchHit = {
   resource: string; // dashboards | folders
@@ -189,11 +191,11 @@ export class UnifiedSearcher implements GrafanaSearcher {
         const resp = await this.fetchResponse(nextPageUrl);
         const frame = toDashboardResults(resp, query.sort ?? '');
         if (!frame) {
-          console.log('no results', frame);
+          logger.logDebug('Search returned no results', { frame });
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          logger.logWarning('Search results have invalid shape', { frame, dataFrame: view.dataFrame });
           return;
         }
 

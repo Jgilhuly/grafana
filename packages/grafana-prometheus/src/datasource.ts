@@ -28,6 +28,7 @@ import {
   ScopeSpecFilter,
   TimeRange,
 } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import {
   BackendSrvRequest,
   config,
@@ -70,6 +71,8 @@ import {
 } from './types';
 import { utf8Support, wrapUtf8Filters } from './utf8_support';
 import { PrometheusVariableSupport } from './variables';
+
+const logger = createStructuredLogger('datasource.prometheus');
 
 export class PrometheusDatasource
   extends DataSourceWithBackend<PromQuery, PromOptions>
@@ -174,7 +177,7 @@ export class PrometheusDatasource
         this.ruleMappings = extractRuleMappingFromGroups(ruleGroups);
       }
     } catch (err) {
-      console.log('Rules API is experimental. Ignore next error.');
+      logger.logInfo('Rules API is experimental; ignoring error');
       console.error(err);
     }
   }
