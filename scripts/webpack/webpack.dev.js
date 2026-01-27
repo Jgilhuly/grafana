@@ -13,6 +13,17 @@ const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { merge } = require('webpack-merge');
 const WebpackBar = require('webpackbar');
 
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'scripts.webpack.dev',
+    timestamp: new Date().toISOString(),
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+};
+
 const getEnvConfig = require('./env-util.js');
 const common = require('./webpack.common.js');
 const esbuildTargets = resolveToEsbuildTarget(browserslist(), { printUnknownTargets: false });
@@ -36,7 +47,7 @@ function scenesModule() {
   try {
     const status = fs.lstatSync(scenesPath);
     if (status.isSymbolicLink()) {
-      console.log(`scenes is linked to local scenes repo`);
+      logInfo('Scenes is linked to local scenes repo');
       return path.resolve(scenesPath + '/src');
     }
   } catch (error) {

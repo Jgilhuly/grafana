@@ -2,7 +2,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import configureMockStore from 'redux-mock-store';
 import { thunk } from 'redux-thunk';
 
+import { createStructuredLogger } from '@grafana/data/internal';
+
 const mockStore = configureMockStore([thunk]);
+const logger = createStructuredLogger('public.test.thunkTester');
 
 export interface ThunkGiven {
   givenThunk: (thunkFunction: any) => ThunkWhen;
@@ -28,7 +31,7 @@ export const thunkTester = (initialState: unknown, debug?: boolean): ThunkGiven 
 
     dispatchedActions = store.getActions();
     if (debug) {
-      console.log('resultingActions:', JSON.stringify(dispatchedActions, null, 2));
+      logger.logDebug('Thunk resulting actions', { actions: dispatchedActions });
     }
 
     return dispatchedActions;

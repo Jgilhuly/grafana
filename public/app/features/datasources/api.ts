@@ -1,6 +1,7 @@
 import { lastValueFrom } from 'rxjs';
 
 import { DataSourceSettings } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { getBackendSrv } from 'app/core/services/backend_srv';
 import { accessControlQueryParam } from 'app/core/utils/accessControl';
 
@@ -45,19 +46,21 @@ export const getDataSourceByUid = async (uid: string) => {
   throw Error(`Could not find data source by UID: "${uid}"`);
 };
 
+const logger = createStructuredLogger('features.datasources.api');
+
 export const getDataSourceByIdOrUid = async (idOrUid: string) => {
   // Try with UID first, as we are trying to migrate to that
   try {
     return await getDataSourceByUid(idOrUid);
   } catch (err) {
-    console.log(`Failed to lookup data source using UID "${idOrUid}"`);
+    logger.logWarning('Failed to lookup data source using UID', { idOrUid });
   }
 
   // Try using ID
   try {
     return await getDataSourceById(idOrUid);
   } catch (err) {
-    console.log(`Failed to lookup data source using ID "${idOrUid}"`);
+    logger.logWarning('Failed to lookup data source using ID', { idOrUid });
   }
 
   throw Error('Could not find data source');

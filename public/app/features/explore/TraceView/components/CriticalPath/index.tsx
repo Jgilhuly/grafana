@@ -14,6 +14,8 @@
 
 import memoizeOne from 'memoize-one';
 
+import { createStructuredLogger } from '@grafana/data/internal';
+
 import { TraceSpan, CriticalPathSection, Trace } from '../types/trace';
 
 import findLastFinishingChildSpan from './utils/findLastFinishingChildSpan';
@@ -88,6 +90,8 @@ const computeCriticalPath = (
   return criticalPath;
 };
 
+const logger = createStructuredLogger('features.explore.traceView.criticalPath');
+
 function criticalPathForTrace(trace: Trace) {
   let criticalPath: CriticalPathSection[] = [];
   // As spans are already sorted based on startTime first span is always rootSpan
@@ -103,8 +107,7 @@ function criticalPathForTrace(trace: Trace) {
       const sanitizedSpanMap = sanitizeOverFlowingChildren(refinedSpanMap);
       criticalPath = computeCriticalPath(sanitizedSpanMap, rootSpanId, criticalPath);
     } catch (error) {
-      /* eslint-disable no-console */
-      console.log('error while computing critical path for a trace', error);
+      logger.logError(error, { action: 'computeCriticalPath' });
     }
   }
   return criticalPath;

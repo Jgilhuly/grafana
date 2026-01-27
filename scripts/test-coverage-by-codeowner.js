@@ -7,6 +7,17 @@ const yargs = require('yargs/yargs');
 
 const { getCodeowners } = require('./codeowners-manifest/utils.js');
 
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'scripts.test-coverage-by-codeowner',
+    timestamp: new Date().toISOString(),
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+};
+
 const JEST_CONFIG_PATH = 'jest.config.codeowner.js';
 
 async function promptCodeownerName() {
@@ -76,7 +87,7 @@ if (require.main === module) {
 
       const noOpen = argv['open'] === false;
 
-      console.log(`🧪 Running test coverage for codeowner: ${codeownerName}`);
+      logInfo('Running test coverage for codeowner', { codeownerName });
       await runTestCoverageByCodeowner(codeownerName, noOpen);
     } catch (e) {
       console.error(e.message);

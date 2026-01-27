@@ -1,6 +1,8 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { FieldValues } from 'react-hook-form';
 
+import { createStructuredLogger } from '@grafana/data/internal';
+
 import { withStoryContainer } from '../../utils/storybook/withStoryContainer';
 import { Button } from '../Button/Button';
 import { Input } from '../Input/Input';
@@ -10,6 +12,8 @@ import { Field } from './Field';
 import { FieldArray } from './FieldArray';
 import mdx from './FieldArray.mdx';
 import { Form } from './Form';
+
+const logger = createStructuredLogger('grafana-ui.story.field-array');
 
 const meta: Meta = {
   title: 'Forms/FieldArray',
@@ -36,7 +40,7 @@ export const Simple: StoryFn = (args) => {
     people: [{ firstName: 'Janis', lastName: 'Joplin' }],
   };
   return (
-    <Form onSubmit={(values) => console.log(values)} defaultValues={defaultValues}>
+    <Form onSubmit={(values) => logger.logInfo('Field array submitted', { values })} defaultValues={defaultValues}>
       {({ control, register }) => (
         <div>
           <FieldArray control={control} name="people">

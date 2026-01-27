@@ -8,7 +8,7 @@ import { loadScriptIntoSandbox } from './codeLoader';
 import { forbiddenElements } from './constants';
 import { recursivePatchObjectAsLiveTarget } from './documentSandbox';
 import { SandboxEnvironment, SandboxPluginMeta } from './types';
-import { logWarning, unboxRegexesFromMembraneProxy } from './utils';
+import { logInfo, logWarning, unboxRegexesFromMembraneProxy } from './utils';
 
 /**
  * Distortions are near-membrane mechanisms to altert JS instrics and DOM APIs.
@@ -139,16 +139,18 @@ function distortConsole(distortions: DistortionMap) {
     function getSandboxConsole(originalAttrOrMethod: unknown, meta: SandboxPluginMeta) {
       const pluginId = meta.id;
 
-      function sandboxLog(...args: unknown[]) {
-        console.log(`[plugin ${pluginId}]`, ...args);
-      }
+      const sandboxLog = (level: string) => {
+        return (...args: unknown[]) => {
+          logInfo('Plugin console output', { pluginId, level, args });
+        };
+      };
       return {
-        log: sandboxLog,
-        warn: sandboxLog,
-        error: sandboxLog,
-        info: sandboxLog,
-        debug: sandboxLog,
-        table: sandboxLog,
+        log: sandboxLog('log'),
+        warn: sandboxLog('warn'),
+        error: sandboxLog('error'),
+        info: sandboxLog('info'),
+        debug: sandboxLog('debug'),
+        table: sandboxLog('table'),
       };
     }
 
@@ -170,7 +172,7 @@ function distortAlert(distortions: DistortionMap) {
     });
 
     return function (...args: unknown[]) {
-      console.log(`[plugin ${pluginId}]`, ...args);
+      logInfo('Plugin alert output', { pluginId, args });
     };
   }
   const descriptor = Object.getOwnPropertyDescriptor(window, 'alert');

@@ -1,3 +1,14 @@
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'public.test.log-reporter',
+    timestamp: new Date().toISOString(),
+  };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+};
+
 class LogReporter {
   constructor(globalConfig, reporterOptions, reporterContext) {
     this._globalConfig = globalConfig;
@@ -28,7 +39,8 @@ class LogReporter {
       duration: Date.now() - results.startTime,
     };
     // JestStats suites=1 tests=94 passes=93 pending=0 failures=1 duration=3973
-    console.log(`JestStats ${objToLogAttributes(stats)}`);
+    process.stdout.write(`JestStats ${objToLogAttributes(stats)}\n`);
+    logInfo('Jest stats', stats);
   }
 }
 
@@ -45,7 +57,8 @@ function printTestFailures(result) {
     };
     // JestFailure file=<...>/public/app/features/dashboard/state/DashboardMigrator.test.ts
     // failures=1 duration=3251 errorMessage="formatted error message"
-    console.log(`JestFailure ${objToLogAttributes(testInfo)}`);
+    process.stdout.write(`JestFailure ${objToLogAttributes(testInfo)}\n`);
+    logInfo('Jest failure', testInfo);
   }
 }
 

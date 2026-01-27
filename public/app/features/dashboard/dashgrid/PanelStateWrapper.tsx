@@ -33,6 +33,7 @@ import {
   SeriesVisibilityChangeMode,
   AdHocFilterItem,
 } from '@grafana/ui';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { appEvents } from 'app/core/app_events';
 import { profiler } from 'app/core/profiler';
 import { annotationServer } from 'app/features/annotations/api';
@@ -58,6 +59,7 @@ import { liveTimer } from './liveTimer';
 import { PanelOptionsLogger } from './panelOptionsLogger';
 
 const DEFAULT_PLUGIN_ERROR = 'Error in plugin';
+const logger = createStructuredLogger('features.dashboard.panelStateWrapper');
 
 export interface Props {
   panel: PanelModel;
@@ -254,7 +256,7 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
       const delta = liveTime.to.valueOf() - data.timeRange.to.valueOf();
       if (delta < 100) {
         // 10hz
-        console.log('Skip tick render', this.props.panel.title, delta);
+        logger.logDebug('Skip tick render', { panelTitle: this.props.panel.title, delta });
         return;
       }
     }

@@ -2,6 +2,8 @@ import { StoryFn } from '@storybook/react';
 import { useId } from 'react';
 import { ValidateResult } from 'react-hook-form';
 
+import { createStructuredLogger } from '@grafana/data/internal';
+
 import { withStoryContainer } from '../../utils/storybook/withStoryContainer';
 import { Button } from '../Button/Button';
 import { Input } from '../Input/Input';
@@ -16,6 +18,8 @@ import { Form } from './Form';
 import mdx from './Form.mdx';
 import { Legend } from './Legend';
 import { RadioButtonGroup } from './RadioButtonGroup/RadioButtonGroup';
+
+const logger = createStructuredLogger('grafana-ui.story.form');
 
 export default {
   title: 'Forms/Form',
@@ -70,11 +74,11 @@ const renderForm = (defaultValues?: FormDTO) => {
     <Form
       defaultValues={defaultValues}
       onSubmit={(data: FormDTO) => {
-        console.log(data);
+        logger.logInfo('Form submitted', { data });
       }}
     >
       {({ register, control, errors }) => {
-        console.log(errors);
+        logger.logDebug('Form errors', { errors });
         return (
           <>
             <Legend>Edit user</Legend>
@@ -162,7 +166,7 @@ export const AsyncValidation: StoryFn = ({ passAsyncValidation }) => {
         }}
       >
         {({ register, control, errors, formState }) => {
-          console.log(errors);
+          logger.logDebug('Async validation errors', { errors });
           return (
             <>
               <Legend>Edit user</Legend>
@@ -201,7 +205,7 @@ const validateAsync = (shouldPass: boolean) => async () => {
     });
     return true;
   } catch (e) {
-    console.log(e);
+    logger.logError(e, { context: 'validateAsync' });
     return false;
   }
 };

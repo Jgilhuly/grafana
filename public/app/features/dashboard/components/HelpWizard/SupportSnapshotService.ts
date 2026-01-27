@@ -1,6 +1,7 @@
 import saveAs from 'file-saver';
 
 import { dateTimeFormat, formattedValueToString, getValueFormat, SelectableValue } from '@grafana/data';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { t } from '@grafana/i18n';
 import { SceneObject } from '@grafana/scenes';
 import { StateManagerBase } from 'app/core/services/StateManagerBase';
@@ -12,6 +13,8 @@ import { DashboardModel } from '../../state/DashboardModel';
 import { PanelModel } from '../../state/PanelModel';
 
 import { getDebugDashboard, getGithubMarkdown } from './utils';
+
+const logger = createStructuredLogger('features.dashboard.supportSnapshot');
 
 interface SupportSnapshotState {
   currentTab: SnapshotTab;
@@ -88,7 +91,7 @@ export class SupportSnapshotService extends StateManagerBase<SupportSnapshotStat
       const dash = createDashboardSceneFromDashboardModel(oldModel, snapshot);
       scene = dash.state.body; // skip the wrappers
     } catch (ex) {
-      console.log('Error creating scene:', ex);
+      logger.logError(ex, { action: 'createScene' });
     }
 
     this.setState({ snapshot, snapshotText, markdownText, snapshotSize, snapshotUpdate: snapshotUpdate + 1, scene });

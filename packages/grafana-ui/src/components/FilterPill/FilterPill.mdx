@@ -1,4 +1,5 @@
 import { ArgTypes } from '@storybook/blocks';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { FilterPill } from './FilterPill';
 
 # FilterPill
@@ -8,9 +9,12 @@ A component used for quick toggling on/off filters. Mostly used in inline form c
 ### Usage
 
 ```jsx
+import { createStructuredLogger } from '@grafana/data/internal';
 import { FilterPill } from '@grafana/ui';
 
-<FilterPill label={'Test'} onClick={() => console.log('toggle')} />;
+const logger = createStructuredLogger('grafana-ui.docs.filter-pill');
+
+<FilterPill label={'Test'} onClick={() => logger.logInfo('Filter pill toggled')} />;
 ```
 
 ### Props

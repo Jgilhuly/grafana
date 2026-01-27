@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ComponentProps } from 'react';
 
+import { createStructuredLogger } from '@grafana/data/internal';
 import { Stack, Text } from '@grafana/ui';
 
 import { AlertLabel } from './AlertLabel';
+
+const logger = createStructuredLogger('alerting.alertLabel.story');
 
 const meta: Meta<typeof AlertLabel> = {
   component: AlertLabel,
@@ -42,7 +45,7 @@ export const Clickable: StoryObj<typeof AlertLabel> = {
       {...args}
       labelKey="region"
       value="eu-central-1"
-      onClick={([value, key]) => console.log('clicked', key, value)}
+      onClick={([value, key]) => logger.logDebug('AlertLabel clicked', { key, value })}
     />
   ),
 };

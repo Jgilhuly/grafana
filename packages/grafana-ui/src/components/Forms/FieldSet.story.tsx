@@ -1,6 +1,8 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { useId } from 'react';
 
+import { createStructuredLogger } from '@grafana/data/internal';
+
 import { Button } from '../Button/Button';
 import { Input } from '../Input/Input';
 
@@ -8,6 +10,8 @@ import { Field } from './Field';
 import { FieldSet, Props } from './FieldSet';
 import mdx from './FieldSet.mdx';
 import { Form } from './Form';
+
+const logger = createStructuredLogger('grafana-ui.story.field-set');
 
 const meta: Meta<typeof FieldSet> = {
   title: 'Forms/FieldSet',
@@ -34,7 +38,7 @@ export const Basic: StoryFn<typeof FieldSet> = (args: Props) => {
   const colorId = useId();
   const fontSizeId = useId();
   return (
-    <Form onSubmit={() => console.log('Submit')}>
+    <Form onSubmit={() => logger.logInfo('Field set form submitted')}>
       {() => (
         <>
           <FieldSet {...args}>

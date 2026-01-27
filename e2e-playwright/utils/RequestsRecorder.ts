@@ -1,6 +1,17 @@
 import { Page, Response, Request } from '@playwright/test';
 import * as prom from 'prom-client';
 
+const logInfo = (message: string, context: Record<string, unknown> = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'e2e.playwright.requestsRecorder',
+    timestamp: new Date().toISOString(),
+  };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+};
+
 /**
  * Records and tracks network request body sizes.
  *
@@ -60,7 +71,7 @@ export class RequestsRecorder {
         return Promise.resolve();
       }
 
-      console.log('waiting for', this.#requestsInFlight, 'requests to finish');
+      logInfo('Waiting for requests to finish', { inFlight: this.#requestsInFlight });
 
       return new Promise<void>((resolve) => {
         this.#resolve = resolve;

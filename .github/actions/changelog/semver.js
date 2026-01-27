@@ -5,6 +5,18 @@
 const semverRegExp =
   /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
+const LOG_SOURCE = 'github.actions.changelog.semver';
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: LOG_SOURCE,
+    timestamp: new Date().toISOString(),
+  };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+};
+
 export function semverParse(tag) {
   const m = tag.match(semverRegExp);
   if (!m) {
@@ -80,9 +92,8 @@ function test(version, expected) {
   const v1 = semverParse(version);
   const prev = findPreviousVersion(versionsByDate, v1);
 
-  const failureMessage = `FAIILED. Expected ${expected}, but was ${prev[5]}`;
-
-  console.log(`Test ${version}, ${prev[5] === expected ? 'PASSED' : failureMessage}`);
+  const passed = prev[5] === expected;
+  logInfo('Semver test result', { version, expected, previous: prev[5], passed });
 }
 
 test("v11.5.4+security-01", "v11.5.4");

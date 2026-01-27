@@ -4,11 +4,31 @@ const pdf = require('pdf-parse');
 const ms = require('smtp-tester');
 
 const PORT = 7777;
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'e2e.cypress.smtpTester',
+    timestamp: new Date().toISOString(),
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+};
+const logWarning = (message, context = {}) => {
+  const payload = {
+    level: 'warn',
+    message,
+    context,
+    source: 'e2e.cypress.smtpTester',
+    timestamp: new Date().toISOString(),
+  };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+};
 
 const initialize = (on, config) => {
   // starts the SMTP server at localhost:7777
   const mailServer = ms.init(PORT);
-  console.log('mail server at port %d', PORT);
+  logInfo('Mail server started', { port: PORT });
 
   let lastEmail = {};
 
@@ -20,10 +40,10 @@ const initialize = (on, config) => {
   on('task', {
     resetEmails(recipient) {
       if (recipient) {
-        console.log('reset all emails for recipient %s', recipient);
+        logInfo('Reset emails for recipient', { recipient });
         delete lastEmail[recipient];
       } else {
-        console.log('reset all emails');
+        logInfo('Reset all emails');
         lastEmail = {};
       }
     },
@@ -92,14 +112,18 @@ const initialize = (on, config) => {
       removePDFGeneratedOnDate(expectedDoc);
 
       if (inputDoc.numpages !== expectedDoc.numpages) {
-        console.log('PDFs do not contain the same number of pages');
+        logWarning('PDFs do not contain the same number of pages', {
+          expectedPages: expectedDoc.numpages,
+          actualPages: inputDoc.numpages,
+        });
         return false;
       }
 
       if (inputDoc.text !== expectedDoc.text) {
-        console.log('PDFs do not contain the same text');
-        console.log('PDF expected text: ', expectedDoc.text);
-        console.log('PDF input text: ', inputDoc.text);
+        logWarning('PDFs do not contain the same text', {
+          expectedText: expectedDoc.text,
+          actualText: inputDoc.text,
+        });
         return false;
       }
 

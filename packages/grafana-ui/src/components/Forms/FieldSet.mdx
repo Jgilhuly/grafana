@@ -1,4 +1,5 @@
 import { ArgTypes } from '@storybook/blocks';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { FieldSet } from './FieldSet';
 
 # FieldSet
@@ -9,9 +10,12 @@ Accepts optional label, which, if provided, is used as a text for the set's lege
 ### Usage
 
 ```jsx
+import { createStructuredLogger } from '@grafana/data/internal';
 import { FieldSet } from '@grafana/ui';
 
-<Form onSubmit={() => console.log('Submit')}>
+const logger = createStructuredLogger('grafana-ui.docs.field-set');
+
+<Form onSubmit={() => logger.logInfo('Field set form submitted')}>
   {() => (
     <>
       <FieldSet label="Details">

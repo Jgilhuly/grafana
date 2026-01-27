@@ -4,6 +4,17 @@ const { fromPairs } = require('lodash');
 const { CDPDataCollector } = require('./CDPDataCollector');
 const { formatResults } = require('./formatting');
 
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'e2e.cypress.benchmark',
+    timestamp: new Date().toISOString(),
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+};
+
 const remoteDebuggingPortOptionPrefix = '--remote-debugging-port=';
 
 const getOrAddRemoteDebuggingPort = (args) => {
@@ -54,7 +65,7 @@ const initialize = (on, config) => {
 
   if (!fs.existsSync(resultsFolder)) {
     fs.mkdirSync(resultsFolder, { recursive: true });
-    console.log(`Created folder for benchmark results ${resultsFolder}`);
+    logInfo('Created folder for benchmark results', { resultsFolder });
   }
 
   on('before:browser:launch', async (browser, options) => {
@@ -69,11 +80,9 @@ const initialize = (on, config) => {
 
     args.push('--start-fullscreen');
 
-    console.log(
-      `initialized benchmarking plugin with ${collectors.length} collectors: ${collectors
-        .map((col) => col.getName())
-        .join(', ')}`
-    );
+    logInfo('Initialized benchmarking plugin', {
+      collectors: collectors.map((col) => col.getName()),
+    });
 
     return options;
   });

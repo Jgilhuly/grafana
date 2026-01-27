@@ -131,7 +131,14 @@ const dashboardWrapper = {
 const dashboardJSON = JSON.stringify(dashboardWrapper, null, 2);
 fs.writeFileSync('dashboard.json', dashboardJSON, 'utf8');
 
-console.log(`Dashboard JSON:\n${}`);
+const logPayload = {
+  level: 'info',
+  message: 'Dashboard JSON',
+  context: { dashboardJSON },
+  source: 'foundation-sdk',
+  timestamp: new Date().toISOString(),
+};
+process.stdout.write(`${JSON.stringify(logPayload)}\n`);
 ```
 
 {{< /code >}}

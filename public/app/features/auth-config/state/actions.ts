@@ -1,5 +1,6 @@
 import { lastValueFrom } from 'rxjs';
 
+import { createStructuredLogger } from '@grafana/data/internal';
 import { getBackendSrv, isFetchError } from '@grafana/runtime';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction } from 'app/types/accessControl';
@@ -18,6 +19,8 @@ import {
   setError,
   settingsUpdated,
 } from './reducers';
+
+const logger = createStructuredLogger('features.authConfig.actions');
 
 export function loadSettings(showSpinner = true): ThunkResult<Promise<Settings>> {
   return async (dispatch) => {
@@ -78,7 +81,7 @@ export function saveSettings(data: UpdateSettingsQuery): ThunkResult<Promise<boo
         dispatch(resetError());
         return true;
       } catch (error) {
-        console.log(error);
+        logger.logError(error, { action: 'saveSettings' });
         if (isFetchError(error)) {
           error.isHandled = true;
           const updateErr: SettingsError = {

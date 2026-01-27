@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import * as React from 'react';
 
 import { store } from './store';
+import { createStructuredLogger } from './structuredLogging';
+
+const logger = createStructuredLogger('data.localStorageValueProvider');
 
 export interface Props<T> {
   storageKey: string;
@@ -41,7 +44,7 @@ export const LocalStorageValueProvider = <T,>(props: Props<T>) => {
     try {
       store.delete(storageKey);
     } catch (error) {
-      console.log(error);
+      logger.logError(error, { storageKey, action: 'delete' });
     }
     setState({ value: defaultValue });
   };

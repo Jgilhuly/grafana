@@ -1,3 +1,7 @@
+import { createStructuredLogger } from '@grafana/data/internal';
+
+const logger = createStructuredLogger('core.dag');
+
 export class Edge {
   inputNode?: Node;
   outputNode?: Node;
@@ -268,7 +272,7 @@ export const printGraph = (g: Graph) => {
     if (!inputEdges) {
       inputEdges = '<none>';
     }
-    console.log(`${n.name}:\n - links to:   ${outputEdges}\n - links from: ${inputEdges}`);
+    logger.logDebug('Graph node links', { node: n.name, outputEdges, inputEdges });
   });
 };
 

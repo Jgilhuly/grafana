@@ -5,6 +5,18 @@ if (process.argv.length !== 3) {
 }
 
 const ELASTIC_BASE_URL = process.argv[2];
+const LOG_SOURCE = 'devenv.docker.elastic.data';
+
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: LOG_SOURCE,
+    timestamp: new Date().toISOString(),
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+};
 
 // helper function, do a http request
 async function jsonRequest(data, method, url, expectedStatusCode) {
@@ -176,7 +188,7 @@ async function main() {
 
 // when running in docker, we catch the needed stop-signal, to shutdown fast
 process.on('SIGTERM', () => {
-  console.log('shutdown requested');
+  logInfo('Shutdown requested');
   process.exit(0);
 });
 

@@ -1,4 +1,5 @@
 import { ArgTypes } from '@storybook/blocks';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { TimeRangeInput } from './TimeRangeInput';
 
 # TimeRangeInput
@@ -23,12 +24,15 @@ A variant of `TimeRangePicker` for use in forms.
 ### Usage
 
 ```jsx
+import { createStructuredLogger } from '@grafana/data/internal';
 import { TimeRangeInput } from '@grafana/ui';
+
+const logger = createStructuredLogger('grafana-ui.docs.time-range-input');
 
 <TimeRangeInput
   value={timeRange}
-  onChange={(range) => console.log('range', range)}
-  onChangeTimeZone={(tz) => console.log('timezone', tz)}
+  onChange={(range) => logger.logInfo('Time range changed', { range })}
+  onChangeTimeZone={(tz) => logger.logInfo('Time zone changed', { timeZone: tz })}
 />;
 ```
 

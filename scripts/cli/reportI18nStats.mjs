@@ -6,6 +6,17 @@ import { fileURLToPath } from 'url';
 
 const LOCALES_DIR = path.resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'public', 'locales');
 
+const logInfo = (message, context = {}) => {
+  const payload = {
+    level: 'info',
+    message,
+    context,
+    source: 'scripts.cli.reportI18nStats',
+    timestamp: new Date().toISOString(),
+  };
+  process.stderr.write(`${JSON.stringify(payload)}\n`);
+};
+
 const locales = await readdir(LOCALES_DIR);
 
 /**
@@ -84,5 +95,6 @@ function eachMessage(value, callback) {
 function logStat(name, value) {
   // Note that this output format must match the parsing in ci-frontend-metrics.sh
   // which expects the two values to be separated by a space
-  console.log(`${name} ${value}`);
+  process.stdout.write(`${name} ${value}\n`);
+  logInfo('Reported i18n stat', { name, value });
 }

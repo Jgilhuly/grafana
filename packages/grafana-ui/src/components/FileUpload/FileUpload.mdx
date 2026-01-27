@@ -1,4 +1,5 @@
 import { ArgTypes } from '@storybook/blocks';
+import { createStructuredLogger } from '@grafana/data/internal';
 import { FileUpload } from './FileUpload';
 
 # FileUpload
@@ -8,10 +9,15 @@ A button-styled input that triggers file upload popup. Button text and accepted 
 ### Usage
 
 ```jsx
+import { createStructuredLogger } from '@grafana/data/internal';
 import { FileUpload } from '@grafana/ui';
 
+const logger = createStructuredLogger('grafana-ui.docs.file-upload');
+
 <FileUpload
-  onFileUpload={({ currentTarget }) => console.log('file', currentTarget?.files && currentTarget.files[0])}
+  onFileUpload={({ currentTarget }) =>
+    logger.logInfo('File uploaded', { file: currentTarget?.files && currentTarget.files[0] })
+  }
 />;
 ```
 
