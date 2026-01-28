@@ -200,7 +200,7 @@ function DashboardOutlineNode({
       <div
         className={cx(styles.row, isEditing ? styles.rowEditMode : styles.rowViewMode, {
           [styles.rowSelected]: isSelected,
-          [styles.rowMatched]: searchQuery.trim() && matches,
+          [styles.rowMatched]: Boolean(searchQuery.trim()) && matches,
         })}
       >
         <div className={styles.indentation}></div>
