@@ -4,8 +4,8 @@ import React, { useMemo, useState } from 'react';
 import { GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans, t } from '@grafana/i18n';
-import { SceneObject } from '@grafana/scenes';
-import { Box, Icon, Sidebar, Text, useElementSelection, useStyles2 } from '@grafana/ui';
+import { SceneObject, VizPanel } from '@grafana/scenes';
+import { Box, Icon, Input, Sidebar, Text, useElementSelection, useStyles2 } from '@grafana/ui';
 
 import { isRepeatCloneOrChildOf } from '../utils/clone';
 import { DashboardInteractions } from '../utils/interactions';
@@ -22,12 +22,31 @@ export interface Props {
 
 export function DashboardOutline({ editPane, isEditing }: Props) {
   const dashboard = getDashboardSceneFor(editPane);
+  const [searchQuery, setSearchQuery] = useState('');
+  const styles = useStyles2(getOutlineStyles);
 
   return (
     <>
       <Sidebar.PaneHeader title={t('dashboard.outline.pane-header', 'Content outline')} />
+      <Box paddingX={1} paddingTop={1} paddingBottom={0.5}>
+        <Input
+          prefix={<Icon name="search" />}
+          placeholder={t('dashboard.outline.search-placeholder', 'Search by name, type, or plugin')}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.currentTarget.value)}
+          className={styles.searchInput}
+          data-testid="outline search input"
+        />
+      </Box>
       <Box padding={1} gap={0} display="flex" direction="column" element="ul" role="tree" position="relative">
-        <DashboardOutlineNode sceneObject={dashboard} isEditing={isEditing} editPane={editPane} depth={0} index={0} />
+        <DashboardOutlineNode
+          sceneObject={dashboard}
+          isEditing={isEditing}
+          editPane={editPane}
+          depth={0}
+          index={0}
+          searchQuery={searchQuery}
+        />
       </Box>
     </>
   );
@@ -39,9 +58,17 @@ interface DashboardOutlineNodeProps {
   isEditing: boolean | undefined;
   depth: number;
   index: number;
+  searchQuery?: string;
 }
 
-function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }: DashboardOutlineNodeProps) {
+function DashboardOutlineNode({
+  sceneObject,
+  editPane,
+  isEditing,
+  depth,
+  index,
+  searchQuery = '',
+}: DashboardOutlineNodeProps) {
   const styles = useStyles2(getStyles);
   const key = sceneObject.state.key;
   const [isCollapsed, setIsCollapsed] = useState(depth > 0);
@@ -62,6 +89,51 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
       : children.filter((child) => !getEditableElementFor(child)?.getEditableElementInfo().isHidden);
   }, [editableElement, isEditing]);
 
+  // Search and filter logic
+  const { matches, childMatches } = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return { matches: true, childMatches: true };
+    }
+
+    const query = searchQuery.toLowerCase();
+    const nameMatches = instanceName.toLowerCase().includes(query);
+    const typeMatches = elementInfo.typeName.toLowerCase().includes(query);
+
+    // Check if it's a VizPanel and search by plugin ID
+    let pluginMatches = false;
+    if (sceneObject instanceof VizPanel) {
+      const pluginId = sceneObject.state.pluginId?.toLowerCase() || '';
+      pluginMatches = pluginId.includes(query);
+    }
+
+    const currentMatches = nameMatches || typeMatches || pluginMatches;
+
+    // Check if any children match
+    let anyChildMatches = false;
+    if (isContainer) {
+      anyChildMatches = visibleChildren.some((child) => {
+        const childElement = getEditableElementFor(child);
+        if (!childElement) {
+          return false;
+        }
+        const childInfo = childElement.getEditableElementInfo();
+        const childName = childInfo.instanceName === '' ? noTitleText : childInfo.instanceName;
+        const childNameMatches = childName.toLowerCase().includes(query);
+        const childTypeMatches = childInfo.typeName.toLowerCase().includes(query);
+
+        let childPluginMatches = false;
+        if (child instanceof VizPanel) {
+          const childPluginId = child.state.pluginId?.toLowerCase() || '';
+          childPluginMatches = childPluginId.includes(query);
+        }
+
+        return childNameMatches || childTypeMatches || childPluginMatches;
+      });
+    }
+
+    return { matches: currentMatches, childMatches: anyChildMatches };
+  }, [searchQuery, instanceName, elementInfo.typeName, sceneObject, isContainer, visibleChildren, noTitleText]);
+
   const onNodeClicked = (e: React.MouseEvent) => {
     e.stopPropagation();
 
@@ -79,9 +151,40 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
     setIsCollapsed(!isCollapsed);
   };
 
+  // Filter based on search query
+  if (searchQuery.trim() && !matches && !childMatches) {
+    return null;
+  }
+
+  // Auto-expand when searching to show matches
+  const shouldBeCollapsed = searchQuery.trim() ? false : isCollapsed;
+
   if (elementInfo.isHidden && !isEditing) {
     return null;
   }
+
+  // Helper function to highlight matched text
+  const highlightMatch = (text: string) => {
+    if (!searchQuery.trim() || !matches) {
+      return text;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const lowerText = text.toLowerCase();
+    const index = lowerText.indexOf(query);
+
+    if (index === -1) {
+      return text;
+    }
+
+    return (
+      <>
+        {text.substring(0, index)}
+        <mark className={styles.highlight}>{text.substring(index, index + searchQuery.length)}</mark>
+        {text.substring(index + searchQuery.length)}
+      </>
+    );
+  };
 
   return (
     // todo: add proper keyboard navigation
@@ -97,6 +200,7 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
       <div
         className={cx(styles.row, isEditing ? styles.rowEditMode : styles.rowViewMode, {
           [styles.rowSelected]: isSelected,
+          [styles.rowMatched]: Boolean(searchQuery.trim()) && matches,
         })}
       >
         <div className={styles.indentation}></div>
@@ -106,7 +210,7 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
             onClick={onToggleCollapse}
             data-testid={selectors.components.PanelEditor.Outline.node(instanceName)}
           >
-            <Icon name={isCollapsed ? 'angle-right' : 'angle-down'} />
+            <Icon name={shouldBeCollapsed ? 'angle-right' : 'angle-down'} />
           </button>
         )}
         <button
@@ -128,7 +232,7 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
           ) : (
             <>
               <div className={styles.nodeName}>
-                <Text truncate>{instanceName}</Text>
+                <Text truncate>{highlightMatch(instanceName)}</Text>
                 {elementInfo.isHidden && <Icon name="eye-slash" size="sm" className={styles.hiddenIcon} />}
               </div>
               {isCloned && (
@@ -141,7 +245,7 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
         </button>
       </div>
 
-      {isContainer && !isCollapsed && (
+      {isContainer && !shouldBeCollapsed && (
         <ul className={styles.nodeChildren} role="group">
           {visibleChildren.length > 0 ? (
             visibleChildren.map((child, i) => (
@@ -152,6 +256,7 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
                 depth={depth + 1}
                 isEditing={isEditing}
                 index={i}
+                searchQuery={searchQuery}
               />
             ))
           ) : (
@@ -174,6 +279,14 @@ function DashboardOutlineNode({ sceneObject, editPane, isEditing, depth, index }
       )}
     </li>
   );
+}
+
+function getOutlineStyles(theme: GrafanaTheme2) {
+  return {
+    searchInput: css({
+      marginBottom: theme.spacing(0.5),
+    }),
+  };
 }
 
 function getStyles(theme: GrafanaTheme2) {
@@ -212,6 +325,9 @@ function getStyles(theme: GrafanaTheme2) {
       color: theme.colors.text.primary,
       outline: `1px dashed ${theme.colors.primary.border} !important`,
       backgroundColor: theme.colors.emphasize(theme.colors.background.primary, 0.05),
+    }),
+    rowMatched: css({
+      backgroundColor: theme.colors.emphasize(theme.colors.warning.main, 0.1),
     }),
     indentation: css({
       marginLeft: `calc(var(--depth) * ${theme.spacing(3)})`,
@@ -257,6 +373,13 @@ function getStyles(theme: GrafanaTheme2) {
     nodeButtonClone: css({
       color: theme.colors.text.secondary,
       cursor: 'not-allowed',
+    }),
+    highlight: css({
+      backgroundColor: theme.colors.warning.main,
+      color: theme.colors.warning.contrastText,
+      padding: '1px 2px',
+      borderRadius: theme.shape.radius.default,
+      fontWeight: theme.typography.fontWeightMedium,
     }),
     outlineInput: css({
       border: `1px solid ${theme.components.input.borderColor}`,
