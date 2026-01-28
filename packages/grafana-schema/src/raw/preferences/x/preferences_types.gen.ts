@@ -30,9 +30,39 @@ export const defaultNavbarPreference: Partial<NavbarPreference> = {
 };
 
 /**
- * Spec defines user, team or org Grafana preferences
- * swagger:model Preferences
+ * Theme customization options for dark mode
  */
+export interface ThemeCustomization {
+  /**
+   * Contrast level: 'default' | 'high' | 'low'
+   */
+  contrastLevel?: string;
+  /**
+   * Custom accent color (hex color code)
+   */
+  accentColor?: string;
+  /**
+   * Custom primary color (hex color code)
+   */
+  primaryColor?: string;
+  /**
+   * Custom background color (hex color code)
+   */
+  backgroundColor?: string;
+  /**
+   * Custom text color (hex color code)
+   */
+  textColor?: string;
+}
+
+export const defaultThemeCustomization: Partial<ThemeCustomization> = {
+  contrastLevel: 'default',
+};
+
+/**
+* Spec defines user, team or org Grafana preferences
+* swagger:model Preferences
+*/
 export interface Preferences {
   /**
    * Cookie preferences
@@ -62,6 +92,10 @@ export interface Preferences {
    * light, dark, empty is default
    */
   theme?: string;
+  /**
+   * Theme customization options
+   */
+  themeCustomization?: ThemeCustomization;
   /**
    * The timezone selection
    * TODO: this should use the timezone defined in common
