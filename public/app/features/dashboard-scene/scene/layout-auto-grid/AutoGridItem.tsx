@@ -1,6 +1,7 @@
 import { isEqual } from 'lodash';
 import React from 'react';
 
+import { logError } from '@grafana/data';
 import {
   CustomVariable,
   MultiValueVariable,
@@ -91,7 +92,7 @@ export class AutoGridItem extends SceneObjectBase<AutoGridItemState> implements 
       });
 
     if (!(variable instanceof MultiValueVariable)) {
-      console.error('DashboardGridItem: Variable is not a MultiValueVariable');
+      logError('DashboardGridItem: Variable is not a MultiValueVariable');
       return;
     }
 

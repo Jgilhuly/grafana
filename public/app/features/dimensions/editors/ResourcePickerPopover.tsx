@@ -4,7 +4,7 @@ import { FocusScope } from '@react-aria/focus';
 import { useOverlay } from '@react-aria/overlays';
 import { useRef, useState } from 'react';
 
-import { GrafanaTheme2 } from '@grafana/data';
+import { GrafanaTheme2, logError } from '@grafana/data';
 import { Trans } from '@grafana/i18n';
 import { getBackendSrv } from '@grafana/runtime';
 import { Button, useStyles2 } from '@grafana/ui';
@@ -130,7 +130,7 @@ export const ResourcePickerPopover = (props: Props) => {
                           .then(() => onChange(`${config.appUrl}api/storage/read/${data.path}`))
                           .then(() => hidePopper?.());
                       })
-                      .catch((err) => console.error(err));
+                      .catch((err) => logError(err));
                   } else {
                     onChange(newValue);
                     hidePopper?.();

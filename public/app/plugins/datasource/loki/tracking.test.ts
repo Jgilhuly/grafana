@@ -1,4 +1,11 @@
-import { CoreApp, DashboardLoadedEvent, DataQueryRequest, dateTime } from '@grafana/data';
+import {
+  CoreApp,
+  DashboardLoadedEvent,
+  DataQueryRequest,
+  dateTime,
+  getStructuredLogger,
+  setStructuredLogger,
+} from '@grafana/data';
 import { QueryEditorMode } from '@grafana/plugin-ui';
 import { reportInteraction } from '@grafana/runtime';
 
@@ -152,10 +159,13 @@ test('Tracks grouped queries', () => {
 });
 
 describe('onDashboardLoadedHandler', () => {
+  const originalLogger = getStructuredLogger();
+  const errorMock = jest.fn();
   beforeEach(() => {
     jest.mocked(reportInteraction).mockClear();
-    jest.spyOn(console, 'error');
+    setStructuredLogger({ ...originalLogger, error: errorMock });
   });
+  afterEach(() => setStructuredLogger(originalLogger));
   test('Reports dashboard loaded interactions', () => {
     const event = new DashboardLoadedEvent({
       dashboardId: 'test',
@@ -169,7 +179,7 @@ describe('onDashboardLoadedHandler', () => {
     onDashboardLoadedHandler(event);
 
     expect(reportInteraction).toHaveBeenCalled();
-    expect(console.error).not.toHaveBeenCalled();
+    expect(errorMock).not.toHaveBeenCalled();
   });
 
   test('Does not report or fails when the dashboard id has no queries', () => {
@@ -185,6 +195,6 @@ describe('onDashboardLoadedHandler', () => {
     onDashboardLoadedHandler(event);
 
     expect(reportInteraction).not.toHaveBeenCalled();
-    expect(console.error).not.toHaveBeenCalled();
+    expect(errorMock).not.toHaveBeenCalled();
   });
 });

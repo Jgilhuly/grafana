@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { firstValueFrom } from 'rxjs';
 
-import { onUpdateDatasourceJsonDataOptionSelect, onUpdateDatasourceOption } from '@grafana/data';
+import { logError, onUpdateDatasourceJsonDataOptionSelect, onUpdateDatasourceOption } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 import {
   Box,
@@ -104,7 +104,7 @@ export const UrlAndAuthenticationSection = (props: Props) => {
         }
       }
     } catch (err) {
-      console.error('Failed to get InfluxDB version:', err);
+      logError('Failed to get InfluxDB version:', err);
     }
 
     return { product: undefined, version: undefined };

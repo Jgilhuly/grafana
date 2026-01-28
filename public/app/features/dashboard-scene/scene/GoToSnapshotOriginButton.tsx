@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 
-import { textUtil } from '@grafana/data';
+import { logError, textUtil } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, locationService } from '@grafana/runtime';
 import { ConfirmModal, ToolbarButton } from '@grafana/ui';
@@ -59,6 +59,6 @@ export const onOpenSnapshotOriginalDashboard = (originalUrl: string) => {
       locationService.push(sanitizedRelativeURL);
     }
   } catch (err) {
-    console.error('Failed to open original dashboard', err);
+    logError('Failed to open original dashboard', err);
   }
 };

@@ -1,6 +1,7 @@
 import { FormEvent } from 'react';
 import { lastValueFrom } from 'rxjs';
 
+import { logWarning } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { ConstantVariable, SceneVariable } from '@grafana/scenes';
 import { Input } from '@grafana/ui';
@@ -24,7 +25,7 @@ export function ConstantVariableEditor({ variable }: ConstantVariableEditorProps
 
 export function getConstantVariableOptions(variable: SceneVariable): OptionsPaneItemDescriptor[] {
   if (!(variable instanceof ConstantVariable)) {
-    console.warn('getConstantVariableOptions: variable is not a ConstantVariable');
+    logWarning('getConstantVariableOptions: variable is not a ConstantVariable');
     return [];
   }
 

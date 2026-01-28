@@ -6,6 +6,7 @@ import {
   LogsMetaItem,
   LogsMetaKind,
   LogRowModel,
+  logError,
   CoreApp,
   Labels,
   store,
@@ -161,6 +162,6 @@ function renderMetaItem(value: string | number | Labels, kind: LogsMetaKind, log
   if (kind === LogsMetaKind.Error) {
     return <span className="logs-meta-item__error">{value.toString()}</span>;
   }
-  console.error(`Meta type ${typeof value} ${value} not recognized.`);
+  logError(`Meta type ${typeof value} ${value} not recognized.`);
   return <></>;
 }

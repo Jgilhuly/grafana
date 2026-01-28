@@ -5,6 +5,7 @@ import {
   CustomVariableSupport,
   DataQueryRequest,
   DataQueryResponse,
+  logError,
   MetricFindValue,
   SelectableValue,
 } from '@grafana/data';
@@ -57,7 +58,7 @@ export class CloudWatchVariableSupport extends CustomVariableSupport<CloudWatchD
           return this.handleAccountsQuery(query);
       }
     } catch (error) {
-      console.error(`Could not run CloudWatchMetricFindQuery ${query}`, error);
+      logError(`Could not run CloudWatchMetricFindQuery ${query}`, error);
       return [];
     }
   }

@@ -2,7 +2,15 @@ import { isEqual } from 'lodash';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { usePrevious } from 'react-use';
 
-import { DataSourceApi, getDefaultTimeRange, LoadingState, PanelData, SelectableValue, TimeRange } from '@grafana/data';
+import {
+  DataSourceApi,
+  getDefaultTimeRange,
+  LoadingState,
+  logError,
+  PanelData,
+  SelectableValue,
+  TimeRange,
+} from '@grafana/data';
 import {
   EditorRow,
   LabelFilters,
@@ -126,7 +134,7 @@ export const LokiQueryBuilder = memo<Props>(({ datasource, query, onChange, onRu
         Math.abs(timeRange.from.valueOf() - prevTimeRange.from.valueOf()) > TIME_SPAN_TO_TRIGGER_SAMPLES);
     const updateBasedOnChangedQuery = !isEqual(prevQuery, query);
     if (updateBasedOnChangedTimeRange || updateBasedOnChangedQuery) {
-      onGetSampleData().catch(console.error);
+      onGetSampleData().catch(logError);
     }
   }, [datasource, query, timeRange, prevQuery, prevTimeRange]);
 

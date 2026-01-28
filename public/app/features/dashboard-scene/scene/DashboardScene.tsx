@@ -1,6 +1,6 @@
 import * as H from 'history';
 
-import { CoreApp, DataQueryRequest, locationUtil, NavIndex, NavModelItem } from '@grafana/data';
+import { CoreApp, DataQueryRequest, locationUtil, logError, NavIndex, NavModelItem } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, locationService, RefreshEvent } from '@grafana/runtime';
 import {
@@ -312,7 +312,7 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
 
   public exitEditMode({ skipConfirm, restoreInitialState }: { skipConfirm: boolean; restoreInitialState?: boolean }) {
     if (!this.canDiscard()) {
-      console.error('Trying to discard back to a state that does not exist, initialState undefined');
+      logError('Trying to discard back to a state that does not exist, initialState undefined');
       return;
     }
 
@@ -560,7 +560,7 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
         clearClipboard();
         store.set(LS_PANEL_COPY_KEY, JSON.stringify({ elements, gridItem: gridItemKind }));
       } else {
-        console.error('Trying to copy a panel that is not DashboardGridItem child');
+        logError('Trying to copy a panel that is not DashboardGridItem child');
         throw new Error('Trying to copy a panel that is not DashboardGridItem child');
       }
       return;
@@ -573,7 +573,7 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
     let gridItem = vizPanel.parent;
 
     if (!(gridItem instanceof DashboardGridItem)) {
-      console.error('Trying to copy a panel that is not DashboardGridItem child');
+      logError('Trying to copy a panel that is not DashboardGridItem child');
       throw new Error('Trying to copy a panel that is not DashboardGridItem child');
     }
 
@@ -607,7 +607,7 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
     const gridItem = panel.parent;
 
     if (!(gridItem instanceof DashboardGridItem)) {
-      console.error('Trying to unlink a lib panel in a layout that is not DashboardGridItem');
+      logError('Trying to unlink a lib panel in a layout that is not DashboardGridItem');
       return;
     }
 
@@ -638,7 +638,7 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
         },
       });
     } catch (err) {
-      console.error('Failed to star dashboard', err);
+      logError('Failed to star dashboard', err);
     }
   }
 

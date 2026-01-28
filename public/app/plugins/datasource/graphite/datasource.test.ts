@@ -11,9 +11,11 @@ import {
   dateMath,
   dateTime,
   getFrameDisplayName,
+  getStructuredLogger,
   MetricFindValue,
   PluginType,
   ScopedVars,
+  setStructuredLogger,
 } from '@grafana/data';
 import {
   BackendSrvRequest,
@@ -101,9 +103,13 @@ const instanceSettings = {
 
 describe('graphiteDatasource', () => {
   let ctx = {} as Context;
+  const originalLogger = getStructuredLogger();
+  const errorMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
+    errorMock.mockClear();
+    setStructuredLogger({ ...originalLogger, error: errorMock });
 
     const templateSrv = getTemplateSrv();
     const ds = new GraphiteDatasource(instanceSettings, templateSrv);
@@ -111,6 +117,10 @@ describe('graphiteDatasource', () => {
     ds.getResource = getResourceMock;
 
     ctx = { templateSrv, ds };
+  });
+
+  afterEach(() => {
+    setStructuredLogger(originalLogger);
   });
 
   it('uses default Graphite version when no graphiteVersion is provided', () => {
@@ -325,15 +335,6 @@ describe('graphiteDatasource', () => {
       title: string;
       tags?: string[];
     }>;
-    let errorSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      errorSpy = jest.spyOn(console, 'error').mockImplementation();
-    });
-
-    afterEach(() => {
-      errorSpy.mockRestore();
-    });
 
     const options = {
       targets: [
@@ -426,7 +427,7 @@ describe('graphiteDatasource', () => {
         results = data;
       });
       expect(results).toEqual([]);
-      expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/Unable to get annotations/));
+      expect(errorMock).toHaveBeenCalledWith(expect.stringMatching(/Unable to get annotations/));
     });
   });
 
@@ -437,15 +438,11 @@ describe('graphiteDatasource', () => {
       title: string;
       tags?: string[];
     }>;
-    let errorSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      errorSpy = jest.spyOn(console, 'error').mockImplementation();
       config.featureToggles.graphiteBackendMode = true;
     });
 
     afterEach(() => {
-      errorSpy.mockRestore();
       config.featureToggles.graphiteBackendMode = false;
     });
 
@@ -540,7 +537,7 @@ describe('graphiteDatasource', () => {
         results = data;
       });
       expect(results).toEqual([]);
-      expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/Unable to get annotations/));
+      expect(errorMock).toHaveBeenCalledWith(expect.stringMatching(/Unable to get annotations/));
     });
   });
 

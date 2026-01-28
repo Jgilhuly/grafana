@@ -3,6 +3,7 @@ import { useAsync } from 'react-use';
 import { Subscription } from 'rxjs';
 
 import { llm } from '@grafana/llm';
+import { logError } from '@grafana/data';
 import { createMonitoringLogger } from '@grafana/runtime';
 import { useAppNotification } from 'app/core/copy/appNotification';
 
@@ -71,7 +72,7 @@ export function useLLMStream(options: Options = defaultOptions): UseLLMStreamRes
         'Failed to generate content using LLM',
         'Please try again or if the problem persists, contact your organization admin.'
       );
-      console.error(e);
+      logError(e);
       genAILogger.logError(e, { messages: JSON.stringify(messages), model, temperature: String(temperature) });
     },
     [messages, model, temperature, notifyError]

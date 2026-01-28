@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { Dispatch, SetStateAction, useState } from 'react';
 
-import { GrafanaTheme2 } from '@grafana/data';
+import { GrafanaTheme2, logError } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { FileDropzone, useStyles2, Button, DropzoneFile, Field } from '@grafana/ui';
 import { SanitizedSVG } from 'app/core/components/SVG/SanitizedSVG';
@@ -47,7 +47,7 @@ export const FileUploader = ({ mediaType, setFormData, setUpload, error }: Props
   const onFileRemove = (file: DropzoneFile) => {
     fetch(`/api/storage/delete/upload/${file.file.name}`, {
       method: 'DELETE',
-    }).catch((error) => console.error('cannot delete file', error));
+    }).catch((error) => logError('cannot delete file', error));
   };
 
   const acceptableFiles =

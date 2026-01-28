@@ -10,6 +10,7 @@ const {
   FILENAMES_BY_CODEOWNER_JSON_PATH,
   CODEOWNERS_JSON_PATH,
 } = require('./constants.js');
+const { logError, logInfo } = require('../utils/structuredLogger');
 
 /**
  * Generate codeowners manifest files from raw audit data
@@ -43,7 +44,7 @@ async function generateCodeownersManifest(
   let filenamesByCodeowner = new Map();
 
   lineReader.on('error', (error) => {
-    console.error('Error reading file:', error);
+    logError('Error reading file:', error);
     throw error;
   });
 
@@ -62,7 +63,7 @@ async function generateCodeownersManifest(
         filenamesByCodeowner.set(owner, filenames.concat(path));
       }
     } catch (parseError) {
-      console.error(`Error parsing line: ${line}`, parseError);
+      logError(`Error parsing line: ${line}`, parseError);
       throw parseError;
     }
   });
@@ -79,19 +80,19 @@ async function generateCodeownersManifest(
 if (require.main === module) {
   (async () => {
     try {
-      console.log(`📋 Generating files ↔ teams manifests from ${RAW_AUDIT_JSONL_PATH} ...`);
+      logInfo(`📋 Generating files ↔ teams manifests from ${RAW_AUDIT_JSONL_PATH} ...`);
       await generateCodeownersManifest(
         RAW_AUDIT_JSONL_PATH,
         CODEOWNERS_JSON_PATH,
         CODEOWNERS_BY_FILENAME_JSON_PATH,
         FILENAMES_BY_CODEOWNER_JSON_PATH
       );
-      console.log('✅ Manifest files generated:');
-      console.log(`   • ${CODEOWNERS_JSON_PATH}`);
-      console.log(`   • ${CODEOWNERS_BY_FILENAME_JSON_PATH}`);
-      console.log(`   • ${FILENAMES_BY_CODEOWNER_JSON_PATH}`);
+      logInfo('✅ Manifest files generated:');
+      logInfo(`   • ${CODEOWNERS_JSON_PATH}`);
+      logInfo(`   • ${CODEOWNERS_BY_FILENAME_JSON_PATH}`);
+      logInfo(`   • ${FILENAMES_BY_CODEOWNER_JSON_PATH}`);
     } catch (e) {
-      console.error(e);
+      logError(e);
       process.exit(1);
     }
   })();

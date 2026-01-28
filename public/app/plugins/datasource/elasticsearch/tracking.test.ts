@@ -1,4 +1,4 @@
-import { DashboardLoadedEvent } from '@grafana/data';
+import { DashboardLoadedEvent, getStructuredLogger, setStructuredLogger } from '@grafana/data';
 import { reportInteraction } from '@grafana/runtime';
 
 import { ElasticsearchDataQuery } from './dataquery.gen';
@@ -25,10 +25,13 @@ afterAll(() => {
 });
 
 describe('onDashboardLoadedHandler', () => {
+  const originalLogger = getStructuredLogger();
+  const errorMock = jest.fn();
   beforeEach(() => {
     jest.mocked(reportInteraction).mockClear();
-    jest.spyOn(console, 'error');
+    setStructuredLogger({ ...originalLogger, error: errorMock });
   });
+  afterEach(() => setStructuredLogger(originalLogger));
   test('Reports dashboard loaded interactions', () => {
     const event = new DashboardLoadedEvent({
       dashboardId: 'test',
@@ -42,7 +45,7 @@ describe('onDashboardLoadedHandler', () => {
     onDashboardLoadedHandler(event);
 
     expect(reportInteraction).toHaveBeenCalled();
-    expect(console.error).not.toHaveBeenCalled();
+    expect(errorMock).not.toHaveBeenCalled();
   });
 
   test('Does not report or fails when the dashboard id has no queries', () => {
@@ -58,6 +61,6 @@ describe('onDashboardLoadedHandler', () => {
     onDashboardLoadedHandler(event);
 
     expect(reportInteraction).not.toHaveBeenCalled();
-    expect(console.error).not.toHaveBeenCalled();
+    expect(errorMock).not.toHaveBeenCalled();
   });
 });

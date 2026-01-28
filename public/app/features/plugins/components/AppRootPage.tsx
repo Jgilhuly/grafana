@@ -249,7 +249,6 @@ async function loadAppPlugin(pluginId: string, dispatch: React.Dispatch<AnyActio
     );
     const error = err instanceof Error ? err : new Error(getMessageFromError(err));
     pluginsLogger.logError(error);
-    console.error(error);
   }
 }
 

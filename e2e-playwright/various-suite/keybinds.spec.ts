@@ -1,5 +1,7 @@
 import { test, expect } from '@grafana/plugin-e2e';
 
+import { logInfo } from '../../scripts/utils/structuredLogger';
+
 test.describe(
   'Keyboard shortcuts',
   {
@@ -105,7 +107,7 @@ test.describe(
       const modKey = process.platform === 'darwin' ? 'Meta' : 'Control';
 
       // Test that mod+o works in the main dashboard (should not trigger file dialog)
-      console.log('Testing mod+o in main dashboard view...');
+      logInfo('Testing mod+o in main dashboard view...');
       await page.keyboard.press(`${modKey}+o`);
       expect(page.url()).toBe(currentUrl); // Should not navigate away
 

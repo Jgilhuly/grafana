@@ -72,7 +72,7 @@ export class DashboardLayoutOrchestrator extends SceneObjectBase<DashboardLayout
           this._lastDropTarget?.draggedGridItemInside?.(gridItem);
         } else {
           const warningMessage = 'No grid item to drag';
-          console.warn(warningMessage);
+          logWarning(warningMessage);
           logWarning(warningMessage);
         }
       });

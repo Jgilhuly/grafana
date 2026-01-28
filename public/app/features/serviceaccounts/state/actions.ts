@@ -1,5 +1,7 @@
 import { debounce } from 'lodash';
 
+import { logError } from '@grafana/data';
+
 import { getBackendSrv } from '@grafana/runtime';
 import { fetchRoleOptions } from 'app/core/components/RolePicker/api';
 import { contextSrv } from 'app/core/services/context_srv';
@@ -31,7 +33,7 @@ export function fetchACOptions(): ThunkResult<void> {
         dispatch(acOptionsLoaded(options));
       }
     } catch (error) {
-      console.error(error);
+      logError(error);
     }
   };
 }
@@ -76,7 +78,7 @@ export function fetchServiceAccounts(
         dispatch(serviceAccountsFetched(result));
       }
     } catch (error) {
-      console.error(error);
+      logError(error);
     } finally {
       dispatch(serviceAccountsFetchEnd());
     }

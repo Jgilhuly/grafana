@@ -2,6 +2,7 @@ import { getFieldDisplayName } from '../../field/fieldState';
 import { stringToJsRegex } from '../../text/string';
 import { DataFrame, Field, FieldType, TIME_SERIES_VALUE_FIELD_NAME } from '../../types/dataFrame';
 import { FieldMatcher, FieldMatcherInfo, FrameMatcherInfo } from '../../types/transformations';
+import { logError } from '../../utils/structuredLogging';
 
 import { FieldMatcherID, FrameMatcherID } from './ids';
 
@@ -201,7 +202,7 @@ const patternToRegex = (pattern?: string): RegExp | undefined => {
   try {
     return stringToJsRegex(pattern);
   } catch (error) {
-    console.error(error);
+    logError(error);
     return undefined;
   }
 };

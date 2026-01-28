@@ -1,3 +1,4 @@
+import { setStructuredLogger, type StructuredLogArgs } from '@grafana/data';
 import { faro, LogContext, LogLevel } from '@grafana/faro-web-sdk';
 
 import { config } from '../config';
@@ -143,3 +144,67 @@ export function createMonitoringLogger(source: string, defaultContext?: LogConte
       logMeasurement(type, measurement, createFullContext(contexts)),
   };
 }
+
+const isLogContext = (value: unknown): value is LogContext => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value) && !(value instanceof Error);
+};
+
+const buildContext = (args: StructuredLogArgs): LogContext | undefined => {
+  if (args.length === 0) {
+    return undefined;
+  }
+
+  if (args.length === 1 && isLogContext(args[0])) {
+    return args[0];
+  }
+
+  return { args };
+};
+
+const buildLogEntry = (args: StructuredLogArgs): { message: string; context?: LogContext } => {
+  if (args.length === 0) {
+    return { message: 'log' };
+  }
+
+  const [first, ...rest] = args;
+
+  if (typeof first === 'string') {
+    return { message: first, context: buildContext(rest) };
+  }
+
+  return { message: 'log', context: buildContext(args) };
+};
+
+const buildErrorEntry = (args: StructuredLogArgs): { error: Error; context?: LogContext } => {
+  if (args.length === 0) {
+    return { error: new Error('Unknown error') };
+  }
+
+  const [first, ...rest] = args;
+
+  if (first instanceof Error) {
+    return { error: first, context: buildContext(rest) };
+  }
+
+  const message = typeof first === 'string' ? first : 'Unknown error';
+  return { error: new Error(message), context: buildContext(args) };
+};
+
+setStructuredLogger({
+  info: (...args) => {
+    const { message, context } = buildLogEntry(args);
+    logInfo(message, context);
+  },
+  warn: (...args) => {
+    const { message, context } = buildLogEntry(args);
+    logWarning(message, context);
+  },
+  debug: (...args) => {
+    const { message, context } = buildLogEntry(args);
+    logDebug(message, context);
+  },
+  error: (...args) => {
+    const { error, context } = buildErrorEntry(args);
+    logError(error, context);
+  },
+});

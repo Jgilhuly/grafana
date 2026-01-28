@@ -1,6 +1,6 @@
 import { lastValueFrom, of } from 'rxjs';
 
-import { AdHocVariableFilter } from '@grafana/data';
+import { AdHocVariableFilter, getStructuredLogger, setStructuredLogger } from '@grafana/data';
 import { BackendSrvRequest, TemplateSrv } from '@grafana/runtime';
 import config from 'app/core/config';
 
@@ -274,12 +274,14 @@ describe('interpolateQueryExpr', () => {
   } as unknown as TemplateSrv;
   let ds = getMockInfluxDS(getMockDSInstanceSettings(), templateSrvStub);
 
-  // Mock console.warn as we expect tests to use it
+  const originalLogger = getStructuredLogger();
+  const warnMock = jest.fn();
   beforeEach(() => {
-    jest.spyOn(console, 'warn').mockImplementation();
+    warnMock.mockClear();
+    setStructuredLogger({ ...originalLogger, warn: warnMock });
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    setStructuredLogger(originalLogger);
   });
 
   it('should return the value as it is', () => {

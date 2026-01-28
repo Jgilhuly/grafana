@@ -93,13 +93,10 @@ const renderHookWithInit = async (mocks: ReturnType<typeof setupMocks>) => {
 
 describe('useMetricsLabelsValues', () => {
   let mocks: ReturnType<typeof setupMocks>;
-  let consoleSpy: jest.SpyInstance;
 
   beforeEach(() => {
     mocks = setupMocks();
     jest.clearAllMocks();
-    // Spy on console.error to handle React warnings
-    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(async () => {
@@ -107,7 +104,6 @@ describe('useMetricsLabelsValues', () => {
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    consoleSpy.mockRestore();
     jest.restoreAllMocks();
   });
 

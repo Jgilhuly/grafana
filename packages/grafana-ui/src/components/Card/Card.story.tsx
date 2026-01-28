@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { Meta, StoryFn } from '@storybook/react';
 
 import { Button } from '../Button/Button';
@@ -93,7 +94,7 @@ export const Tags: StoryFn<typeof Card> = (args) => {
       <Card.Heading>Test dashboard</Card.Heading>
       <Card.Description>Card with a list of tags</Card.Description>
       <Card.Tags>
-        <TagList tags={['tag1', 'tag2', 'tag3']} onClick={(tag) => console.log(tag)} />
+        <TagList tags={['tag1', 'tag2', 'tag3']} onClick={(tag) => logInfo(tag)} />
       </Card.Tags>
     </Card>
   );

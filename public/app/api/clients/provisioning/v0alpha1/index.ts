@@ -7,6 +7,7 @@ import {
   type ErrorDetails,
   type Status,
 } from '@grafana/api-clients/rtkq/provisioning/v0alpha1';
+import { logError } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { isFetchError } from '@grafana/runtime';
 import { clearFolders } from 'app/features/browse-dashboards/state/slice';
@@ -236,7 +237,7 @@ export const provisioningAPIv0alpha1 = generatedAPI.enhanceEndpoints({
             dispatch(clearFolders(childrenKeys));
           }
         } catch (e) {
-          console.error('Error in getRepositoryJobsWithPath:', e);
+          logError('Error in getRepositoryJobsWithPath:', e);
         }
       },
     },

@@ -1,4 +1,4 @@
-import { DataFrameView, IconName, fuzzySearch } from '@grafana/data';
+import { DataFrameView, fuzzySearch, IconName, logError } from '@grafana/data';
 import { isSharedWithMe } from 'app/features/browse-dashboards/components/utils';
 import { DashboardViewItemWithUIItems } from 'app/features/browse-dashboards/types';
 import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
@@ -34,7 +34,7 @@ async function getCurrentFolderUID(): Promise<string | undefined> {
     }
     return Promise.resolve(dash?.meta?.folderUid);
   } catch (e) {
-    console.error(e);
+    logError(e);
   }
   return undefined;
 }

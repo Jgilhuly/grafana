@@ -7,6 +7,7 @@ import {
   dateTime,
   Field,
   LinkModel,
+  logError,
   mapInternalLinkToExplore,
   rangeUtil,
   ScopedVars,
@@ -123,7 +124,7 @@ export function createSpanLinkFactory({
         spanLinks.push.apply(spanLinks, newSpanLinks);
       } catch (error) {
         // It's fairly easy to crash here for example if data source defines wrong interpolation in the data link
-        console.error(error);
+        logError(error);
         return spanLinks;
       }
     }

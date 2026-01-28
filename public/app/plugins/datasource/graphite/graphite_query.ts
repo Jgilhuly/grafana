@@ -1,6 +1,6 @@
 import { compact, each, findIndex, flatten, get, join, keyBy, last, map, reduce, without } from 'lodash';
 
-import { ScopedVars } from '@grafana/data';
+import { logError, ScopedVars } from '@grafana/data';
 import { TemplateSrv } from '@grafana/runtime';
 
 import { GraphiteDatasource } from './datasource';
@@ -94,7 +94,7 @@ export default class GraphiteQuery {
       }
     } catch (err) {
       if (err instanceof Error) {
-        console.error('error parsing target:', err.message);
+        logError('error parsing target:', err.message);
         this.error = err.message;
       }
       this.target.textEditor = true;

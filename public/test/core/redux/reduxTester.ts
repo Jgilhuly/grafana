@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { AnyAction, configureStore, EnhancedStore, Reducer, Tuple } from '@reduxjs/toolkit';
 import { Middleware, Store, StoreEnhancer, UnknownAction } from 'redux';
 import { thunk, ThunkDispatch, ThunkMiddleware } from 'redux-thunk';
@@ -118,7 +119,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
 
   const thenDispatchedActionsShouldEqual = (...actions: AnyAction[]): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logInfo('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
     }
 
     if (!actions.length) {
@@ -133,7 +134,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
     predicate: (dispatchedActions: AnyAction[]) => boolean
   ): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logInfo('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
     }
 
     expect(predicate(dispatchedActions)).toBe(true);
@@ -142,7 +143,7 @@ export const reduxTester = <State>(args?: ReduxTesterArguments<State>): ReduxTes
 
   const thenNoActionsWhereDispatched = (): ReduxTesterWhen<State> => {
     if (debug) {
-      console.log('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
+      logInfo('Dispatched Actions', JSON.stringify(dispatchedActions, null, 2));
     }
 
     expect(dispatchedActions.length).toBe(0);

@@ -39,6 +39,7 @@ import {
   DataSourceWithQueryModificationSupport,
   AdHocVariableModel,
   TypedVariableModel,
+  logError,
 } from '@grafana/data';
 import {
   DataSourceWithBackend,
@@ -1172,12 +1173,12 @@ export class ElasticDatasource
         try {
           return new SemVer(versionNumber);
         } catch (error) {
-          console.error(error);
+          logError(error);
           return null;
         }
       },
       (error) => {
-        console.error(error);
+        logError(error);
         return null;
       }
     );

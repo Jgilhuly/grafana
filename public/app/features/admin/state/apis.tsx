@@ -1,3 +1,4 @@
+import { logError } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 
 interface AnonServerStat {
@@ -28,7 +29,7 @@ export const getServerStats = async (): Promise<ServerStat | null> => {
   return getBackendSrv()
     .get('api/admin/stats')
     .catch((err) => {
-      console.error(err);
+      logError(err);
       return null;
     });
 };

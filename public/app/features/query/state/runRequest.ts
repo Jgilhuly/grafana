@@ -14,6 +14,7 @@ import {
   DataSourceApi,
   DataTopic,
   dateMath,
+  logError,
   LoadingState,
   PanelData,
   TimeRange,
@@ -163,7 +164,7 @@ export function runRequest(
     }),
     // handle errors
     catchError((err) => {
-      console.error('runRequest.catchError', err);
+      logError('runRequest.catchError', err);
       queryLogger.logError(err);
       return of({
         ...state.panelData,

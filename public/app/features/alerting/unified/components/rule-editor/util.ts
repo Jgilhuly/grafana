@@ -7,6 +7,7 @@ import {
   ThresholdsConfig,
   ThresholdsMode,
   isTimeSeriesFrames,
+  logError,
 } from '@grafana/data';
 import { GraphThresholdsStyleMode } from '@grafana/schema';
 import { config } from 'app/core/config';
@@ -210,7 +211,7 @@ export function getThresholdsForQueries(queries: AlertQuery[], condition: string
           }
         });
       } catch (err) {
-        console.error('Failed to parse thresholds', err);
+        logError('Failed to parse thresholds', err);
         return;
       }
     });

@@ -1,5 +1,7 @@
 import { isString } from 'lodash';
 
+import { logError } from '@grafana/data';
+
 import { ALIGNMENT_PERIODS, SELECTORS } from './constants';
 import { ValueTypes, MetricFindQueryTypes } from './dataquery.gen';
 import CloudMonitoringDatasource from './datasource';
@@ -50,7 +52,7 @@ export default class CloudMonitoringMetricFindQuery {
           return [];
       }
     } catch (error) {
-      console.error(`Could not run CloudMonitoringMetricFindQuery ${query}`, error);
+      logError(`Could not run CloudMonitoringMetricFindQuery ${query}`, error);
       return [];
     }
   }

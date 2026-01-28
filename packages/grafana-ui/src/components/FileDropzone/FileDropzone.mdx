@@ -8,9 +8,10 @@ A dropzone component to use for file uploads.
 ### Usage
 
 ```jsx
+import { logInfo } from '@grafana/data';
 import { FileDropzone } from '@grafana/ui';
 
-<FileDropzone onLoad={(result) => console.log(result)} />;
+<FileDropzone onLoad={(result) => logInfo(result)} />;
 ```
 
 ### Props

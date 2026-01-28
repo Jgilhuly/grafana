@@ -12,6 +12,7 @@ import {
   GrafanaTheme2,
   FieldColorModeId,
   FALLBACK_COLOR,
+  logError,
 } from '@grafana/data';
 import { VizTextDisplayOptions, VizOrientation, Threshold } from '@grafana/schema';
 
@@ -154,7 +155,7 @@ export class Gauge extends PureComponent<Props> {
         $.plot(this.canvasElement, [plotSeries], options);
       }
     } catch (err) {
-      console.error('Gauge rendering error', err, options, value);
+      logError('Gauge rendering error', err, options, value);
     }
   }
 

@@ -68,7 +68,6 @@ export async function importPluginModule({
 
   return SystemJS.import(modulePath).catch((e) => {
     let error = new Error('Could not load plugin', { cause: e });
-    console.error(error);
     pluginsLogger.logError(error, {
       path,
       pluginId,

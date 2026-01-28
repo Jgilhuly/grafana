@@ -1,12 +1,13 @@
+import { logDebug } from '@grafana/data';
 import { throttle } from 'lodash';
 
-type Args = Parameters<typeof console.log>;
+type Args = unknown[];
 
 /**
  * @internal
  * */
 const throttledLog = throttle((...t: Args) => {
-  console.log(...t);
+  logDebug(...t);
 }, 500);
 
 /**
@@ -32,7 +33,7 @@ export const createLogger = (name: string): Logger => {
       if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test' || !loggingEnabled) {
         return;
       }
-      const fn = throttle ? throttledLog : console.log;
+      const fn = throttle ? throttledLog : logDebug;
       fn(`[${name}: ${id}]:`, ...t);
     },
     enable: () => (loggingEnabled = true),

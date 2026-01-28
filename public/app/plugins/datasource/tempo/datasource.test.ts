@@ -13,9 +13,11 @@ import {
   CoreApp,
   DataSourceApi,
   DataQueryRequest,
+  getStructuredLogger,
   getTimeZone,
   PluginMetaInfo,
   DataLink,
+  setStructuredLogger,
   NodeGraphDataFrameFieldNames,
 } from '@grafana/data';
 import {
@@ -53,11 +55,10 @@ import { initTemplateSrv } from './test/test_utils';
 import { TempoJsonData, TempoQuery } from './types';
 
 describe('Tempo data source', () => {
-  // Mock the console error so that running the test suite doesnt throw the error
-  const origError = console.error;
-  const consoleErrorMock = jest.fn();
-  afterEach(() => (console.error = origError));
-  beforeEach(() => (console.error = consoleErrorMock));
+  const originalLogger = getStructuredLogger();
+  const errorMock = jest.fn();
+  afterEach(() => setStructuredLogger(originalLogger));
+  beforeEach(() => setStructuredLogger({ ...originalLogger, error: errorMock }));
 
   describe('runs correctly', () => {
     const handleStreamingQuery = jest.spyOn(TempoDatasource.prototype, 'handleStreamingQuery');

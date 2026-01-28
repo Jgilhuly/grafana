@@ -1,4 +1,4 @@
-import { AppEvents, textUtil } from '@grafana/data';
+import { AppEvents, logError, textUtil } from '@grafana/data';
 import { BackendSrvRequest, getBackendSrv, getTemplateSrv } from '@grafana/runtime';
 import { appEvents } from 'app/core/app_events';
 import { createAbsoluteUrl, RelativeUrl } from 'app/features/alerting/unified/utils/url';
@@ -23,7 +23,7 @@ export const callApi = (api: APIEditorConfig, updateLoadingStateCallback?: IsLoa
     .subscribe({
       error: (error) => {
         appEvents.emit(AppEvents.alertError, ['An error has occurred. Check console output for more details.']);
-        console.error('API call error: ', error);
+        logError('API call error: ', error);
         updateLoadingStateCallback && updateLoadingStateCallback(false);
       },
       complete: () => {

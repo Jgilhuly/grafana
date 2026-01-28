@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { FC } from 'react';
 import { Controller, DeepMap, FieldError, useFormContext } from 'react-hook-form';
 
-import { GrafanaTheme2 } from '@grafana/data';
+import { GrafanaTheme2, logError } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import {
   Checkbox,
@@ -292,7 +292,7 @@ const OptionInput: FC<Props & { id: string }> = ({
       );
 
     default:
-      console.error('Element not supported', option.element);
+      logError('Element not supported', option.element);
       return null;
   }
 };

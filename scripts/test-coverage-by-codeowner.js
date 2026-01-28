@@ -6,6 +6,7 @@ const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs/yargs');
 
 const { getCodeowners } = require('./codeowners-manifest/utils.js');
+const { logError, logInfo, logWarning } = require('./utils/structuredLogger');
 
 const JEST_CONFIG_PATH = 'jest.config.codeowner.js';
 
@@ -66,7 +67,7 @@ if (require.main === module) {
         if (process.env.CI === 'true') {
           throw new Error(msg);
         } else {
-          console.warn(`⚠️ ${msg}`);
+          logWarning(`⚠️ ${msg}`);
         }
       }
 
@@ -76,10 +77,10 @@ if (require.main === module) {
 
       const noOpen = argv['open'] === false;
 
-      console.log(`🧪 Running test coverage for codeowner: ${codeownerName}`);
+      logInfo(`🧪 Running test coverage for codeowner: ${codeownerName}`);
       await runTestCoverageByCodeowner(codeownerName, noOpen);
     } catch (e) {
-      console.error(e.message);
+      logError(e);
       process.exit(1);
     }
   })();

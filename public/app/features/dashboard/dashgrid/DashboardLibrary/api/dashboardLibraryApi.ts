@@ -1,3 +1,4 @@
+import { logError, logWarning } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 import { DashboardJson } from 'app/features/manage-dashboards/types';
 import { PluginDashboard } from 'app/types/plugins';
@@ -80,7 +81,7 @@ export async function fetchCommunityDashboards(
   }
 
   // Fallback for unexpected response format
-  console.warn('Unexpected API response format from Grafana.com:', result);
+  logWarning('Unexpected API response format from Grafana.com:', result);
   return {
     page: params.page,
     pages: 1,
@@ -105,7 +106,7 @@ export async function fetchProvisionedDashboards(datasourceType: string): Promis
     });
     return Array.isArray(dashboards) ? dashboards : [];
   } catch (error) {
-    console.error('Error loading provisioned dashboards', error);
+    logError('Error loading provisioned dashboards', error);
     return [];
   }
 }

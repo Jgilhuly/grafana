@@ -1,6 +1,6 @@
 import { collectorTypes } from '@opentelemetry/exporter-collector';
 
-import { PluginType, DataSourceInstanceSettings, PluginMetaInfo } from '@grafana/data';
+import { DataSourceInstanceSettings, getStructuredLogger, PluginMetaInfo, PluginType, setStructuredLogger } from '@grafana/data';
 
 import {
   transformToOTLP,
@@ -341,11 +341,10 @@ describe('createTableFrameFromTraceQlQueryAsSpans()', () => {
 });
 
 describe('transformFromOTLP()', () => {
-  // Mock the console error so that running the test suite doesnt throw the error
-  const origError = console.error;
-  const consoleErrorMock = jest.fn();
-  afterEach(() => (console.error = origError));
-  beforeEach(() => (console.error = consoleErrorMock));
+  const originalLogger = getStructuredLogger();
+  const errorMock = jest.fn();
+  afterEach(() => setStructuredLogger(originalLogger));
+  beforeEach(() => setStructuredLogger({ ...originalLogger, error: errorMock }));
 
   test('if passed bad data, will surface an error', () => {
     const res = transformFromOTLP(

@@ -3,6 +3,7 @@ import {
   DataFrameJSON,
   DataFrameView,
   getDisplayProcessor,
+  logWarning,
   SelectableValue,
   toDataFrame,
 } from '@grafana/data';
@@ -174,11 +175,11 @@ export class BlugeSearcher implements GrafanaSearcher {
         const frame = toDataFrame(resp.frames[0]);
 
         if (!frame) {
-          console.log('no results', frame);
+          logWarning('No results frame returned', frame);
           return;
         }
         if (frame.fields.length !== view.dataFrame.fields.length) {
-          console.log('invalid shape', frame, view.dataFrame);
+          logWarning('Invalid search frame shape', frame, view.dataFrame);
           return;
         }
 

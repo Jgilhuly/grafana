@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { Meta, StoryFn } from '@storybook/react';
 
 import { FileUpload } from './FileUpload';
@@ -28,7 +29,7 @@ export const Basic: StoryFn<typeof FileUpload> = (args) => {
   return (
     <FileUpload
       size={args.size}
-      onFileUpload={({ currentTarget }) => console.log('file', currentTarget?.files && currentTarget.files[0])}
+      onFileUpload={({ currentTarget }) => logInfo('file', currentTarget?.files && currentTarget.files[0])}
     />
   );
 };

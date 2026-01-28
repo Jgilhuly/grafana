@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { PanelData, TimeRange } from '@grafana/data';
+import { logError, PanelData, TimeRange } from '@grafana/data';
 import { Trans } from '@grafana/i18n';
 import { EditorFieldGroup, EditorRow, EditorRows } from '@grafana/plugin-ui';
 import { config, getTemplateSrv } from '@grafana/runtime';
@@ -193,11 +193,11 @@ const LogsQueryEditor = ({
           setDataIngestedWarning(null);
         }
       } catch (err) {
-        console.error(err);
+        logError(err);
       }
     };
 
-    getBasicLogsUsage(query).catch((err) => console.error(err));
+    getBasicLogsUsage(query).catch((err) => logError(err));
   }, [datasource.azureLogAnalyticsDatasource, query, showBasicLogsToggle, from, to]);
   let portalLinkButton = null;
 

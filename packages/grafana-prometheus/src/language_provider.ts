@@ -7,6 +7,7 @@ import {
   AbstractQuery,
   AdHocVariableFilter,
   getDefaultTimeRange,
+  logError,
   Scope,
   scopeFilterOperatorMap,
   ScopeSpecFilter,
@@ -132,7 +133,7 @@ export class PrometheusLanguageProvider implements PrometheusLanguageProviderInt
       return res.data.data;
     } catch (error) {
       if (!isCancelledError(error)) {
-        console.error(error);
+        logError(error);
       }
     }
 

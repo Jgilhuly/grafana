@@ -16,6 +16,7 @@ import {
   TimeZone,
   TypedVariableModel,
   UrlQueryValue,
+  logWarning,
 } from '@grafana/data';
 import { PromQuery } from '@grafana/prometheus';
 import { RefreshEvent, TimeRangeUpdatedEvent, config } from '@grafana/runtime';
@@ -1087,13 +1088,13 @@ export class DashboardModel implements TimeModel {
 
   /** @deprecated */
   on<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.on is deprecated use events.subscribe');
+    logWarning('DashboardModel.on is deprecated use events.subscribe');
     this.events.on(event, callback);
   }
 
   /** @deprecated */
   off<T>(event: AppEvent<T>, callback: (payload?: T) => void) {
-    console.log('DashboardModel.off is deprecated');
+    logWarning('DashboardModel.off is deprecated');
     this.events.off(event, callback);
   }
 

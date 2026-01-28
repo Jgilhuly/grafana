@@ -7,6 +7,8 @@ import {
   isEmptyObject,
   isObject,
   LoadingState,
+  logError,
+  logWarning,
   TimeRange,
   TypedVariableModel,
   UrlQueryMap,
@@ -20,7 +22,7 @@ import {
   VariableRefresh,
   VariableWithOptions,
 } from '@grafana/data';
-import { config, locationService, logWarning } from '@grafana/runtime';
+import { config, locationService } from '@grafana/runtime';
 import { notifyApp } from 'app/core/actions';
 import { contextSrv } from 'app/core/services/context_srv';
 import { getTimeSrv } from 'app/features/dashboard/services/TimeSrv';
@@ -808,7 +810,7 @@ export const onTimeRangeUpdated =
       await Promise.all(promises);
       dependencies.events.publish(new VariablesTimeRangeProcessDone({ variableIds }));
     } catch (error) {
-      console.error(error);
+      logError(error);
       dispatch(notifyApp(createVariableErrorNotification('Template variable service failed', error)));
     }
   };
@@ -962,7 +964,7 @@ export const initVariablesTransaction =
       dispatch(toKeyedAction(uid, variablesCompleteTransaction({ uid })));
     } catch (err) {
       dispatch(notifyApp(createVariableErrorNotification('Templating init failed', err)));
-      console.error(err);
+      logError(err);
     }
   };
 
@@ -1033,7 +1035,7 @@ export const updateOptions =
       dispatch(toKeyedAction(rootStateKey, variableStateFailed(toVariablePayload(identifier, { error }))));
 
       if (!rethrow) {
-        console.error(error);
+        logError(error);
         dispatch(notifyApp(createVariableErrorNotification('Error updating options:', error, identifier)));
       }
 
@@ -1113,7 +1115,7 @@ export function upgradeLegacyQueries(
       );
     } catch (err) {
       dispatch(notifyApp(createVariableErrorNotification('Failed to upgrade legacy queries', err)));
-      console.error(err);
+      logError(err);
     }
   };
 }

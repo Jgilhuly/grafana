@@ -15,6 +15,7 @@ import {
   FieldType,
   getFieldDisplayName,
   KeyValue,
+  logError,
   standardTransformers,
 } from '@grafana/data';
 import { t } from '@grafana/i18n';
@@ -227,7 +228,7 @@ export function getAnnotationsFromData(
       }
 
       if (!hasTime || !hasText) {
-        console.error('Cannot process annotation fields. No time or text present.');
+        logError('Cannot process annotation fields. No time or text present.');
         return [];
       }
 

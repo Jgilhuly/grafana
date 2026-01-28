@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom-v5-compat';
 import { useAsync } from 'react-use';
 
-import { GrafanaTheme2 } from '@grafana/data';
+import { GrafanaTheme2, logError } from '@grafana/data';
 import { t, Trans } from '@grafana/i18n';
 import { getBackendSrv, getDataSourceSrv, locationService } from '@grafana/runtime';
 import { Box, Grid, Modal, Text, useStyles2 } from '@grafana/ui';
@@ -87,7 +87,7 @@ export const TemplateDashboardModal = () => {
 
       return response.items;
     } catch (error) {
-      console.error('Error loading template dashboards ', error);
+      logError('Error loading template dashboards ', error);
       return [];
     }
   }, [isOpen]);

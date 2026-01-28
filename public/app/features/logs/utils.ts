@@ -29,6 +29,7 @@ import {
   getTimeField,
   Field,
   LogsMetaItem,
+  logError,
   store,
 } from '@grafana/data';
 import { t } from '@grafana/i18n';
@@ -366,10 +367,10 @@ export function getLogLevelInfo(dataFrame: DataFrame, allDataFrames: DataFrame[]
   const valueField = fieldCache.getFirstFieldOfType(FieldType.number);
 
   if (!timeField) {
-    console.error('Time field missing in data frame');
+    logError('Time field missing in data frame');
   }
   if (!valueField) {
-    console.error('Value field missing in data frame');
+    logError('Value field missing in data frame');
   }
 
   const level = valueField ? getFieldDisplayName(valueField, dataFrame, allDataFrames) : 'logs';

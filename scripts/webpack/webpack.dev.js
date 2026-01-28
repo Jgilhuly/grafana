@@ -12,6 +12,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { merge } = require('webpack-merge');
 const WebpackBar = require('webpackbar');
+const { logError, logInfo } = require('../utils/structuredLogger');
 
 const getEnvConfig = require('./env-util.js');
 const common = require('./webpack.common.js');
@@ -36,11 +37,11 @@ function scenesModule() {
   try {
     const status = fs.lstatSync(scenesPath);
     if (status.isSymbolicLink()) {
-      console.log(`scenes is linked to local scenes repo`);
+      logInfo('scenes is linked to local scenes repo');
       return path.resolve(scenesPath + '/src');
     }
   } catch (error) {
-    console.error(`Error checking scenes path: ${error.message}`);
+    logError('Error checking scenes path', error);
   }
   return scenesPath;
 }

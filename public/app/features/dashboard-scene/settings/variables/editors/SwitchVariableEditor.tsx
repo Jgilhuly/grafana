@@ -1,3 +1,4 @@
+import { logWarning } from '@grafana/data';
 import { SceneVariable, SwitchVariable } from '@grafana/scenes';
 import { OptionsPaneItemDescriptor } from 'app/features/dashboard/components/PanelEditor/OptionsPaneItemDescriptor';
 
@@ -42,7 +43,7 @@ export function SwitchVariableEditor({ variable }: SwitchVariableEditorProps) {
 
 export function getSwitchVariableOptions(variable: SceneVariable): OptionsPaneItemDescriptor[] {
   if (!(variable instanceof SwitchVariable)) {
-    console.warn('getSwitchVariableOptions: variable is not a SwitchVariable');
+    logWarning('getSwitchVariableOptions: variable is not a SwitchVariable');
     return [];
   }
 

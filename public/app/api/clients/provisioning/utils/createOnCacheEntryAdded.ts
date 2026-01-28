@@ -1,5 +1,6 @@
 import { Subscription } from 'rxjs';
 
+import { logError } from '@grafana/data';
 import { ScopedResourceClient } from 'app/features/apiserver/client';
 import { ListOptions, GeneratedResourceList as ResourceList } from 'app/features/apiserver/types';
 
@@ -57,7 +58,7 @@ export function createOnCacheEntryAdded<Spec, Status>(resourceName: string) {
         });
       });
     } catch (error) {
-      console.error('Error in onCacheEntryAdded:', error);
+      logError('Error in onCacheEntryAdded:', error);
       return;
     }
 

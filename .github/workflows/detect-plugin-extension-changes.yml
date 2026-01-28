@@ -41,14 +41,15 @@ jobs:
           script: |
             const { execSync } = require('child_process');
             const fs = require('fs');
+            const { logInfo, logWarning } = require('./scripts/utils/structuredLogger');
             
             // Plugin extension keywords from environment
             const keywords = process.env.PLUGIN_EXTENSION_KEYWORDS.split(',');
             const baseSha = '${{ github.event.pull_request.base.sha }}';
             const headSha = '${{ github.event.pull_request.head.sha }}';
             
-            console.log('Checking for plugin extension changes...');
-            console.log('Keywords:', keywords);
+            logInfo('Checking for plugin extension changes...');
+            logInfo('Keywords:', keywords);
             
             // Get changed files in packages/ and public/ directories
             let changedFiles = [];
@@ -66,7 +67,7 @@ jobs:
               });
             }
             
-            console.log('Changed files to check:', changedFiles);
+            logInfo('Changed files to check:', changedFiles);
             
             // Check each file for plugin extension keywords
             const filesWithChanges = new Set();
@@ -83,14 +84,14 @@ jobs:
                 // Check if any keywords are in the diff
                 for (const keyword of keywords) {
                   if (fileDiff.includes(keyword)) {
-                    console.log(`Found ${keyword} in ${file}`);
+                    logInfo(`Found ${keyword} in ${file}`);
                     filesWithChanges.add(file);
                     hasPluginExtensionChanges = true;
                     break; // Found at least one keyword, move to next file
                   }
                 }
               } catch (error) {
-                console.log(`Error checking file ${file}:`, error.message);
+                logWarning(`Error checking file ${file}:`, error.message);
               }
             }
             
@@ -104,10 +105,10 @@ jobs:
             core.setOutput('formatted_changed_files', formattedFiles);
 
             if (hasPluginExtensionChanges) {
-              console.log('The following files have changes that may affect plugin extensions:');
-              console.log(filesArray);
+              logInfo('The following files have changes that may affect plugin extensions:');
+              logInfo(filesArray);
             } else {
-              console.log('No changes detected in core Grafana extensions or extension points.');
+              logInfo('No changes detected in core Grafana extensions or extension points.');
             }
 
       - name: Send Slack Message via Payload

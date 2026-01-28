@@ -135,6 +135,7 @@ func main() {
 
 ```typescript
 // Import the appropriate Grafana Foundation SDK packages
+import { logInfo } from '@grafana/data';
 import * as common from '@grafana/grafana-foundation-sdk/common';
 import * as dashboard from '@grafana/grafana-foundation-sdk/dashboard';
 import * as stat from '@grafana/grafana-foundation-sdk/stat';
@@ -167,7 +168,7 @@ const builder = new dashboard.DashboardBuilder('My Dashboard')
 const dashboard = builder.build();
 
 // Output the generated dashboard as JSON
-console.log(JSON.stringify(dashboard, null, 2));
+logInfo(JSON.stringify(dashboard, null, 2));
 ```
 
 {{< /code >}}

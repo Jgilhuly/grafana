@@ -4,6 +4,8 @@ import { readdir, stat, readFile } from 'fs/promises';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import { logInfo } from '../utils/structuredLogger.js';
+
 const LOCALES_DIR = path.resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'public', 'locales');
 
 const locales = await readdir(LOCALES_DIR);
@@ -84,5 +86,5 @@ function eachMessage(value, callback) {
 function logStat(name, value) {
   // Note that this output format must match the parsing in ci-frontend-metrics.sh
   // which expects the two values to be separated by a space
-  console.log(`${name} ${value}`);
+  logInfo(`${name} ${value}`);
 }

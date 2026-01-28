@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import React from 'react';
 import { Unsubscribable } from 'rxjs';
 
+import { logError } from '@grafana/data';
 import {
   VizPanel,
   SceneObjectBase,
@@ -150,7 +151,7 @@ export class DashboardGridItem
       });
 
     if (!(variable instanceof MultiValueVariable)) {
-      console.error('DashboardGridItem: Variable is not a MultiValueVariable');
+      logError('DashboardGridItem: Variable is not a MultiValueVariable');
       return;
     }
 

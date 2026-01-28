@@ -10,6 +10,8 @@ import { createRoot } from 'react-dom/client';
 
 import {
   locationUtil,
+  logError,
+  logWarning,
   monacoLanguageRegistry,
   setLocale,
   setTimeZoneResolver,
@@ -144,7 +146,7 @@ export class GrafanaApp {
         try {
           await initOpenFeature();
         } catch (err) {
-          console.error('Failed to initialize OpenFeature provider', err);
+          logError('Failed to initialize OpenFeature provider', err);
         }
       }
 
@@ -286,7 +288,7 @@ export class GrafanaApp {
       try {
         cleanupOldExpandedFolders();
       } catch (err) {
-        console.warn('Failed to clean up old expanded folders', err);
+        logWarning('Failed to clean up old expanded folders', err);
       }
 
       this.context = {
@@ -320,7 +322,7 @@ export class GrafanaApp {
 
       await postInitTasks();
     } catch (error) {
-      console.error('Failed to start Grafana', error);
+      logError('Failed to start Grafana', error);
       window.__grafana_load_failed();
     } finally {
       stopMeasure('frontend_app_init');

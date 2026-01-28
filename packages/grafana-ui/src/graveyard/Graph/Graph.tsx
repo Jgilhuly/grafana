@@ -5,7 +5,7 @@ import { PureComponent, type JSX } from 'react';
 import * as React from 'react';
 
 // Types
-import { TimeRange, GraphSeriesXY, TimeZone, createDimension } from '@grafana/data';
+import { TimeRange, GraphSeriesXY, TimeZone, createDimension, logError } from '@grafana/data';
 import { TooltipDisplayMode } from '@grafana/schema';
 
 import { VizTooltipProps, VizTooltipContentProps, ActiveDimensions, VizTooltip } from '../../components/VizTooltip';
@@ -370,7 +370,7 @@ export class Graph extends PureComponent<GraphProps, GraphState> {
         flotOptions
       );
     } catch (err) {
-      console.error('Graph rendering error', err, flotOptions, series);
+      logError('Graph rendering error', err, flotOptions, series);
       throw new Error('Error rendering panel');
     }
   }

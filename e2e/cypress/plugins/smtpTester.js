@@ -2,13 +2,14 @@ const fs = require('fs');
 const { Jimp, diff } = require('jimp');
 const pdf = require('pdf-parse');
 const ms = require('smtp-tester');
+const { logInfo } = require('../../../scripts/utils/structuredLogger');
 
 const PORT = 7777;
 
 const initialize = (on, config) => {
   // starts the SMTP server at localhost:7777
   const mailServer = ms.init(PORT);
-  console.log('mail server at port %d', PORT);
+  logInfo('mail server at port %d', PORT);
 
   let lastEmail = {};
 
@@ -20,10 +21,10 @@ const initialize = (on, config) => {
   on('task', {
     resetEmails(recipient) {
       if (recipient) {
-        console.log('reset all emails for recipient %s', recipient);
+        logInfo('reset all emails for recipient %s', recipient);
         delete lastEmail[recipient];
       } else {
-        console.log('reset all emails');
+        logInfo('reset all emails');
         lastEmail = {};
       }
     },
@@ -92,14 +93,14 @@ const initialize = (on, config) => {
       removePDFGeneratedOnDate(expectedDoc);
 
       if (inputDoc.numpages !== expectedDoc.numpages) {
-        console.log('PDFs do not contain the same number of pages');
+        logInfo('PDFs do not contain the same number of pages');
         return false;
       }
 
       if (inputDoc.text !== expectedDoc.text) {
-        console.log('PDFs do not contain the same text');
-        console.log('PDF expected text: ', expectedDoc.text);
-        console.log('PDF input text: ', inputDoc.text);
+        logInfo('PDFs do not contain the same text');
+        logInfo('PDF expected text: ', expectedDoc.text);
+        logInfo('PDF input text: ', inputDoc.text);
         return false;
       }
 

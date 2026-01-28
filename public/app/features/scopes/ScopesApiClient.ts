@@ -1,5 +1,5 @@
 import { getAPIBaseURL } from '@grafana/api-clients';
-import { Scope, ScopeDashboardBinding, ScopeNode } from '@grafana/data';
+import { logError, Scope, ScopeDashboardBinding, ScopeNode } from '@grafana/data';
 import { getBackendSrv, config } from '@grafana/runtime';
 
 import { ScopeNavigation } from './dashboards/types';
@@ -12,7 +12,7 @@ export class ScopesApiClient {
       return await getBackendSrv().get<Scope>(apiUrl + `/scopes/${name}`);
     } catch (err) {
       // TODO: maybe some better error handling
-      console.error(err);
+      logError(err);
       return undefined;
     }
   }

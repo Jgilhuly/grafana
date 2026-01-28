@@ -1,7 +1,7 @@
 import pluralize from 'pluralize';
 import * as React from 'react';
 
-import { QueryEditorProps, SelectableValue, rangeUtil, DataQueryRequest, Field } from '@grafana/data';
+import { DataQueryRequest, Field, logWarning, QueryEditorProps, rangeUtil, SelectableValue } from '@grafana/data';
 import { config, getDataSourceSrv } from '@grafana/runtime';
 import {
   InlineField,
@@ -159,7 +159,7 @@ export class UnthemedQueryEditor extends React.PureComponent<Props, State> {
         try {
           buffer = rangeUtil.intervalToSeconds(txt) * 1000;
         } catch (err) {
-          console.warn('ERROR', err);
+          logWarning('ERROR', err);
         }
       }
       onChange({

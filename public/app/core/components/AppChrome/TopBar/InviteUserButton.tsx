@@ -1,3 +1,4 @@
+import { logError } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { ToolbarButton } from '@grafana/ui';
 import { useMediaQueryMinWidth } from 'app/core/hooks/useMediaQueryMinWidth';
@@ -13,7 +14,7 @@ export function InviteUserButton() {
     try {
       performInviteUserClick('top_bar_right', 'invite-user-top-bar');
     } catch (error) {
-      console.error('Failed to handle invite user click:', error);
+      logError('Failed to handle invite user click:', error);
     }
   };
 

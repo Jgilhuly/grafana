@@ -1,5 +1,7 @@
 import { pick } from 'lodash';
 
+import { logError } from '@grafana/data';
+
 import store from 'app/core/store';
 import { removePanel } from 'app/features/dashboard/utils/panel';
 import { cleanUpPanelState } from 'app/features/panel/state/actions';
@@ -171,7 +173,7 @@ export function updatePanelEditorUIState(uiState: Partial<PanelEditorUIState>): 
     try {
       store.setObject(PANEL_EDITOR_UI_STATE_STORAGE_KEY, nextState);
     } catch (error) {
-      console.error(error);
+      logError(error);
     }
   };
 }

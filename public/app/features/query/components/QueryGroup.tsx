@@ -9,6 +9,7 @@ import {
   DataSourceInstanceSettings,
   getDataSourceRef,
   getDefaultTimeRange,
+  logError,
   LoadingState,
   PanelData,
 } from '@grafana/data';
@@ -122,7 +123,7 @@ export class QueryGroup extends PureComponent<Props, State> {
         defaultDataSource,
       });
     } catch (error) {
-      console.error('failed to load data source', error);
+      logError('failed to load data source', error);
     }
   }
 

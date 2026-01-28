@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAsyncFn } from 'react-use';
 
-import { OrgRole } from '@grafana/data';
+import { logError, OrgRole } from '@grafana/data';
 import { contextSrv } from 'app/core/services/context_srv';
 import { Role, AccessControlAction } from 'app/types/accessControl';
 
@@ -67,7 +67,7 @@ export const UserRolePicker = ({
           return await fetchUserRoles(userId, orgId);
         }
       } catch (e) {
-        console.error('Error fetching user roles');
+        logError('Error fetching user roles', e);
       }
       return [];
     },

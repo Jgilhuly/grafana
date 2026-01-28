@@ -17,6 +17,8 @@ import {
   hasLogsContextSupport,
   hasLogsContextUiSupport,
   Labels,
+  logError,
+  logWarning,
   LogRowContextOptions,
   LogRowModel,
   LogsSortOrder,
@@ -477,7 +479,7 @@ export const LogsPanel = ({
       try {
         newSeries = await requestMoreLogs(dataSourcesMap, panelData, scrollRange, timeZone, onNewLogsReceivedCallback);
       } catch (e) {
-        console.error(e);
+        logError(e);
       } finally {
         setInfiniteScrolling(false);
         loadingRef.current = false;
@@ -798,7 +800,7 @@ function getLogsPanelState(): LogsPermalinkUrlState | undefined {
     try {
       return JSON.parse(panelStateEncoded[0]);
     } catch (e) {
-      console.error('error parsing logsPanelState', e);
+      logError('error parsing logsPanelState', e);
     }
   }
 
@@ -858,7 +860,7 @@ export async function requestMoreLogs(
   for (const uid in targetGroups) {
     const dataSource = dataSourcesMap.get(panelData.request.targets[0].refId);
     if (!dataSource) {
-      console.warn(`Could not resolve data source for target ${panelData.request.targets[0].refId}`);
+      logWarning(`Could not resolve data source for target ${panelData.request.targets[0].refId}`);
       continue;
     }
     dataRequests.push(

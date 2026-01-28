@@ -9,6 +9,7 @@ import {
   LiveChannelConnectionState,
   LiveChannelEvent,
   LiveChannelScope,
+  logWarning,
 } from '@grafana/data';
 import { getGrafanaLiveSrv, locationService } from '@grafana/runtime';
 import { appEvents } from 'app/core/app_events';
@@ -127,7 +128,7 @@ class DashboardWatcher {
 
             const dash = getDashboardSrv().getCurrent();
             if (dash?.uid !== event.message.uid) {
-              console.log('dashboard event for different dashboard?', event, dash);
+              logWarning('dashboard event for different dashboard?', event, dash);
               return;
             }
 

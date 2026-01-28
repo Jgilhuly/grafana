@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { AppEvents } from '@grafana/data';
+import { AppEvents, logWarning } from '@grafana/data';
 import { t, Trans } from '@grafana/i18n';
 import { reportInteraction } from '@grafana/runtime';
 import { Button, Stack } from '@grafana/ui';
@@ -125,7 +125,7 @@ export function RecentlyDeletedActions() {
       const deletedDashboards = await deletedDashboardsCache.getAsResourceList();
       const dashboard = deletedDashboards?.items.find((d) => d.metadata.name === uid);
       if (!dashboard) {
-        console.warn(`Dashboard ${uid} not found in deleted items`);
+        logWarning(`Dashboard ${uid} not found in deleted items`);
         return { uid, error: 'not_found' };
       }
       // Clone the dashboard to be able to edit the immutable data from the store

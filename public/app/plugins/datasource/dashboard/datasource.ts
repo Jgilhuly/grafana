@@ -8,6 +8,7 @@ import {
   TestDataSourceResponse,
   ScopedVar,
   DataTopic,
+  logWarning,
   PanelData,
   DataFrame,
   LoadingState,
@@ -270,7 +271,7 @@ export class DashboardDatasource extends DataSourceApi<DashboardQuery> {
         options: { value: filter.value },
       });
     } catch (error) {
-      console.warn('Failed to create value matcher for filter:', filter, error);
+      logWarning('Failed to create value matcher for filter:', filter, error);
       return null;
     }
   }

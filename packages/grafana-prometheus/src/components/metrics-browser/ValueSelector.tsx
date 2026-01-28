@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FixedSizeList } from 'react-window';
 
+import { logError } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t, Trans } from '@grafana/i18n';
 import { BrowserLabel as PromLabel, Input, Label, useStyles2, Spinner } from '@grafana/ui';
@@ -59,7 +60,7 @@ export function ValueSelector() {
         <div className={styles.valueListArea}>
           {Object.entries(filteredLabelValues).map(([lk, lv]) => {
             if (!lk || !lv) {
-              console.error('label values are empty:', { lk, lv });
+              logError('label values are empty:', { lk, lv });
               return null;
             }
             return (

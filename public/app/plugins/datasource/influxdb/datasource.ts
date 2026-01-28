@@ -16,6 +16,7 @@ import {
   DateTime,
   escapeRegex,
   FieldType,
+  logWarning,
   MetricFindValue,
   QueryResultMeta,
   QueryVariableModel,
@@ -388,7 +389,7 @@ export default class InfluxDatasource extends DataSourceWithBackend<InfluxQuery,
         // then put inside parenthesis.
         return typeof value === 'string' ? escapeRegex(value) : `(${value.map((v) => escapeRegex(v)).join('|')})`;
       } catch (e) {
-        console.warn(`Supplied match is not valid regex: ${match}`);
+        logWarning(`Supplied match is not valid regex: ${match}`);
       }
     }
 

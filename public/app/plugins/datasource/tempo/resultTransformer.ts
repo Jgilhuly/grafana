@@ -16,6 +16,7 @@ import {
   FieldDTO,
   FieldType,
   getDisplayProcessor,
+  logError,
   MutableDataFrame,
   toDataFrame,
   TraceKeyValuePair,
@@ -189,7 +190,7 @@ export function transformFromOTLP(
       }
     }
   } catch (error) {
-    console.error(error);
+    logError(error);
     return { error: { message: 'JSON is not valid OpenTelemetry format: ' + error }, data: [] };
   }
 

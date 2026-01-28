@@ -15,6 +15,7 @@ import {
   ReducerID,
   Threshold,
   ThresholdsMode,
+  logInfo,
 } from '@grafana/data';
 import {
   LegendDisplayMode,
@@ -283,7 +284,7 @@ export function graphToTimeseriesOptions(angular: any): {
             });
             break;
           default:
-            console.log('Ignore override migration:', seriesOverride.alias, p, v);
+            logInfo('Ignore override migration:', seriesOverride.alias, p, v);
         }
       }
       if (dashOverride) {

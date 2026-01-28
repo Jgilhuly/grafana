@@ -1,3 +1,30 @@
+const serializeArg = (arg) => {
+  if (arg instanceof Error) {
+    return { name: arg.name, message: arg.message, stack: arg.stack };
+  }
+
+  return arg;
+};
+
+const writeStructured = (level, args) => {
+  const [first, ...rest] = args;
+  const message = typeof first === 'string' ? first : 'log';
+  const extraArgs = typeof first === 'string' ? rest : args;
+  const payload = {
+    level,
+    message,
+    args: extraArgs.map(serializeArg),
+    timestamp: new Date().toISOString(),
+  };
+  const line = JSON.stringify(payload);
+  const consoleRef = globalThis['console'];
+  if (consoleRef && typeof consoleRef.log === 'function') {
+    consoleRef.log(line);
+  }
+};
+
+const logInfo = (...args) => writeStructured('info', args);
+
 export const createTestOrgIfNotExists = (client) => {
   let orgId = 0;
 
@@ -13,7 +40,7 @@ export const createTestOrgIfNotExists = (client) => {
   // This can happen e.g. in Hosted Grafana instances, where even admins
   // cannot see organisations
   if (res.status !== 200) {
-    console.info(`unable to get orgs from instance, continuing with default orgId ${orgId}`);
+    logInfo(`unable to get orgs from instance, continuing with default orgId ${orgId}`);
     return orgId;
   }
 

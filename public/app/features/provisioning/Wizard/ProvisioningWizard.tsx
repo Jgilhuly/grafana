@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
-import { AppEvents, GrafanaTheme2 } from '@grafana/data';
+import { AppEvents, GrafanaTheme2, logError } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { getAppEvents, isFetchError, reportInteraction } from '@grafana/runtime';
 import { Box, Button, ConfirmModal, Stack, Text, useStyles2 } from '@grafana/ui';
@@ -334,7 +334,7 @@ export const ProvisioningWizard = memo(function ProvisioningWizard({
           setStepStatusInfo({ status: 'success' });
           handleNext();
         } else {
-          console.error('Saved repository without a name:', rsp);
+          logError('Saved repository without a name:', rsp);
         }
       } catch (error) {
         if (isFetchError(error)) {

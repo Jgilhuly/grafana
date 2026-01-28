@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash';
 
+import { logInfo, logWarning } from '@grafana/data';
+
 import { notFoundItem } from 'app/features/canvas/elements/notFound';
 import { DimensionContext } from 'app/features/dimensions/context';
 import { HorizontalConstraint, Placement, VerticalConstraint } from 'app/plugins/panel/canvas/panelcfg.gen';
@@ -129,7 +131,7 @@ export class FrameState extends ElementState {
         break;
       case LayerActionID.Duplicate:
         if (element.item.id === 'frame') {
-          console.log('Can not duplicate frames (yet)', action, element);
+          logWarning('Can not duplicate frames (yet)', action, element);
           return;
         }
         const opts = cloneDeep(element.options);
@@ -239,7 +241,7 @@ export class FrameState extends ElementState {
         break;
 
       default:
-        console.log('DO action', action, element);
+        logInfo('DO action', action, element);
         return;
     }
   };

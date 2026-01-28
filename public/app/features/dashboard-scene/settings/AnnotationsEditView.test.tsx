@@ -8,8 +8,10 @@ import {
   DataSourceInstanceSettings,
   DataSourcePluginMeta,
   getDataSourceUID,
+  getStructuredLogger,
   LoadingState,
   PanelData,
+  setStructuredLogger,
 } from '@grafana/data';
 import { SceneTimeRange, dataLayers } from '@grafana/scenes';
 import { DataSourceRef } from '@grafana/schema';
@@ -97,11 +99,19 @@ jest.mock('@grafana/runtime', () => ({
 describe('AnnotationsEditView', () => {
   describe('Dashboard annotations state', () => {
     let annotationsView: AnnotationsEditView;
+    let errorSpy: jest.Mock;
+    let previousLogger: ReturnType<typeof getStructuredLogger>;
 
     beforeEach(async () => {
       const result = await buildTestScene();
       annotationsView = result.annotationsView;
-      jest.spyOn(console, 'error').mockImplementation();
+      previousLogger = getStructuredLogger();
+      errorSpy = jest.fn();
+      setStructuredLogger({ ...previousLogger, error: errorSpy });
+    });
+
+    afterEach(() => {
+      setStructuredLogger(previousLogger);
     });
 
     it('should return the correct urlKey', () => {
@@ -111,7 +121,7 @@ describe('AnnotationsEditView', () => {
     it('should return undefined when datasource does not support annotations', () => {
       const ds = annotationsView.getDataSourceRefForAnnotation();
       expect(ds).toBe(undefined);
-      expect(console.error).toHaveBeenCalledWith('Default datasource does not support annotations');
+      expect(errorSpy).toHaveBeenCalledWith('Default datasource does not support annotations');
     });
 
     it('should add a new annotation and group it with the other annotations', () => {

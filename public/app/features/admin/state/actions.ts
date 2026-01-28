@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 
-import { dateTimeFormatTimeAgo } from '@grafana/data';
+import { dateTimeFormatTimeAgo, logError } from '@grafana/data';
 import { featureEnabled, getBackendSrv, isFetchError, locationService } from '@grafana/runtime';
 import { FetchDataArgs } from '@grafana/ui';
 import config from 'app/core/config';
@@ -50,7 +50,7 @@ export function loadAdminUserPage(userUid: string): ThunkResult<void> {
       }
       dispatch(userAdminPageLoadedAction(true));
     } catch (error) {
-      console.error(error);
+      logError(error);
 
       if (isFetchError(error)) {
         const userError = {
@@ -300,7 +300,7 @@ export function fetchUsers(): ThunkResult<void> {
       dispatch(usersFetched(result));
     } catch (error) {
       usersFetchEnd();
-      console.error(error);
+      logError(error);
     }
   };
 }
@@ -366,7 +366,7 @@ export function fetchUsersAnonymousDevices(): ThunkResult<void> {
       const result = await getBackendSrv().get(url);
       dispatch(usersAnonymousDevicesFetched(result));
     } catch (error) {
-      console.error(error);
+      logError(error);
     }
   };
 }
@@ -409,7 +409,7 @@ export function changeAnonPage(page: number): ThunkResult<void> {
 //       dispatch(usersAnonymousDevicesFetched({ devices: result }));
 //     } catch (error) {
 //       usersFetchEnd();
-//       console.error(error);
+//       logError(error);
 //     }
 //   };
 // }

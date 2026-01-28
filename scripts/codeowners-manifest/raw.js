@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const { access } = require('node:fs/promises');
 
 const { CODEOWNERS_FILE_PATH, CODEOWNERS_MANIFEST_DIR, RAW_AUDIT_JSONL_PATH } = require('./constants.js');
+const { logError, logInfo } = require('../utils/structuredLogger');
 
 /**
  * Generate raw CODEOWNERS audit data using github-codeowners CLI
@@ -70,12 +71,12 @@ if (require.main === module) {
         fs.mkdirSync(CODEOWNERS_MANIFEST_DIR, { recursive: true });
       }
 
-      console.log(`🍣 Getting raw CODEOWNERS data for manifest ...`);
+      logInfo('🍣 Getting raw CODEOWNERS data for manifest ...');
       await generateCodeownersRawAudit(CODEOWNERS_FILE_PATH, RAW_AUDIT_JSONL_PATH);
-      console.log('✅ Raw audit generated:');
-      console.log(`   • ${RAW_AUDIT_JSONL_PATH}`);
+      logInfo('✅ Raw audit generated:');
+      logInfo(`   • ${RAW_AUDIT_JSONL_PATH}`);
     } catch (e) {
-      console.error('❌ Error generating raw audit:', e.message);
+      logError('❌ Error generating raw audit:', e);
       process.exit(1);
     }
   })();

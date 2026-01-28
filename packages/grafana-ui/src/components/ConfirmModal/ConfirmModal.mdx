@@ -10,15 +10,17 @@ Used to request user for action confirmation, e.g. deleting items. Triggers prov
 # Usage
 
 ```jsx
+import { logInfo } from '@grafana/data';
+
 <ConfirmModal
   isOpen={false}
   title="Delete user"
   body="Are you sure you want to delete this user?"
   confirmText="Confirm"
   icon="exclamation-triangle"
-  onConfirm={() => console.log('Confirm action')}
-  onDismiss={() => console.log('Dismiss action')}
-/>
+  onConfirm={() => logInfo('Confirm action')}
+  onDismiss={() => logInfo('Dismiss action')}
+/>;
 ```
 
 <ArgTypes of={ConfirmModal} />

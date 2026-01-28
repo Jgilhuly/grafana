@@ -1,4 +1,4 @@
-import { DataQuery, locationUtil, setWeekStart, DashboardLoadedEvent } from '@grafana/data';
+import { DataQuery, locationUtil, setWeekStart, DashboardLoadedEvent, logError, logInfo } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, isFetchError, locationService } from '@grafana/runtime';
 import { notifyApp } from 'app/core/actions';
@@ -110,7 +110,7 @@ async function fetchDashboard(
               ...locationService.getLocation(),
               pathname: dashboardUrl,
             });
-            console.log('not correct url correcting', dashboardUrl, currentPath);
+            logInfo('not correct url correcting', dashboardUrl, currentPath);
           }
         }
         return dashDTO;
@@ -139,7 +139,7 @@ async function fetchDashboard(
         error: err,
       })
     );
-    console.error(err);
+    logError(err);
     return null;
   }
 }
@@ -207,7 +207,7 @@ export function initDashboard(args: InitDashboardArgs): ThunkResult<void> {
           error: err,
         })
       );
-      console.error(err);
+      logError(err);
       return;
     }
 
@@ -265,7 +265,7 @@ export function initDashboard(args: InitDashboardArgs): ThunkResult<void> {
       if (err instanceof Error) {
         dispatch(notifyApp(createErrorNotification('Dashboard init failed', err)));
       }
-      console.error(err);
+      logError(err);
     }
 
     // send open dashboard event
