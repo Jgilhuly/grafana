@@ -29,6 +29,7 @@ import { PreferencesService } from 'app/core/services/PreferencesService';
 import { changeTheme } from 'app/core/services/theme';
 
 import { getSelectableThemes } from '../ThemeSelector/getSelectableThemes';
+import { ThemeCustomizationSettings } from './ThemeCustomizationSettings';
 
 export interface Props {
   resourceUri: string;
@@ -113,6 +114,7 @@ export class SharedPreferences extends PureComponent<Props, State> {
       regionalFormat: '',
       queryHistory: { homeTab: '' },
       navbar: { bookmarkUrls: [] },
+      themeCustomization: undefined,
     };
 
     const themes = getSelectableThemes();
@@ -147,6 +149,7 @@ export class SharedPreferences extends PureComponent<Props, State> {
       regionalFormat: prefs.regionalFormat,
       queryHistory: prefs.queryHistory,
       navbar: prefs.navbar,
+      themeCustomization: prefs.themeCustomization,
     });
   }
 
@@ -155,8 +158,17 @@ export class SharedPreferences extends PureComponent<Props, State> {
     const confirmationResult = this.props.onConfirm ? await this.props.onConfirm() : true;
 
     if (confirmationResult) {
-      const { homeDashboardUID, theme, timezone, weekStart, language, regionalFormat, queryHistory, navbar } =
-        this.state;
+      const {
+        homeDashboardUID,
+        theme,
+        timezone,
+        weekStart,
+        language,
+        regionalFormat,
+        queryHistory,
+        navbar,
+        themeCustomization,
+      } = this.state;
       reportInteraction('grafana_preferences_save_button_clicked', {
         preferenceType: this.props.preferenceType,
         theme,
@@ -173,6 +185,7 @@ export class SharedPreferences extends PureComponent<Props, State> {
           regionalFormat,
           queryHistory,
           navbar,
+          themeCustomization,
         })
         .finally(() => {
           this.setState({ isSubmitting: false });
@@ -226,12 +239,26 @@ export class SharedPreferences extends PureComponent<Props, State> {
     });
   };
 
+  onThemeCustomizationChanged = (themeCustomization: UserPreferencesDTO['themeCustomization']) => {
+    this.setState({ themeCustomization });
+  };
+
   render() {
-    const { theme, timezone, weekStart, homeDashboardUID, language, isLoading, isSubmitting, regionalFormat } =
-      this.state;
+    const {
+      theme,
+      timezone,
+      weekStart,
+      homeDashboardUID,
+      language,
+      isLoading,
+      isSubmitting,
+      regionalFormat,
+      themeCustomization,
+    } = this.state;
     const { disabled } = this.props;
     const styles = getStyles();
     const currentThemeOption = this.themeOptions.find((x) => x.value === theme) ?? this.themeOptions[0];
+    const isDarkTheme = currentThemeOption.value && currentThemeOption.value.includes('dark');
 
     return (
       <form onSubmit={this.onSubmitForm} className={styles.form}>
@@ -262,6 +289,14 @@ export class SharedPreferences extends PureComponent<Props, State> {
               id="shared-preferences-theme-select"
             />
           </Field>
+
+          {isDarkTheme && (
+            <ThemeCustomizationSettings
+              customization={themeCustomization}
+              onChange={this.onThemeCustomizationChanged}
+              disabled={disabled || isLoading}
+            />
+          )}
 
           <Field
             loading={isLoading}
