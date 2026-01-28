@@ -11,9 +11,7 @@ A button-styled input that triggers file upload popup. Button text and accepted 
 import { logInfo } from '@grafana/data';
 import { FileUpload } from '@grafana/ui';
 
-<FileUpload
-  onFileUpload={({ currentTarget }) => logInfo('file', currentTarget?.files && currentTarget.files[0])}
-/>;
+<FileUpload onFileUpload={({ currentTarget }) => logInfo('file', currentTarget?.files && currentTarget.files[0])} />;
 ```
 
 ### Props

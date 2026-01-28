@@ -14,13 +14,9 @@ Commonly it is passed in the `addonAfter` prop on `<Input />`
 ```jsx
 import { logInfo } from '@grafana/data';
 
-<ClipboardButton
-  variant="secondary"
-  getText={() => 'Text to be copied'}
-  onClipboardCopy={() => logInfo('text copied')}
->
+<ClipboardButton variant="secondary" getText={() => 'Text to be copied'} onClipboardCopy={() => logInfo('text copied')}>
   Copy to clipboard
-</ClipboardButton>
+</ClipboardButton>;
 ```
 
 ```jsx

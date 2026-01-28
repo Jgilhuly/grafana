@@ -146,6 +146,5 @@ describe('Carousel', () => {
     await waitFor(() => {
       expect(screen.getByTestId('alert-warning')).toBeInTheDocument();
     });
-
   });
 });

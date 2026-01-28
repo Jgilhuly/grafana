@@ -120,12 +120,12 @@ const dashboard = new DashboardBuilder('My Dashboard')
 
 // Convert to Kubernetes-style format
 const dashboardWrapper = {
-  apiVersion: "dashboard.grafana.app/v1beta1",
-  kind: "Dashboard",
+  apiVersion: 'dashboard.grafana.app/v1beta1',
+  kind: 'Dashboard',
   metadata: {
-    name: dashboard.uid!
+    name: dashboard.uid!,
   },
-  spec: dashboard
+  spec: dashboard,
 };
 
 // Save the formatted JSON to a file
