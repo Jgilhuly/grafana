@@ -11,7 +11,10 @@ import {
   Field,
   FieldType,
   GrafanaTheme2,
+  getStructuredLogger,
   LinkModel,
+  setStructuredLogger,
+  type StructuredLogger,
   ValueLinkConfig,
 } from '@grafana/data';
 import { BarGaugeDisplayMode, TableCellBackgroundDisplayMode, TableCellHeight } from '@grafana/schema';
@@ -1499,6 +1502,27 @@ describe('TableNG utils', () => {
   });
 
   describe('parseStyleJson', () => {
+    let originalLogger: StructuredLogger;
+    let loggerSpy: StructuredLogger;
+
+    beforeAll(() => {
+      originalLogger = getStructuredLogger();
+    });
+
+    beforeEach(() => {
+      loggerSpy = {
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        debug: jest.fn(),
+      };
+      setStructuredLogger(loggerSpy);
+    });
+
+    afterEach(() => {
+      setStructuredLogger(originalLogger);
+    });
+
     it('parses the contents of the styleField for this row and returns a style object', () => {
       expect(parseStyleJson('{"color":"red"}')).toEqual({ color: 'red' });
     });
@@ -1524,18 +1548,16 @@ describe('TableNG utils', () => {
       expect(parseStyleJson(value)).toBeUndefined();
     });
 
-    it('returns void and does not throw if this is invalid JSON (but it does console.error)', () => {
-      jest.spyOn(console, 'error').mockImplementation();
+    it('returns void and does not throw if this is invalid JSON', () => {
       expect(parseStyleJson('{"mal": "formed}')).toBeUndefined();
-      expect(console.error).toHaveBeenCalled();
+      expect(loggerSpy.error).toHaveBeenCalled();
     });
 
-    it('only calls console.error once for a given malformed style', () => {
-      jest.spyOn(console, 'error').mockImplementation();
+    it('only calls the logger once for a given malformed style', () => {
       for (let i = 0; i < 100; i++) {
         parseStyleJson('{"mal": "formed-in-a-new-way}');
       }
-      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(loggerSpy.error).toHaveBeenCalledTimes(1);
     });
 
     it('returns an object with invalid style properties, because we do not validate the style properties', () => {

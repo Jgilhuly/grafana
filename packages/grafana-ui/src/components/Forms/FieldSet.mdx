@@ -9,9 +9,10 @@ Accepts optional label, which, if provided, is used as a text for the set's lege
 ### Usage
 
 ```jsx
+import { logInfo } from '@grafana/data';
 import { FieldSet } from '@grafana/ui';
 
-<Form onSubmit={() => console.log('Submit')}>
+<Form onSubmit={() => logInfo('Submit')}>
   {() => (
     <>
       <FieldSet label="Details">

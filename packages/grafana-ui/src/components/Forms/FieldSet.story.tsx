@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { Meta, StoryFn } from '@storybook/react';
 import { useId } from 'react';
 
@@ -34,7 +35,7 @@ export const Basic: StoryFn<typeof FieldSet> = (args: Props) => {
   const colorId = useId();
   const fontSizeId = useId();
   return (
-    <Form onSubmit={() => console.log('Submit')}>
+    <Form onSubmit={() => logInfo('Submit')}>
       {() => (
         <>
           <FieldSet {...args}>

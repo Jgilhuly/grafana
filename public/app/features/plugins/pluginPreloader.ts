@@ -4,6 +4,7 @@ import type {
   PluginExtensionExposedComponentConfig,
   PluginExtensionAddedComponentConfig,
 } from '@grafana/data';
+import { logError } from '@grafana/data';
 import { contextSrv } from 'app/core/services/context_srv';
 import { getPluginSettings } from 'app/features/plugins/pluginSettings';
 
@@ -46,6 +47,6 @@ async function preload(config: AppPluginConfig): Promise<void> {
       return;
     }
 
-    console.error(`[Plugins] Failed to preload plugin: ${config.path} (version: ${config.version})`, error);
+    logError(`[Plugins] Failed to preload plugin: ${config.path} (version: ${config.version})`, error);
   }
 }

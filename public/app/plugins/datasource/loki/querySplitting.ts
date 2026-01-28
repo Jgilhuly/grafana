@@ -9,6 +9,7 @@ import {
   DataTopic,
   dateTime,
   LoadingState,
+  logError,
   rangeUtil,
   store,
   TimeRange,
@@ -173,7 +174,7 @@ export function runSplitGroupedQueries(
           return false;
         }
       } catch (e) {
-        console.error(e);
+        logError(e);
         shouldStop = true;
         return false;
       }

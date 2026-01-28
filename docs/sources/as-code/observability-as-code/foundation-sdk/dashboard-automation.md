@@ -106,6 +106,7 @@ func main() {
 ```typescript
 import { DashboardBuilder, RowBuilder } from '@grafana/grafana-foundation-sdk/dashboard';
 import * as fs from 'fs';
+import { logInfo } from '@grafana/data';
 
 // Generate the dashboard JSON
 const dashboard = new DashboardBuilder('My Dashboard')
@@ -131,7 +132,7 @@ const dashboardWrapper = {
 const dashboardJSON = JSON.stringify(dashboardWrapper, null, 2);
 fs.writeFileSync('dashboard.json', dashboardJSON, 'utf8');
 
-console.log(`Dashboard JSON:\n${}`);
+logInfo(`Dashboard JSON:\n${dashboardJSON}`);
 ```
 
 {{< /code >}}

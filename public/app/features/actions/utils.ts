@@ -12,6 +12,7 @@ import {
   getFieldDataContextClone,
   InterpolateFunction,
   InfinityOptions,
+  logError,
   ScopedVars,
   textUtil,
   ValueLinkConfig,
@@ -120,7 +121,7 @@ export const getActions = (
                   appEvents.emit(AppEvents.alertError, [
                     'An error has occurred. Check console output for more details.',
                   ]);
-                  console.error(error);
+                  logError(error);
                 },
                 complete: () => {
                   appEvents.emit(AppEvents.alertSuccess, ['API call was successful']);
@@ -128,7 +129,7 @@ export const getActions = (
               });
           } catch (error) {
             appEvents.emit(AppEvents.alertError, ['An error has occurred. Check console output for more details.']);
-            console.error(error);
+            logError(error);
             return;
           }
         },

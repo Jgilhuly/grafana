@@ -1,3 +1,4 @@
+import { logError } from '@grafana/data';
 import { isResourceList } from 'app/features/apiserver/guards';
 import { ResourceList } from 'app/features/apiserver/types';
 import { getDashboardAPI } from 'app/features/dashboard/api/dashboard_api';
@@ -79,7 +80,7 @@ class DeletedDashboardsCache {
         items: [],
       };
     } catch (error) {
-      console.error('Failed to fetch deleted dashboards:', error);
+      logError('Failed to fetch deleted dashboards:', error);
       return {
         apiVersion: 'v1',
         kind: 'List',

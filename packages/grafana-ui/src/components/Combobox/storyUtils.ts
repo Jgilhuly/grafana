@@ -1,3 +1,5 @@
+import { logInfo } from '@grafana/data';
+
 import { ComboboxOption } from './types';
 
 let fakeApiOptions: Array<ComboboxOption<string>>;
@@ -13,7 +15,7 @@ export async function fakeSearchAPI(urlString: string): Promise<Array<ComboboxOp
 
   if (!fakeApiOptions) {
     fakeApiOptions = await generateOptions(1000);
-    console.log('fakeApiOptions', fakeApiOptions);
+    logInfo('fakeApiOptions', fakeApiOptions);
   }
 
   if (!searchQuery || searchQuery.length === 0) {

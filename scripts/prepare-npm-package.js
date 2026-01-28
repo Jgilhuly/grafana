@@ -1,5 +1,6 @@
 //@ts-check
 import PackageJson from '@npmcli/package-json';
+import { logError } from './utils/structuredLogger.js';
 
 const cwd = process.cwd();
 
@@ -30,6 +31,6 @@ try {
     await pkgJson.save();
   }
 } catch (e) {
-  console.error(e);
+  logError(e);
   process.exit(1);
 }

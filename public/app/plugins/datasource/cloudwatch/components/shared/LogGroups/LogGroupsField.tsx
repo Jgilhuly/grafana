@@ -1,6 +1,7 @@
 import { css } from '@emotion/css';
 import { useEffect, useState } from 'react';
 
+import { logError } from '@grafana/data';
 import { config } from '@grafana/runtime';
 
 import { LogGroup } from '../../../dataquery.gen';
@@ -72,7 +73,7 @@ export const LogGroupsField = ({
           onChange([...logGroups, ...variables.map((v) => ({ name: v, arn: v }))]);
         })
         .catch((err) => {
-          console.error(err);
+          logError(err);
         });
     }
   }, [datasource, legacyLogGroupNames, logGroups, onChange, region, loadingLogGroupsStarted]);

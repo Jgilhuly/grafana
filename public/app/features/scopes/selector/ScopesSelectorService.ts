@@ -1,4 +1,4 @@
-import { Scope, ScopeNode, store as storeImpl } from '@grafana/data';
+import { logError, Scope, ScopeNode, store as storeImpl } from '@grafana/data';
 import { config, locationService } from '@grafana/runtime';
 import { performanceUtils } from '@grafana/scenes';
 import { getDashboardSceneProfiler } from 'app/features/dashboard/services/DashboardProfiler';
@@ -96,7 +96,7 @@ export class ScopesSelectorService extends ScopesServiceBase<ScopesSelectorServi
       }
       return node;
     } catch (error) {
-      console.error('Failed to load node', error);
+      logError('Failed to load node', error);
       return undefined;
     }
   };
@@ -514,7 +514,7 @@ export class ScopesSelectorService extends ScopesServiceBase<ScopesSelectorServi
           path.unshift('');
           nodeAtPath = treeNodeAtPath(newTree, path);
         } catch (error) {
-          console.error('Failed to resolve path to root', error);
+          logError('Failed to resolve path to root', error);
         }
       }
 
@@ -532,7 +532,7 @@ export class ScopesSelectorService extends ScopesServiceBase<ScopesSelectorServi
       try {
         newTree = expandNodes(newTree, parentPath);
       } catch (error) {
-        console.error('Failed to expand nodes', error);
+        logError('Failed to expand nodes', error);
       }
     }
 
@@ -610,7 +610,7 @@ function parseScopesFromLocalStorage(content: string | undefined): RecentScope[]
   try {
     recentScopes = JSON.parse(content || '[]');
   } catch (e) {
-    console.error('Failed to parse recent scopes', e, content);
+    logError('Failed to parse recent scopes', e, content);
     return [];
   }
   if (!(Array.isArray(recentScopes) && Array.isArray(recentScopes[0]))) {

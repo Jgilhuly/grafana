@@ -7,6 +7,7 @@ import {
   TransformerRegistryItem,
   TransformerUIProps,
   getFieldDisplayName,
+  logError,
   stringToJsRegex,
   TransformerCategory,
   SelectableValue,
@@ -102,7 +103,7 @@ export class FilterByNameTransformerEditor extends React.PureComponent<
           }
         }
       } catch (error) {
-        console.error(error);
+        logError(error);
       }
     }
 

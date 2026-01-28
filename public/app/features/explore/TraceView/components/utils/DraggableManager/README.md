@@ -56,6 +56,8 @@ To use a DraggableManager instance, relevant mouse events should be piped to the
 `MouseEvent` (and `SyntheticMouseEvent`) events provide the [`clientX`](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX) property, which generally needs some adjustments before it's useful. For instance, in the following snippet we transform `clientX` to the `x` within the `<div>`. The `value` is simply the `x/width` ratio, which is pretty much the percent but divided by `100`.
 
 ```jsx
+import { logInfo } from '@grafana/data';
+
 <div className="DividerDemo--realm">
   <div
     className="DividerDemo--divider"
@@ -63,9 +65,9 @@ To use a DraggableManager instance, relevant mouse events should be piped to the
       const { clientX, target } = event;
       const { left, width } = target.getBoundingClientRect();
       const localX = clientX - left;
-      console.log('within the client area, x:', clientX);
-      console.log('within the div, x:        ', localX);
-      console.log('position along the width: ', localX / width);
+      logInfo('within the client area, x:', clientX);
+      logInfo('within the div, x:        ', localX);
+      logInfo('position along the width: ', localX / width);
     }}
   />
 </div>

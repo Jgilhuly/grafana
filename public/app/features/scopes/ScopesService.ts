@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import { BehaviorSubject, Observable, combineLatest, Subscription } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 
+import { logError } from '@grafana/data';
 import { LocationService, ScopesContextValue, ScopesContextValueState } from '@grafana/runtime';
 
 import { ScopesDashboardsService } from './dashboards/ScopesDashboardsService';
@@ -93,7 +94,7 @@ export class ScopesService implements ScopesContextValue {
     const nodeToPreload = scopeNodeId;
     if (nodeToPreload) {
       this.selectorService.resolvePathToRoot(nodeToPreload, this.selectorService.state.tree!).catch((error) => {
-        console.error('Failed to pre-load node path', error);
+        logError('Failed to pre-load node path', error);
       });
     }
 

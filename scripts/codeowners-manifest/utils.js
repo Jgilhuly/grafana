@@ -1,6 +1,7 @@
 const { readFile } = require('node:fs/promises');
 
 const { CODEOWNERS_JSON_PATH: CODEOWNERS_MANIFEST_CODEOWNERS_PATH } = require('./constants.js');
+const { logError } = require('../utils/structuredLogger');
 
 let _codeownersCache = null;
 
@@ -21,9 +22,9 @@ module.exports = {
         _codeownersCache = JSON.parse(codeownersJson);
       } catch (e) {
         if (e.code === 'ENOENT') {
-          console.error(`Could not read ${CODEOWNERS_MANIFEST_CODEOWNERS_PATH} ...`);
+          logError(`Could not read ${CODEOWNERS_MANIFEST_CODEOWNERS_PATH} ...`);
         } else {
-          console.error(e);
+          logError(e);
         }
         process.exit(1);
       }

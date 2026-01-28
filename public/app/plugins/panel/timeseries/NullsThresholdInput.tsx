@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { rangeUtil } from '@grafana/data';
+import { logWarning, rangeUtil } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { Input } from '@grafana/ui';
 
@@ -31,7 +31,7 @@ export const NullsThresholdInput = ({ value, onChange, inputPrefix, isTime }: Pr
           val = Number(txt);
         }
       } catch (err) {
-        console.warn('ERROR', err);
+        logWarning('ERROR', err);
       }
     }
     onChange(val);

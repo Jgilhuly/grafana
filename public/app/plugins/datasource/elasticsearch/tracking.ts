@@ -1,4 +1,4 @@
-import { CoreApp, DashboardLoadedEvent, DataQueryRequest, DataQueryResponse } from '@grafana/data';
+import { CoreApp, DashboardLoadedEvent, DataQueryRequest, DataQueryResponse, logError } from '@grafana/data';
 import { config, reportInteraction } from '@grafana/runtime';
 
 import { ElasticsearchDataQuery } from './dataquery.gen';
@@ -71,7 +71,7 @@ export const onDashboardLoadedHandler = ({
 
     reportInteraction('grafana_elasticsearch_dashboard_loaded', event);
   } catch (error) {
-    console.error('error in elasticsearch tracking handler', error);
+    logError('error in elasticsearch tracking handler', error);
   }
 };
 

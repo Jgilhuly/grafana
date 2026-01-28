@@ -1,6 +1,14 @@
 import { of } from 'rxjs';
 
-import { DataQueryError, DataQueryRequest, DataQueryResponse, dateTime, LoadingState } from '@grafana/data';
+import {
+  DataQueryError,
+  DataQueryRequest,
+  DataQueryResponse,
+  dateTime,
+  getStructuredLogger,
+  LoadingState,
+  setStructuredLogger,
+} from '@grafana/data';
 import { config } from '@grafana/runtime';
 
 import { LokiQueryType, LokiQueryDirection } from './dataquery.gen';
@@ -19,9 +27,11 @@ jest.mock('uuid', () => ({
 
 const originalShardingFlagState = config.featureToggles.lokiShardSplitting;
 const originalLokiQueryLimitsContextState = config.featureToggles.lokiQueryLimitsContext;
-const originalErr = console.error;
+const originalLogger = getStructuredLogger();
+const errorMock = jest.fn();
 beforeEach(() => {
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  errorMock.mockClear();
+  setStructuredLogger({ ...originalLogger, error: errorMock });
 });
 beforeAll(() => {
   // @ts-expect-error
@@ -35,7 +45,7 @@ afterAll(() => {
   jest.mocked(global.setTimeout).mockReset();
   config.featureToggles.lokiShardSplitting = originalShardingFlagState;
   config.featureToggles.lokiQueryLimitsContext = originalLokiQueryLimitsContextState;
-  console.error = originalErr;
+  setStructuredLogger(originalLogger);
 });
 
 describe('runSplitQuery()', () => {

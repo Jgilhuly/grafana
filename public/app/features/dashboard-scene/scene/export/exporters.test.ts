@@ -1,6 +1,13 @@
 import { find } from 'lodash';
 
-import { DataSourceInstanceSettings, DataSourceRef, PanelPluginMeta, TypedVariableModel } from '@grafana/data';
+import {
+  DataSourceInstanceSettings,
+  DataSourceRef,
+  getStructuredLogger,
+  PanelPluginMeta,
+  setStructuredLogger,
+  TypedVariableModel,
+} from '@grafana/data';
 import { Dashboard, DashboardCursorSync, ThresholdsMode } from '@grafana/schema';
 import {
   DatasourceVariableKind,
@@ -799,8 +806,9 @@ describe('dashboard exporter v2', () => {
   });
 
   it('should handle library panel conversion errors gracefully', async () => {
-    // Mock console.error to avoid Jest warnings
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const previousLogger = getStructuredLogger();
+    const errorSpy = jest.fn();
+    setStructuredLogger({ ...previousLogger, error: errorSpy });
 
     const setupWithInvalidLibraryPanel = async () => {
       const schemaCopy = JSON.parse(JSON.stringify(handyTestingSchema));
@@ -837,11 +845,10 @@ describe('dashboard exporter v2', () => {
     expect((placeholderPanel as PanelKind).spec.vizConfig.kind).toBe('VizConfig');
     expect((placeholderPanel as PanelKind).spec.vizConfig.group).toBe('text');
 
-    // Verify console.error was called
-    expect(consoleSpy).toHaveBeenCalledWith('Failed to load library panel invalid-uid:', expect.any(Error));
+    // Verify logError was called
+    expect(errorSpy).toHaveBeenCalledWith('Failed to load library panel invalid-uid:', expect.any(Error));
 
-    // Restore console.error
-    consoleSpy.mockRestore();
+    setStructuredLogger(previousLogger);
   });
 });
 

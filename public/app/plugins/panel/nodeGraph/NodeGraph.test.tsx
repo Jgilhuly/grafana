@@ -138,11 +138,6 @@ describe('NodeGraph', () => {
       />
     );
 
-    // We mock this because for some reason the simulated click events don't have pageX/Y values resulting in some NaNs
-    // for positioning and this creates a warning message.
-    const origError = console.error;
-    console.error = jest.fn();
-
     const node = await screen.findByTestId('node-click-rect-0');
     await userEvent.click(node);
     await screen.findByText(/Node traces/);
@@ -150,7 +145,6 @@ describe('NodeGraph', () => {
     const edge = await screen.findByLabelText(/Edge from/);
     await userEvent.click(edge);
     await screen.findByText(/Edge traces/);
-    console.error = origError;
   });
 
   it('lays out 3 nodes in single line', async () => {

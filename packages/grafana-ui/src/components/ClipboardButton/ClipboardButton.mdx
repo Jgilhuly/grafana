@@ -12,10 +12,12 @@ Commonly it is passed in the `addonAfter` prop on `<Input />`
 # Usage
 
 ```jsx
+import { logInfo } from '@grafana/data';
+
 <ClipboardButton
   variant="secondary"
   getText={() => 'Text to be copied'}
-  onClipboardCopy={() => console.log('text copied')}
+  onClipboardCopy={() => logInfo('text copied')}
 >
   Copy to clipboard
 </ClipboardButton>

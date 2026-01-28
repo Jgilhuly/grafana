@@ -7,6 +7,7 @@ import {
   ExploreLogsPanelState,
   GrafanaTheme2,
   Labels,
+  logWarning,
   LogRowModel,
   LogsSortOrder,
   SelectableValue,
@@ -387,7 +388,7 @@ export function LogsTableWrap(props: Props) {
   // Toggle a column on or off when the user interacts with an element in the multi-select sidebar
   const toggleColumn = (columnName: FieldName) => {
     if (!columnsWithMeta || !(columnName in columnsWithMeta)) {
-      console.warn('failed to get column', columnsWithMeta);
+      logWarning('failed to get column', columnsWithMeta);
       return;
     }
 

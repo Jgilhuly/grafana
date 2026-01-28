@@ -13,6 +13,7 @@ import {
   QueryRunner as QueryRunnerSrv,
   LoadingState,
   DataSourceRef,
+  logError,
   preProcessPanelData,
 } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
@@ -113,7 +114,7 @@ export class QueryRunner implements QueryRunnerSrv {
             },
           });
         },
-        error: (error) => console.error('PanelQueryRunner Error', error),
+        error: (error) => logError('PanelQueryRunner Error', error),
       });
   }
 

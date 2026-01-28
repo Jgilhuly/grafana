@@ -7,6 +7,7 @@ import {
   DataSourceApi,
   DataSourceInstanceSettings,
   DataSourcePluginContextProvider,
+  logError,
   LoadingState,
 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
@@ -260,7 +261,7 @@ export default class StandardAnnotationQueryEditor extends PureComponent<Props, 
       this.setState({ skipNextVerification: true });
       onChange(preparedAnnotation);
     } catch (error) {
-      console.error('Failed to replace annotation query:', error);
+      logError('Failed to replace annotation query:', error);
       // On error, reset the replacing state but don't change the annotation
     }
   };

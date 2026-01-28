@@ -1,3 +1,4 @@
+import { logError } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { isFetchError } from '@grafana/runtime';
 
@@ -69,7 +70,7 @@ export async function makeApiRequest(request: ApiRequest) {
 
   if (!response.ok) {
     const errorData = await response.text();
-    console.error('API Error Response:', errorData);
+    logError('API Error Response:', errorData);
     const error: HttpError = new Error(
       t('provisioning.http-utils.http-error', 'HTTP {{status}}: {{statusText}}', {
         status: response.status,

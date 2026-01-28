@@ -7,6 +7,7 @@ import {
   Field,
   FieldType,
   LoadingState,
+  logError,
   QueryResultMetaNotice,
   QueryResultMetaStat,
   shallowCompare,
@@ -142,7 +143,7 @@ export function mergeFrames(dest: DataFrame, source: DataFrame) {
   const sourceIdField = source.fields.find((field) => field.type === FieldType.string && field.name === 'id');
 
   if (!destTimeField || !sourceTimeField) {
-    console.error(new Error(`Time fields not found in the data frames`));
+    logError(new Error(`Time fields not found in the data frames`));
     return;
   }
 

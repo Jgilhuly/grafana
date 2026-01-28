@@ -1,5 +1,7 @@
 import Prism, { Token } from 'prismjs';
 
+import { getStructuredLogger, setStructuredLogger } from '@grafana/data';
+
 import { createLogLine } from '../mocks/logRow';
 
 import { generateLogGrammar, generateTextMatchGrammar } from './grammar';
@@ -89,12 +91,12 @@ describe('generateLogGrammar', () => {
 });
 
 describe('generateTextMatchGrammar', () => {
-  const originalErr = console.error;
+  const originalLogger = getStructuredLogger();
   beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    setStructuredLogger({ ...originalLogger, error: jest.fn() });
   });
   afterAll(() => {
-    console.error = originalErr;
+    setStructuredLogger(originalLogger);
   });
 
   test('Generates text match grammars for search words', () => {

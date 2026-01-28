@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import * as React from 'react';
 
+import { logWarning } from '@grafana/data';
+
 import { measureText } from '../../utils/measureText';
 
 import { AutoSizeInputContext } from './AutoSizeInputContext';
@@ -119,7 +121,7 @@ function useControlledState<T>(controlledValue: T, onChange: Function | undefine
 
   const hasLoggedControlledWarning = useRef(false);
   if (isControlledNow !== isControlledRef.current && !hasLoggedControlledWarning.current) {
-    console.warn(
+    logWarning(
       'An AutoSizeInput is changing from an uncontrolled to a controlled input. If you want to control the input, the empty value should be an empty string.'
     );
     hasLoggedControlledWarning.current = true;

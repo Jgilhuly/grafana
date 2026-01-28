@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { PageLayoutType, dateTimeFormat, dateTimeFormatTimeAgo } from '@grafana/data';
+import { PageLayoutType, dateTimeFormat, dateTimeFormatTimeAgo, logError } from '@grafana/data';
 import { SceneComponentProps, SceneObjectBase, sceneGraph } from '@grafana/scenes';
 import { Spinner, Stack } from '@grafana/ui';
 import { Page } from 'app/core/components/Page/Page';
@@ -119,7 +119,7 @@ export class VersionsEditView extends SceneObjectBase<VersionsEditViewState> imp
         // Update the continueToken for the next request, if available
         this._continueToken = result.continueToken ?? '';
       })
-      .catch((err) => console.log(err))
+      .catch((err) => logError(err))
       .finally(() => this.setState({ isAppending: false }));
   };
 

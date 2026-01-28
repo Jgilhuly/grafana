@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ComponentProps } from 'react';
 
+import { logInfo } from '@grafana/data';
 import { Stack, Text } from '@grafana/ui';
 
 import { AlertLabel } from './AlertLabel';
@@ -42,7 +43,7 @@ export const Clickable: StoryObj<typeof AlertLabel> = {
       {...args}
       labelKey="region"
       value="eu-central-1"
-      onClick={([value, key]) => console.log('clicked', key, value)}
+      onClick={([value, key]) => logInfo('clicked', key, value)}
     />
   ),
 };

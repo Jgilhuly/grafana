@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useAsync } from 'react-use';
 
-import { SelectableValue, DataSourceInstanceSettings, getDataSourceRef, VariableRegexApplyTo } from '@grafana/data';
+import { SelectableValue, DataSourceInstanceSettings, getDataSourceRef, logWarning, VariableRegexApplyTo } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans, t } from '@grafana/i18n';
 import { getDataSourceSrv } from '@grafana/runtime';
@@ -131,7 +131,7 @@ export function QueryVariableEditor({ variable, onRunQuery }: QueryVariableEdito
 
 export function getQueryVariableOptions(variable: SceneVariable): OptionsPaneItemDescriptor[] {
   if (!(variable instanceof QueryVariable)) {
-    console.warn('getQueryVariableOptions: variable is not a QueryVariable');
+    logWarning('getQueryVariableOptions: variable is not a QueryVariable');
     return [];
   }
 

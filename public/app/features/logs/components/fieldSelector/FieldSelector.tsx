@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { Resizable, ResizeCallback } from 're-resizable';
 import { startTransition, useCallback, useLayoutEffect, useMemo, useState } from 'react';
 
-import { DataFrame, fuzzySearch, GrafanaTheme2, store } from '@grafana/data';
+import { DataFrame, fuzzySearch, GrafanaTheme2, logWarning, store } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, reportInteraction } from '@grafana/runtime';
 import { getDragStyles, IconButton, useStyles2 } from '@grafana/ui';
@@ -106,7 +106,7 @@ export const LogListFieldSelector = ({ containerElement, dataFrames, logs }: Log
   const fields = useMemo(() => getFieldsWithStats(dataFrames), [dataFrames]);
 
   if (!onClickShowField || !onClickHideField || !setDisplayedFields) {
-    console.warn(
+    logWarning(
       'LogListFieldSelector: Missing required props: onClickShowField, onClickHideField, setDisplayedFields'
     );
     return null;

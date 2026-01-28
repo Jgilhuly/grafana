@@ -14,7 +14,7 @@ import { Component, ReactNode } from 'react';
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 
-import { DataHoverEvent, PanelData, PanelProps } from '@grafana/data';
+import { DataHoverEvent, logError, PanelData, PanelProps } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
 import { PanelContext, PanelContextRoot } from '@grafana/ui';
@@ -260,7 +260,7 @@ export class GeomapPanel extends Component<Props, State> {
         layers.push(await initLayer(this, map, lyr, false));
       }
     } catch (ex) {
-      console.error('error loading layers', ex);
+      logError('error loading layers', ex);
     }
 
     for (const lyr of layers) {

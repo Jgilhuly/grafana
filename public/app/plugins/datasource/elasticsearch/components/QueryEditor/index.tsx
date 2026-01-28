@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { useEffect, useId, useState } from 'react';
 import { SemVer } from 'semver';
 
-import { getDefaultTimeRange, GrafanaTheme2, QueryEditorProps } from '@grafana/data';
+import { getDefaultTimeRange, GrafanaTheme2, logWarning, QueryEditorProps } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { Alert, InlineField, InlineLabel, Input, QueryField, useStyles2 } from '@grafana/ui';
 
@@ -38,7 +38,7 @@ function useElasticVersion(datasource: ElasticDatasource): SemVer | null {
       },
       (error) => {
         // we do nothing
-        console.log(error);
+        logWarning(error);
       }
     );
 

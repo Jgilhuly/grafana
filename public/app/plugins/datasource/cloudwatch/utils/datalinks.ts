@@ -4,6 +4,7 @@ import {
   DataQueryRequest,
   DataQueryResponse,
   FieldType,
+  logError,
   ScopedVars,
   TimeRange,
 } from '@grafana/data';
@@ -66,7 +67,7 @@ async function createInternalXrayLink(datasourceUid: string, region: string): Pr
   try {
     ds = await getDataSourceSrv().get(datasourceUid);
   } catch (e) {
-    console.error('Could not load linked xray data source, it was probably deleted after it was linked', e);
+    logError('Could not load linked xray data source, it was probably deleted after it was linked', e);
     return undefined;
   }
 

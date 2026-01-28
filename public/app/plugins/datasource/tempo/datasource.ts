@@ -23,6 +23,7 @@ import {
   SelectableValue,
   TestDataSourceResponse,
   TimeRange,
+  logWarning,
   urlUtil,
 } from '@grafana/data';
 import { NodeGraphOptions, SpanBarOptions, TraceToLogsOptions } from '@grafana/o11y-ds-frontend';
@@ -299,7 +300,7 @@ export class TempoDatasource extends DataSourceWithBackend<TempoQuery, TempoJson
 
       return false;
     } catch (error) {
-      console.warn('Failed to check for native histograms:', error);
+      logWarning('Failed to check for native histograms:', error);
       return false;
     }
   }

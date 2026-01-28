@@ -5,7 +5,7 @@ import LayerGroup from 'ol/layer/Group';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import { Subject } from 'rxjs';
 
-import { getFrameMatchers, MapLayerHandler, MapLayerOptions, PanelData, textUtil } from '@grafana/data';
+import { getFrameMatchers, logWarning, MapLayerHandler, MapLayerOptions, PanelData, textUtil } from '@grafana/data';
 import { config } from '@grafana/runtime';
 
 import { GeomapPanel } from '../GeomapPanel';
@@ -91,7 +91,7 @@ export async function updateLayer(panel: GeomapPanel, uid: string, newOptions: M
     // initialize with new data
     applyLayerFilter(info.handler, newOptions, panel.props.data);
   } catch (err) {
-    console.warn('ERROR', err); // eslint-disable-line no-console
+    logWarning('ERROR', err);
     return false;
   }
 

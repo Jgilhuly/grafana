@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { monacoTypes } from '@grafana/ui';
 
 // this thing here is a workaround in a way.
@@ -81,7 +82,7 @@ function makeStorageService() {
     },
 
     logStorage: (): void => {
-      console.log('logStorage: not implemented');
+      logInfo('logStorage: not implemented');
     },
 
     migrate: (): Promise<void> => {

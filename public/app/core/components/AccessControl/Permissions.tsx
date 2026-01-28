@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import * as React from 'react';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 
-import { GrafanaTheme2 } from '@grafana/data';
+import { GrafanaTheme2, logError, logInfo } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { Text, Box, Button, useStyles2, LoadingPlaceholder } from '@grafana/ui';
 import { SlideDown } from 'app/core/components/Animations/SlideDown';
@@ -101,7 +101,7 @@ export const Permissions = ({
   };
 
   const onChange = (item: ResourcePermission, permission: string) => {
-    console.log('onChange', item, permission);
+    logInfo('onChange', item, permission);
     if (item.permission === permission) {
       return;
     }
@@ -247,7 +247,7 @@ const getDescription = async (resource: string): Promise<Description> => {
   try {
     return await getBackendSrv().get(`/api/access-control/${resource}/description`);
   } catch (e) {
-    console.error('failed to load resource description: ', e);
+    logError('failed to load resource description: ', e);
     return INITIAL_DESCRIPTION;
   }
 };

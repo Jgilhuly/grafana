@@ -136,9 +136,6 @@ describe('Carousel', () => {
   });
 
   it('shows warning when all images fail to load', async () => {
-    const originalConsoleError = console.error;
-    console.error = jest.fn();
-
     render(<Carousel images={testImages} />);
 
     const images = screen.getAllByRole('presentation');
@@ -150,6 +147,5 @@ describe('Carousel', () => {
       expect(screen.getByTestId('alert-warning')).toBeInTheDocument();
     });
 
-    console.error = originalConsoleError;
   });
 });

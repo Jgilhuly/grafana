@@ -218,7 +218,7 @@ export class TabItem
         layout.setState({ children: newChildren });
       } else {
         const warningMessage = 'Grid item has unexpected parent type';
-        console.warn(warningMessage);
+        logWarning(warningMessage);
         logWarning(warningMessage);
       }
     }
@@ -232,7 +232,7 @@ export class TabItem
       layout.addGridItem(gridItem);
     } else {
       const warningMessage = 'Layout manager does not support addGridItem';
-      console.warn(warningMessage);
+      logWarning(warningMessage);
       logWarning(warningMessage);
     }
     this.setIsDropTarget(false);

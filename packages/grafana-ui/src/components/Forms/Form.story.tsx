@@ -1,3 +1,4 @@
+import { logError, logInfo, logWarning } from '@grafana/data';
 import { StoryFn } from '@storybook/react';
 import { useId } from 'react';
 import { ValidateResult } from 'react-hook-form';
@@ -70,11 +71,11 @@ const renderForm = (defaultValues?: FormDTO) => {
     <Form
       defaultValues={defaultValues}
       onSubmit={(data: FormDTO) => {
-        console.log(data);
+        logInfo(data);
       }}
     >
       {({ register, control, errors }) => {
-        console.log(errors);
+        logWarning(errors);
         return (
           <>
             <Legend>Edit user</Legend>
@@ -162,7 +163,7 @@ export const AsyncValidation: StoryFn = ({ passAsyncValidation }) => {
         }}
       >
         {({ register, control, errors, formState }) => {
-          console.log(errors);
+          logWarning(errors);
           return (
             <>
               <Legend>Edit user</Legend>
@@ -201,7 +202,7 @@ const validateAsync = (shouldPass: boolean) => async () => {
     });
     return true;
   } catch (e) {
-    console.log(e);
+    logError(e);
     return false;
   }
 };

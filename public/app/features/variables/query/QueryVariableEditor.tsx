@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import {
   DataSourceInstanceSettings,
   getDataSourceRef,
+  logError,
   QueryVariableModel,
   SelectableValue,
   VariableRefresh,
@@ -25,7 +26,7 @@ import { changeQueryVariableDataSource, changeQueryVariableQuery, initQueryVaria
 const mapStateToProps = (state: StoreState, ownProps: OwnProps) => {
   const { rootStateKey } = ownProps.variable;
   if (!rootStateKey) {
-    console.error('QueryVariableEditor: variable has no rootStateKey');
+    logError('QueryVariableEditor: variable has no rootStateKey');
     return {
       extended: getQueryVariableEditorState(initialVariableEditorState),
     };

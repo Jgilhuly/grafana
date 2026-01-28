@@ -9,14 +9,14 @@ The `alertingAlertRuleFormSchema` API provides a Zod schema for navigating to th
 ### Usage Example
 
 ```ts
-import { useRestrictedGrafanaApis } from "@grafana/data";
+import { logError, logInfo, logWarning, useRestrictedGrafanaApis } from "@grafana/data";
 
 function MyAlertingPlugin() {
   const { alertingAlertRuleFormSchema } = useRestrictedGrafanaApis();
 
   const validateAndNavigateToAlertForm = (data: unknown) => {
     if (!alertingAlertRuleFormSchema) {
-      console.warn('Navigate to alert form schema API not available');
+      logWarning('Navigate to alert form schema API not available');
       return;
     }
 
@@ -24,10 +24,10 @@ function MyAlertingPlugin() {
     const result = alertingAlertRuleFormSchema.safeParse(data);
 
     if (result.success) {
-      console.log('Valid navigation data:', result.data);
+      logInfo('Valid navigation data:', result.data);
       // Proceed with navigating to the alert form
     } else {
-      console.error('Validation failed:', result.error.errors);
+      logError('Validation failed:', result.error.errors);
     }
   };
 

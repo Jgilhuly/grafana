@@ -7,9 +7,11 @@ import {
   DateTime,
   dateTime,
   Field,
+  getStructuredLogger,
   LoadingState,
   SupplementaryQueryType,
   TimeRange,
+  setStructuredLogger,
   toUtc,
 } from '@grafana/data';
 import { FetchResponse, reportInteraction, getBackendSrv, setBackendSrv, BackendSrv, config } from '@grafana/runtime';
@@ -18,7 +20,8 @@ import { ElasticsearchDataQuery, Filters } from './dataquery.gen';
 import { ElasticDatasource } from './datasource';
 import { createElasticDatasource, createElasticQuery, mockResponseFrames } from './mocks';
 
-const originalConsoleError = console.error;
+const originalLogger = getStructuredLogger();
+const errorMock = jest.fn();
 jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   reportInteraction: jest.fn(),
@@ -73,14 +76,15 @@ describe('ElasticDatasource', () => {
   let origBackendSrv: BackendSrv;
   let ds: ElasticDatasource;
   beforeEach(() => {
-    console.error = jest.fn();
+    errorMock.mockClear();
+    setStructuredLogger({ ...originalLogger, error: errorMock });
     origBackendSrv = getBackendSrv();
     setBackendSrv({ ...origBackendSrv, fetch: jest.fn().mockReturnValue(of({ data: {} })) });
     ds = createElasticDatasource();
   });
 
   afterEach(() => {
-    console.error = originalConsoleError;
+    setStructuredLogger(originalLogger);
     setBackendSrv(origBackendSrv);
     jest.clearAllMocks();
   });

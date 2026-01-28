@@ -1,3 +1,4 @@
+import { logError } from '@grafana/data';
 import { locationService } from '@grafana/runtime';
 import { DataSourceInput } from 'app/features/manage-dashboards/state/reducers';
 
@@ -198,7 +199,7 @@ export async function onUseCommunityDashboard({
       }
     }
   } catch (err) {
-    console.error('Error loading community dashboard:', err);
+    logError('Error loading community dashboard:', err);
     // TODO: Show error notification
   }
 }

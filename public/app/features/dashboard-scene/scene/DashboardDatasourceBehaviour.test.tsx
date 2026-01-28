@@ -955,7 +955,7 @@ describe('DashboardDatasourceBehaviour', () => {
   it('Should re-run query after transformations reprocess', async () => {
     // sometimes this tests fails with a console error `AggregateError` with an XMLHttpRequest component
     // this is not related to the test, but a side effect of the interaction with scenes, mixed ds or even js dom
-    // considering it a flaky test, we are explicitly ignoring it by mocking console.error
+    // considering it a flaky test, we are explicitly ignoring it by mocking error logging
     jest.spyOn(console, 'error').mockImplementation();
     const sourcePanel = new VizPanel({
       title: 'Panel A',

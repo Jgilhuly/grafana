@@ -43,12 +43,8 @@ const defaultTimeRange: TimeRange = {
 };
 
 describe('MetricsModalContext', () => {
-  let consoleSpy: jest.SpyInstance;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    // Mock console.error to suppress React act() warnings
-    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     // Default mock implementations
     mockGenerateMetricData.mockImplementation((metric) => ({
@@ -59,10 +55,6 @@ describe('MetricsModalContext', () => {
     (mockLanguageProvider.queryMetricsMetadata as jest.Mock).mockResolvedValue({
       test_metric: { type: 'counter', help: 'Test metric' },
     });
-  });
-
-  afterEach(() => {
-    consoleSpy.mockRestore();
   });
 
   describe('useMetricsModal hook', () => {

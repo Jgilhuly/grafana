@@ -52,14 +52,9 @@ describe('SqlExprContext', () => {
         return <div>Should not render</div>;
       };
 
-      // Suppress console.error for this test
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
       expect(() => {
         render(<TestComponent />);
       }).toThrow('useSqlExprContext must be used within SqlExprProvider');
-
-      consoleSpy.mockRestore();
     });
 
     it('returns context value when used inside provider', () => {

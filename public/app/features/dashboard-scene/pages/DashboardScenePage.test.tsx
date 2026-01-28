@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom-v5-compat';
 import { TestProvider } from 'test/helpers/TestProvider';
 import { getGrafanaContextMock } from 'test/mocks/getGrafanaContextMock';
 
-import { PanelProps, systemDateFormats, SystemDateFormatsState } from '@grafana/data';
+import { getStructuredLogger, PanelProps, setStructuredLogger, systemDateFormats, SystemDateFormatsState } from '@grafana/data';
 import { getPanelPlugin } from '@grafana/data/test';
 import { selectors } from '@grafana/e2e-selectors';
 import { LocationServiceProvider, config, locationService, setPluginImportUtils } from '@grafana/runtime';
@@ -339,10 +339,16 @@ describe('DashboardScenePage', () => {
   });
 
   describe('errors rendering', () => {
-    const origError = console.error;
-    const consoleErrorMock = jest.fn();
-    afterEach(() => (console.error = origError));
-    beforeEach(() => (console.error = consoleErrorMock));
+    let previousLogger: ReturnType<typeof getStructuredLogger>;
+
+    beforeEach(() => {
+      previousLogger = getStructuredLogger();
+      setStructuredLogger({ ...previousLogger, error: jest.fn() });
+    });
+
+    afterEach(() => {
+      setStructuredLogger(previousLogger);
+    });
 
     it('should render dashboard not found notice when dashboard... not found', async () => {
       setupLoadDashboardMockReject({
@@ -406,7 +412,8 @@ describe('DashboardScenePage', () => {
   describe('UnifiedDashboardScenePageStateManager', () => {
     it('should reset active manager when unmounting', async () => {
       // This test is missing setup for v2 api so it erroring
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      const previousLogger = getStructuredLogger();
+      setStructuredLogger({ ...previousLogger, error: jest.fn() });
 
       const manager = getDashboardScenePageStateManager();
       manager.setActiveManager('v2');
@@ -416,6 +423,8 @@ describe('DashboardScenePage', () => {
       expect(manager['activeManager']).toBeInstanceOf(DashboardScenePageStateManagerV2);
       unmount();
       expect(manager['activeManager']).toBeInstanceOf(DashboardScenePageStateManager);
+
+      setStructuredLogger(previousLogger);
     });
   });
 });

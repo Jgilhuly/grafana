@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 
-import { DataSourceRef } from '@grafana/data';
+import { DataSourceRef, logError } from '@grafana/data';
 import { getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
 import { ThunkResult } from 'app/types/store';
 
@@ -109,7 +109,7 @@ export const changeQueryVariableDataSource = (
         )
       );
     } catch (err) {
-      console.error(err);
+      logError(err);
     }
   };
 };

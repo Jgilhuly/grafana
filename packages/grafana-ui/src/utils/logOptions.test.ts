@@ -1,26 +1,42 @@
+import { getStructuredLogger, setStructuredLogger, type StructuredLogger } from '@grafana/data';
+
 import { logOptions } from './logOptions';
 
 const RECOMMENDED_AMOUNT = 10;
 
 describe('logOptions', () => {
+  let originalLogger: StructuredLogger;
+  let loggerSpy: StructuredLogger;
+
+  beforeAll(() => {
+    originalLogger = getStructuredLogger();
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
+    loggerSpy = {
+      info: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+      debug: jest.fn(),
+    };
+    setStructuredLogger(loggerSpy);
+  });
+
+  afterEach(() => {
+    setStructuredLogger(originalLogger);
   });
 
   it('should not log anything if amount is less than or equal to recommendedAmount', () => {
-    console.warn = jest.fn();
-
     logOptions(5, RECOMMENDED_AMOUNT, 'test-id', 'test-aria');
 
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(loggerSpy.warn).not.toHaveBeenCalled();
   });
 
   it('should log a warning if amount exceeds recommendedAmount', () => {
-    console.warn = jest.fn();
-
     logOptions(15, RECOMMENDED_AMOUNT, 'test-id', 'test-aria');
 
-    expect(console.warn).toHaveBeenCalledWith('[Combobox] Items exceed the recommended amount 10.', {
+    expect(loggerSpy.warn).toHaveBeenCalledWith('[Combobox] Items exceed the recommended amount 10.', {
       itemsCount: '15',
       recommendedAmount: '10',
       'aria-labelledby': 'test-aria',

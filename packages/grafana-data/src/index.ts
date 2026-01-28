@@ -243,6 +243,16 @@ export {
 } from './utils/datasource';
 export { deprecationWarning } from './utils/deprecationWarning';
 export {
+  logDebug,
+  logError,
+  logInfo,
+  logWarning,
+  getStructuredLogger,
+  setStructuredLogger,
+  type StructuredLogger,
+  type StructuredLogArgs,
+} from './utils/structuredLogging';
+export {
   CSVHeaderStyle,
   type CSVConfig,
   type CSVParseCallbacks,

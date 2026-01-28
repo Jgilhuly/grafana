@@ -11,6 +11,7 @@ import {
   isDateTime,
   LoadingState,
   LogRowModel,
+  logError,
   PanelData,
   RawTimeRange,
   ScopedVars,
@@ -116,7 +117,7 @@ export async function loadAndInitDatasource(
       instance.init();
     } catch (err) {
       // TODO: should probably be handled better
-      console.error(err);
+      logError(err);
     }
   }
 

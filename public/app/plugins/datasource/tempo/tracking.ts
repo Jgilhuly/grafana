@@ -1,4 +1,4 @@
-import { DashboardLoadedEvent } from '@grafana/data';
+import { DashboardLoadedEvent, logError } from '@grafana/data';
 import { getTemplateSrv, reportInteraction } from '@grafana/runtime';
 
 import pluginJson from './plugin.json';
@@ -58,7 +58,7 @@ export const onDashboardLoadedHandler = ({
 
     reportInteraction('grafana_tempo_dashboard_loaded', stats);
   } catch (error) {
-    console.error('error in tempo tracking handler', error);
+    logError('error in tempo tracking handler', error);
   }
 };
 

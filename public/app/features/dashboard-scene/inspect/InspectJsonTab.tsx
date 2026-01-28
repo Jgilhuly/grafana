@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-import { SelectableValue } from '@grafana/data';
+import { logError, SelectableValue } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans, t } from '@grafana/i18n';
 import {
@@ -157,7 +157,7 @@ export class InspectJsonTab extends SceneObjectBase<InspectJsonTabState> {
       const newState = sceneUtils.cloneSceneObjectState(gridItem.state);
 
       if (!(panel.parent instanceof DashboardGridItem)) {
-        console.error('Cannot update state of panel', panel, gridItem);
+        logError('Cannot update state of panel', panel, gridItem);
         return;
       }
 

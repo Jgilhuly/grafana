@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { Meta, StoryFn } from '@storybook/react';
 
 import { getAvailableIcons } from '../../types/icon';
@@ -43,7 +44,7 @@ const options = generateOptions();
 export const Simple: StoryFn<typeof ValuePicker> = (args) => {
   return (
     <div style={{ width: '200px' }}>
-      <ValuePicker {...args} options={options} onChange={(v) => console.log(v)} />
+      <ValuePicker {...args} options={options} onChange={(v) => logInfo(v)} />
     </div>
   );
 };

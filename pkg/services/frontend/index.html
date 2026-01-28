@@ -189,6 +189,8 @@
       // are explicitly assigned to the `window` object.
       (() => {
         const publicDashboardAccessToken = [[.PublicDashboardAccessToken]]
+        const logError = (...args) => window.__grafanaStructuredLogger?.error?.(...args);
+        const logWarning = (...args) => window.__grafanaStructuredLogger?.warn?.(...args);
         // Grafana can only fail to load once
         // However, it can fail to load in multiple different places
         // To avoid double reporting the error, we use this boolean to check if we've already failed
@@ -198,7 +200,7 @@
             return;
           }
           hasFailedToBoot = true;
-          console.error('Failed to load Grafana', err);
+          logError('Failed to load Grafana', err);
           document.querySelector('.fs-variant-loader').classList.add('fs-hidden');
           document.querySelector('.fs-variant-error').classList.remove('fs-hidden');
 
@@ -210,14 +212,14 @@
             method: 'GET',
             cache: "no-store",
           }).catch(err => {
-            console.error('Failed to report boot error to backend: ', err);
+            logError('Failed to report boot error to backend: ', err);
           });
         };
         // Needed to stop retrying boot data when custom domain error occurs
         // TODO remove when https://github.com/grafana/grafana/pull/113717 is released in backend
         const CUSTOM_DOMAIN_ERROR = "Custom domain error";
         window.__grafana_custom_domain_failed = function(err) {
-          console.error('Failed to load Grafana due to custom domain issue', err);
+          logError('Failed to load Grafana due to custom domain issue', err);
           document.querySelector('.fs-variant-loader').classList.add('fs-hidden');
           document.querySelector('.fs-custom-domain-error').classList.remove('fs-hidden');
         }
@@ -340,7 +342,7 @@
                 }
               } catch (error) {
                 // Just ignore any errors in session rotation. The user can just log in again.
-                console.warn("Failed to rotate session", error);
+                logWarning("Failed to rotate session", error);
               }
 
               try {
@@ -414,7 +416,7 @@
 
         window.__grafana_boot_data_promise = initGrafana()
         window.__grafana_boot_data_promise.catch((err) => {
-          console.error("__grafana_boot_data_promise rejected", err);
+          logError("__grafana_boot_data_promise rejected", err);
           window.__grafana_load_failed(err);
         });
       })();

@@ -29,6 +29,7 @@ import {
   ApplyFieldOverrideOptions,
   StreamingDataFrame,
   DataTopic,
+  logWarning,
 } from '@grafana/data';
 import { toDataQueryError } from '@grafana/runtime';
 import { ExpressionDatasourceRef } from '@grafana/runtime/internal';
@@ -257,7 +258,7 @@ export class PanelQueryRunner {
         return { ...data, series, annotations };
       }),
       catchError((err) => {
-        console.warn('Error running transformation:', err);
+        logWarning('Error running transformation:', err);
         return of({
           ...data,
           state: LoadingState.Error,

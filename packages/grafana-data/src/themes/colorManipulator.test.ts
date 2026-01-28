@@ -13,12 +13,29 @@ import {
   asRgbString,
   onBackground,
 } from './colorManipulator';
+import { getStructuredLogger, setStructuredLogger, type StructuredLogger } from '../utils/structuredLogging';
 
 describe('utils/colorManipulator', () => {
-  const origError = console.error;
-  const consoleErrorMock = jest.fn();
-  afterEach(() => (console.error = origError));
-  beforeEach(() => (console.error = consoleErrorMock));
+  let originalLogger: StructuredLogger;
+  let loggerSpy: StructuredLogger;
+
+  beforeAll(() => {
+    originalLogger = getStructuredLogger();
+  });
+
+  beforeEach(() => {
+    loggerSpy = {
+      info: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+      debug: jest.fn(),
+    };
+    setStructuredLogger(loggerSpy);
+  });
+
+  afterEach(() => {
+    setStructuredLogger(originalLogger);
+  });
 
   describe('recomposeColor', () => {
     it('converts a decomposed rgb color object to a string` ', () => {

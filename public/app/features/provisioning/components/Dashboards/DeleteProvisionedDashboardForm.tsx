@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
-import { AppEvents } from '@grafana/data';
+import { AppEvents, logError } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { getAppEvents, reportInteraction } from '@grafana/runtime';
 import { Button, Drawer, Stack } from '@grafana/ui';
@@ -76,7 +76,7 @@ export function DeleteProvisionedDashboardForm({
 
   const handleSubmitForm = async ({ repo, path, comment }: ProvisionedDashboardFormData) => {
     if (!repo || !repository) {
-      console.error('Missing required repository for deletion:', { repo });
+      logError('Missing required repository for deletion:', { repo });
       return;
     }
 

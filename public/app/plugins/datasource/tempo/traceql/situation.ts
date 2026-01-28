@@ -1,5 +1,6 @@
 import { SyntaxNode, Tree } from '@lezer/common';
 
+import { logError } from '@grafana/data';
 import {
   Aggregate,
   And,
@@ -444,7 +445,7 @@ function resolveNewSpansetExpression(node: SyntaxNode, text: string, offset: num
       previousNode = previousNode!.nextSibling;
     }
   } catch (error) {
-    console.error('Unexpected error while searching for previous node', error);
+    logError('Unexpected error while searching for previous node', error);
   }
 
   if (previousNode?.type.id === And || previousNode?.type.id === Or) {

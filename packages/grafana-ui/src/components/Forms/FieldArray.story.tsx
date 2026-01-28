@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { Meta, StoryFn } from '@storybook/react';
 import { FieldValues } from 'react-hook-form';
 
@@ -36,7 +37,7 @@ export const Simple: StoryFn = (args) => {
     people: [{ firstName: 'Janis', lastName: 'Joplin' }],
   };
   return (
-    <Form onSubmit={(values) => console.log(values)} defaultValues={defaultValues}>
+    <Form onSubmit={(values) => logInfo(values)} defaultValues={defaultValues}>
       {({ control, register }) => (
         <div>
           <FieldArray control={control} name="people">

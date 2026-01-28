@@ -19,6 +19,9 @@ import {
   dateTime,
   getDefaultTimeRange,
   LegacyMetricFindQueryOptions,
+  logError,
+  logInfo,
+  logWarning,
   MetricFindValue,
   QueryFixAction,
   QueryVariableModel,
@@ -174,8 +177,8 @@ export class PrometheusDatasource
         this.ruleMappings = extractRuleMappingFromGroups(ruleGroups);
       }
     } catch (err) {
-      console.log('Rules API is experimental. Ignore next error.');
-      console.error(err);
+      logInfo('Rules API is experimental. Ignore next error.');
+      logError(err);
     }
   }
 
@@ -354,7 +357,7 @@ export class PrometheusDatasource
       } catch (err) {
         // If status code of error is Method Not Allowed (405) and HTTP method is POST, retry with GET
         if (this.httpMethod === 'POST' && isFetchError(err) && (err.status === 405 || err.status === 400)) {
-          console.warn(`Couldn't use configured POST HTTP method for this request. Trying to use GET method instead.`);
+          logWarning(`Couldn't use configured POST HTTP method for this request. Trying to use GET method instead.`);
         } else {
           throw err;
         }

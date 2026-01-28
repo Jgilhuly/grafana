@@ -1,6 +1,7 @@
 import { toDataFrame } from '../../dataframe/processDataFrame';
 import { FieldType } from '../../types/dataFrame';
 import { DataTransformerConfig, MatcherConfig } from '../../types/transformations';
+import { getStructuredLogger, setStructuredLogger, type StructuredLogger } from '../../utils/structuredLogging';
 import { mockTransformationsRegistry } from '../../utils/tests/mockTransformationsRegistry';
 import { ValueMatcherID } from '../matchers/ids';
 import { BasicValueMatcherOptions } from '../matchers/valueMatchers/types';
@@ -42,14 +43,26 @@ const multiSeriesWithSingleField = [
   }),
 ];
 
-let spyConsoleWarn: jest.SpyInstance;
+let loggerSpy: StructuredLogger;
+let originalLogger: StructuredLogger;
 describe('FilterByValue transformer', () => {
   beforeAll(() => {
     mockTransformationsRegistry([filterByValueTransformer]);
+    originalLogger = getStructuredLogger();
   });
 
   beforeEach(() => {
-    spyConsoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    loggerSpy = {
+      info: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+      debug: jest.fn(),
+    };
+    setStructuredLogger(loggerSpy);
+  });
+
+  afterEach(() => {
+    setStructuredLogger(originalLogger);
   });
 
   it('should exclude values', async () => {
@@ -153,10 +166,8 @@ describe('FilterByValue transformer', () => {
         },
       ]);
 
-      expect(console.warn).toHaveBeenCalledTimes(2);
+      expect(loggerSpy.warn).toHaveBeenCalledTimes(2);
     });
-
-    spyConsoleWarn.mockRestore();
   });
 
   it('should not cross frame boundaries', async () => {
@@ -211,7 +222,7 @@ describe('FilterByValue transformer', () => {
         },
       ]);
 
-      expect(console.warn).toHaveBeenCalledTimes(1);
+      expect(loggerSpy.warn).toHaveBeenCalledTimes(1);
     });
   });
 

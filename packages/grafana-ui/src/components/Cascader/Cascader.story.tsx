@@ -1,3 +1,4 @@
+import { logInfo } from '@grafana/data';
 import { StoryFn, Meta } from '@storybook/react';
 import { useId, useState } from 'react';
 
@@ -6,7 +7,7 @@ import { Field } from '../Forms/Field';
 import { Cascader, CascaderOption } from './Cascader';
 import mdx from './Cascader.mdx';
 
-const onSelect = (val: string) => console.log(val);
+const onSelect = (val: string) => logInfo(val);
 const options = [
   {
     label: 'First',

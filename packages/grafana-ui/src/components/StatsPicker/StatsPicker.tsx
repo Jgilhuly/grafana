@@ -1,7 +1,7 @@
 import { difference } from 'lodash';
 import { memo, useEffect } from 'react';
 
-import { fieldReducers, SelectableValue, FieldReducerInfo } from '@grafana/data';
+import { fieldReducers, SelectableValue, FieldReducerInfo, logWarning } from '@grafana/data';
 
 import { Select } from '../Select/Select';
 
@@ -36,13 +36,13 @@ export const StatsPicker = memo<Props>(
       if (current.length !== stats.length) {
         const found = current.map((v) => v.id);
         const notFound = difference(stats, found);
-        console.warn('Unknown stats', notFound, stats);
+        logWarning('Unknown stats', notFound, stats);
         onChange(current.map((stat) => stat.id));
       }
 
       // Make sure there is only one
       if (!allowMultiple && stats.length > 1) {
-        console.warn('Removing extra stat', stats);
+        logWarning('Removing extra stat', stats);
         onChange([stats[0]]);
       }
 

@@ -1,3 +1,5 @@
+import { logError } from '@grafana/data';
+
 import { reportPerformance } from '../services/echo/EchoSrv';
 
 export function startMeasure(eventName: string) {
@@ -8,7 +10,7 @@ export function startMeasure(eventName: string) {
   try {
     performance.mark(`${eventName}_started`);
   } catch (error) {
-    console.error(`[Metrics] Failed to startMeasure ${eventName}`, error);
+    logError(`[Metrics] Failed to startMeasure ${eventName}`, error);
   }
 }
 
@@ -31,7 +33,7 @@ export function stopMeasure(eventName: string) {
     performance.clearMeasures(measured);
     return measure;
   } catch (error) {
-    console.error(`[Metrics] Failed to stopMeasure ${eventName}`, error);
+    logError(`[Metrics] Failed to stopMeasure ${eventName}`, error);
     return;
   }
 }

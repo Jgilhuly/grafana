@@ -1,6 +1,7 @@
 import memoizeOne from 'memoize-one';
 import { useEffect, useState } from 'react';
 
+import { logError } from '@grafana/data';
 import { Spec as DashboardV2Spec } from '@grafana/schema/dist/esm/schema/dashboard/v2';
 import { getDashboardAPI } from 'app/features/dashboard/api/dashboard_api';
 import { DashboardWithAccessInfo } from 'app/features/dashboard/api/types';
@@ -36,7 +37,7 @@ export function useDashboardQuery(dashboardUid?: string) {
           } else if (isDashboardV2Resource(dashboardDTO)) {
             setDashboard(dashboardDTO);
           } else {
-            console.error('Something went wrong, unexpected dashboard format');
+            logError('Something went wrong, unexpected dashboard format');
           }
           setIsFetching(false);
         });

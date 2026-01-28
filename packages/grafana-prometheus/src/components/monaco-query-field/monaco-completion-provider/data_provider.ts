@@ -1,4 +1,4 @@
-import { HistoryItem, TimeRange } from '@grafana/data';
+import { HistoryItem, logWarning, TimeRange } from '@grafana/data';
 
 import { DEFAULT_COMPLETION_LIMIT, METRIC_LABEL } from '../../../constants';
 import { type PrometheusLanguageProviderInterface } from '../../../language_provider';
@@ -80,7 +80,7 @@ export class DataProvider {
 
       return Array.isArray(result) ? result : [];
     } catch (error) {
-      console.warn('Failed to query metric names:', error);
+      logWarning('Failed to query metric names:', error);
       return [];
     }
   };

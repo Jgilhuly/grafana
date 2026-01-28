@@ -1,5 +1,6 @@
 import { SyntaxNode } from '@lezer/common';
 
+import { logError } from '@grafana/data';
 import {
   And,
   BinOpExpr,
@@ -105,7 +106,7 @@ export function buildVisualQueryFromString(expr: string): Context {
     handleExpression(replacedExpr, node, context);
   } catch (err) {
     // Not ideal to log it here, but otherwise we would lose the stack trace.
-    console.error(err);
+    logError(err);
     if (err instanceof Error) {
       context.errors.push({
         text: err.message,

@@ -1,4 +1,4 @@
-import { locationUtil, UrlQueryMap } from '@grafana/data';
+import { locationUtil, UrlQueryMap, logError, logInfo } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, getBackendSrv, getDataSourceSrv, isFetchError, locationService } from '@grafana/runtime';
 import { sceneGraph } from '@grafana/scenes';
@@ -344,7 +344,7 @@ abstract class DashboardScenePageStateManagerBase<T>
       });
 
       if (!isFetchError(err)) {
-        console.error('Error loading dashboard:', err);
+        logError('Error loading dashboard:', err);
       }
 
       // If the error is a DashboardVersionError, we want to throw it so that the error boundary is triggered
@@ -685,7 +685,7 @@ export class DashboardScenePageStateManager extends DashboardScenePageStateManag
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          logInfo('not correct url correcting', dashboardUrl, currentPath);
         }
       }
 
@@ -874,7 +874,7 @@ export class DashboardScenePageStateManagerV2 extends DashboardScenePageStateMan
             ...locationService.getLocation(),
             pathname: dashboardUrl,
           });
-          console.log('not correct url correcting', dashboardUrl, currentPath);
+          logInfo('not correct url correcting', dashboardUrl, currentPath);
         }
       }
       // Populate nav model in global store according to the folder

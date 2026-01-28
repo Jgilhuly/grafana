@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import {
   DataTransformerID,
   GrafanaTheme2,
+  logDebug,
   PanelOptionsEditorBuilder,
   PluginState,
   StandardEditorContext,
@@ -138,7 +139,7 @@ export const SetGeometryTransformerEditor = (props: Props) => {
     if (!props.options.source?.mode) {
       const opts = getDefaultOptions(supplier);
       props.onChange({ ...opts, ...props.options });
-      console.log('geometry useEffect', opts);
+      logDebug('geometry useEffect', opts);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

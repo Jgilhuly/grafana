@@ -418,15 +418,9 @@ describe('MetricsBrowserContext', () => {
 
   describe('error handling', () => {
     it('should throw error when hook is used outside provider', () => {
-      // Suppress console.error for this test
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-
       expect(() => {
         renderHook(() => useMetricsBrowser());
       }).toThrow('useMetricsBrowser must be used within a MetricsBrowserProvider');
-
-      // Restore console.error
-      (console.error as jest.Mock).mockRestore();
     });
   });
 });

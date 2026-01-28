@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom-v5-compat';
 
-import { SelectableValue, GrafanaTheme2, PluginType } from '@grafana/data';
+import { logError, SelectableValue, GrafanaTheme2, PluginType } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { locationSearchToObject } from '@grafana/runtime';
 import { Select, RadioButtonGroup, useStyles2, Tooltip, Field, TextLink } from '@grafana/ui';
@@ -72,7 +72,7 @@ export default function Browse() {
 
   // How should we handle errors?
   if (error) {
-    console.error(error.message);
+    logError(error.message);
     return null;
   }
 

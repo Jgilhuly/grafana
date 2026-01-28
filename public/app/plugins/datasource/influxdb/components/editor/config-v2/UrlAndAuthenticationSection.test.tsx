@@ -19,8 +19,6 @@ import { createTestProps } from './helpers';
 
 describe('UrlAndAuthenticationSection', () => {
   const onOptionsChangeMock = jest.fn();
-  let consoleSpy: jest.SpyInstance;
-
   const defaultProps = createTestProps({
     options: {
       id: 1234,
@@ -61,13 +59,10 @@ describe('UrlAndAuthenticationSection', () => {
   };
 
   beforeEach(() => {
-    // Mock console.error to suppress React act() warnings
-    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.clearAllMocks();
   });
 
   afterEach(() => {
-    consoleSpy.mockRestore();
   });
 
   it('calls onOptionsChange when URL is changed', () => {

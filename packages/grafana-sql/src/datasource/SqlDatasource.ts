@@ -16,6 +16,7 @@ import {
   LegacyMetricFindQueryOptions,
   VariableWithMultiSupport,
   TimeRange,
+  logError,
 } from '@grafana/data';
 import { EditorMode } from '@grafana/plugin-ui';
 import {
@@ -214,7 +215,7 @@ export abstract class SqlDatasource extends DataSourceWithBackend<SQLQuery, SQLO
     try {
       response = await this.runMetaQuery(interpolatedQuery, range);
     } catch (error) {
-      console.error(error);
+      logError(error);
       throw new Error('error when executing the sql query');
     }
     return this.getResponseParser().transformMetricFindResponse(response);

@@ -3,7 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { handleRequestError } from '@grafana/api-clients';
 import { createBaseQuery } from '@grafana/api-clients/rtkq';
 import { generatedAPI as legacyUserAPI } from '@grafana/api-clients/rtkq/legacy/user';
-import { AppEvents, locationUtil } from '@grafana/data';
+import { AppEvents, locationUtil, logError } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, getBackendSrv, isFetchError, locationService } from '@grafana/runtime';
 import { Dashboard } from '@grafana/schema';
@@ -462,7 +462,7 @@ export const browseDashboardsAPI = createApi({
           } catch (error) {
             if (isFetchError(error)) {
               if (error.status !== 404) {
-                console.error('Error fetching dashboard', error);
+                logError('Error fetching dashboard', error);
               } else {
                 // Do not show the error alert if the dashboard does not exist
                 // this is expected when importing a new dashboard

@@ -2,13 +2,14 @@ const fs = require('fs');
 const open = require('open').default;
 const path = require('path');
 
+const { logError, logInfo } = require('./scripts/utils/structuredLogger');
 const baseConfig = require('./jest.config.js');
 
 const CODEOWNERS_MANIFEST_FILENAMES_BY_TEAM_PATH = 'codeowners-manifest/filenames-by-team.json';
 
 const codeownerName = process.env.CODEOWNER_NAME;
 if (!codeownerName) {
-  console.error('ERROR: CODEOWNER_NAME environment variable is required');
+  logError('ERROR: CODEOWNER_NAME environment variable is required');
   process.exit(1);
 }
 
@@ -17,8 +18,8 @@ const outputDir = `./coverage/by-team/${createOwnerDirectory(codeownerName)}`;
 const codeownersFilePath = path.join(__dirname, CODEOWNERS_MANIFEST_FILENAMES_BY_TEAM_PATH);
 
 if (!fs.existsSync(codeownersFilePath)) {
-  console.error(`Codeowners file not found at ${codeownersFilePath} ...`);
-  console.error('Please run: yarn codeowners-manifest first to generate the mapping file');
+  logError(`Codeowners file not found at ${codeownersFilePath} ...`);
+  logError('Please run: yarn codeowners-manifest first to generate the mapping file');
   process.exit(1);
 }
 
@@ -26,8 +27,8 @@ const codeownersData = JSON.parse(fs.readFileSync(codeownersFilePath, 'utf8'));
 const teamFiles = codeownersData[codeownerName] || [];
 
 if (teamFiles.length === 0) {
-  console.error(`ERROR: No files found for team "${codeownerName}"`);
-  console.error('Available teams:', Object.keys(codeownersData).join(', '));
+  logError(`ERROR: No files found for team "${codeownerName}"`);
+  logError('Available teams:', Object.keys(codeownersData).join(', '));
   process.exit(1);
 }
 
@@ -58,11 +59,11 @@ const testFiles = teamFiles.filter((file) => {
 });
 
 if (testFiles.length === 0) {
-  console.log(`No test files found for team ${codeownerName}`);
+  logInfo(`No test files found for team ${codeownerName}`);
   process.exit(0);
 }
 
-console.log(
+logInfo(
   `🧪 Collecting coverage for ${sourceFiles.length} testable files and running ${testFiles.length} test files of ${teamFiles.length} files owned by ${codeownerName}.`
 );
 
@@ -94,7 +95,7 @@ module.exports = {
         cleanCache: true,
         onEnd: (coverageResults) => {
           const reportURL = `file://${path.resolve(outputDir)}/index.html`;
-          console.log(`📄 Coverage report saved to ${reportURL}`);
+          logInfo(`📄 Coverage report saved to ${reportURL}`);
 
           if (process.env.SHOULD_OPEN_COVERAGE_REPORT === 'true') {
             openCoverageReport(reportURL);
@@ -139,6 +140,6 @@ async function openCoverageReport(reportURL) {
   try {
     await open(reportURL);
   } catch (err) {
-    console.error(`Failed to open coverage report: ${err}`);
+    logError(`Failed to open coverage report: ${err}`);
   }
 }

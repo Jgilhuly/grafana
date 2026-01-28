@@ -1,3 +1,4 @@
+import { logError } from '@grafana/data';
 import { config, registerEchoBackend, setEchoSrv } from '@grafana/runtime';
 import { reportMetricPerformanceMark } from 'app/core/utils/metrics';
 
@@ -28,43 +29,43 @@ export async function initEchoSrv() {
   try {
     await initPerformanceBackend();
   } catch (error) {
-    console.error('Error initializing EchoSrv Performance backend', error);
+    logError('Error initializing EchoSrv Performance backend', error);
   }
 
   try {
     await initFaroBackend();
   } catch (error) {
-    console.error('Error initializing EchoSrv Faro backend', error);
+    logError('Error initializing EchoSrv Faro backend', error);
   }
 
   try {
     await initGoogleAnalyticsBackend();
   } catch (error) {
-    console.error('Error initializing EchoSrv GoogleAnalytics backend', error);
+    logError('Error initializing EchoSrv GoogleAnalytics backend', error);
   }
 
   try {
     await initGoogleAnalaytics4Backend();
   } catch (error) {
-    console.error('Error initializing EchoSrv GoogleAnalaytics4 backend', error);
+    logError('Error initializing EchoSrv GoogleAnalaytics4 backend', error);
   }
 
   try {
     await initRudderstackBackend();
   } catch (error) {
-    console.error('Error initializing EchoSrv Rudderstack backend', error);
+    logError('Error initializing EchoSrv Rudderstack backend', error);
   }
 
   try {
     await initAzureAppInsightsBackend();
   } catch (error) {
-    console.error('Error initializing EchoSrv AzureAppInsights backend', error);
+    logError('Error initializing EchoSrv AzureAppInsights backend', error);
   }
 
   try {
     await initConsoleBackend();
   } catch (error) {
-    console.error('Error initializing EchoSrv Console backend', error);
+    logError('Error initializing EchoSrv Console backend', error);
   }
 }
 

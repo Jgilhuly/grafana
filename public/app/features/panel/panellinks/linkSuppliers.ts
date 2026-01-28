@@ -8,6 +8,7 @@ import {
   InterpolateFunction,
   Labels,
   LinkModelSupplier,
+  logWarning,
   ScopedVar,
   ScopedVars,
 } from '@grafana/data';
@@ -124,7 +125,7 @@ export const getFieldLinksSupplier = (value: FieldDisplay): LinkModelSupplier<Fi
           };
         }
       } else {
-        console.log('VALUE', value);
+        logWarning('Unexpected link value', value);
       }
 
       const replace: InterpolateFunction = (value: string, vars: ScopedVars | undefined, fmt?: string | Function) => {

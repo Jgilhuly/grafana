@@ -5,6 +5,7 @@ import {
   OrgRole,
   rangeUtil,
   WithAccessControlMetadata,
+  logError,
   userHasPermission,
   userHasPermissionInMetadata,
   userHasAnyPermission,
@@ -112,7 +113,7 @@ export class ContextSrv {
         reloadcache: true,
       });
     } catch (e) {
-      console.error(e);
+      logError(e);
     }
   }
 
@@ -262,7 +263,7 @@ export class ContextSrv {
         }
       })
       .catch((e) => {
-        console.error(e);
+        logError(e);
       });
   }
 }

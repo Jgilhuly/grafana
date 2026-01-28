@@ -24,6 +24,8 @@ We strongly advise using these recommended methods instead of direct API calls b
 `datasource.languageProvider.fetchLabels()` can be used to fetch label names from the connected Loki data source. Labels are essential for selecting and filtering log data. You can use this method to retrieve labels, providing a foundation for various data manipulation tasks within your app plugin.
 
 ```ts
+import { logError, logInfo } from '@grafana/data';
+import { logError, logInfo } from '@grafana/data';
 /**
  * Fetch label keys using the best applicable endpoint.
  *
@@ -44,9 +46,9 @@ async function fetchLabels(options?: { streamSelector?: string; timeRange?: Time
 
 try {
   const labelKeys = await fetchLabels();
-  console.log(labelKeys);
+  logInfo(labelKeys);
 } catch (error) {
-  console.error(`Error fetching label keys: ${error.message}`);
+  logError(`Error fetching label keys: ${error.message}`);
 }
 ```
 
@@ -55,6 +57,7 @@ try {
 The `datasource.languageProvider.fetchLabelValues()` method is designed for fetching label values. This API enables you to retrieve the values associated with a particular label.
 
 ```ts
+import { logError, logInfo } from '@grafana/data';
 /**
  * Fetch label values
  *
@@ -80,9 +83,9 @@ async function fetchLabelValues(
 const labelName = 'job';
 try {
   const values = await fetchLabelValues(labelName);
-  console.log(values);
+  logInfo(values);
 } catch (error) {
-  console.error(`Error fetching label values: ${error.message}`);
+  logError(`Error fetching label values: ${error.message}`);
 }
 
 /**
@@ -93,9 +96,9 @@ const labelName = 'job';
 const streamSelector = '{app="grafana"}';
 try {
   const values = await fetchLabelValues(labelName, { streamSelector });
-  console.log(values);
+  logInfo(values);
 } catch (error) {
-  console.error(`Error fetching label values: ${error.message}`);
+  logError(`Error fetching label values: ${error.message}`);
 }
 ```
 
@@ -104,6 +107,7 @@ try {
 `datasource.languageProvider.fetchSeriesLabels` can be used to fetch available labels for a given stream selector.
 
 ```ts
+import { logError, logInfo } from '@grafana/data';
 /**
  * Fetch series labels for a selector
  *
@@ -127,9 +131,9 @@ async function fetchSeriesLabels(
 const streamSelector = '{job="grafana"}';
 try {
   const labels = await fetchSeriesLabels(streamSelector);
-  console.log(labels);
+  logInfo(labels);
 } catch (error) {
-  console.error(`Error fetching labels: ${error.message}`);
+  logError(`Error fetching labels: ${error.message}`);
 }
 ```
 
@@ -175,9 +179,9 @@ async function getParserAndLabelKeys(
 const streamSelector = '{job="grafana"}';
 try {
   const parserAndLabelKeys = await getParserAndLabelKeys(streamSelector, { maxLines: 5 });
-  console.log(parserAndLabelKeys);
+  logInfo(parserAndLabelKeys);
 } catch (error) {
-  console.error(`Error fetching parser and label keys: ${error.message}`);
+  logError(`Error fetching parser and label keys: ${error.message}`);
 }
 ```
 

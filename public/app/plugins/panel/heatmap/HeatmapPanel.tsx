@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { useMemo, useRef, useState } from 'react';
 
-import { DashboardCursorSync, PanelProps, TimeRange } from '@grafana/data';
+import { DashboardCursorSync, logError, PanelProps, TimeRange } from '@grafana/data';
 import { PanelDataErrorView } from '@grafana/runtime';
 import { ScaleDistributionConfig } from '@grafana/schema';
 import {
@@ -54,7 +54,7 @@ export const HeatmapPanel = (props: HeatmapPanelProps) => {
         timeRange,
       });
     } catch (ex) {
-      console.error(ex);
+      logError(ex);
       return { warning: `${ex}` };
     }
   }, [data.series, data.annotations, options, palette, theme, replaceVariables, timeRange]);

@@ -1,3 +1,4 @@
+import { getStructuredLogger, setStructuredLogger } from '@grafana/data';
 import { getPanelPlugin } from '@grafana/data/test';
 import { setPluginImportUtils } from '@grafana/runtime';
 import { SceneGridLayout, SceneVariableSet, TestVariable, VizPanel } from '@grafana/scenes';
@@ -149,16 +150,16 @@ describe('PanelRepeaterGridItem', () => {
       throwError: 'Error',
     });
 
-    // we expect console.error when variable encounters an error
-    const origError = console.error;
-    console.error = jest.fn();
+    const previousLogger = getStructuredLogger();
+    const errorSpy = jest.fn();
+    setStructuredLogger({ ...previousLogger, error: errorSpy });
 
     activateFullSceneTree(scene);
 
     await new Promise((r) => setTimeout(r, 10));
 
     expect(repeater.state.body.state.$variables?.state.variables[0].getValue()).toBe('');
-    console.error = origError;
+    setStructuredLogger(previousLogger);
   });
 
   it('Should adjust container height to fit panels direction is horizontal', async () => {

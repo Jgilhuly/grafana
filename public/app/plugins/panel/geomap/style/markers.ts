@@ -2,7 +2,7 @@ import { Fill, RegularShape, Stroke, Circle, Style, Icon, Text } from 'ol/style'
 import type { FlatStyle } from 'ol/style/flat';
 import tinycolor from 'tinycolor2';
 
-import { Registry, RegistryItem, textUtil } from '@grafana/data';
+import { logError, Registry, RegistryItem, textUtil } from '@grafana/data';
 import { config } from '@grafana/runtime';
 import { getPublicOrAbsoluteUrl } from 'app/features/dimensions/resource';
 
@@ -297,7 +297,7 @@ async function prepareSVG(url: string, size?: number, backgroundOpacity?: number
       return `data:image/svg+xml,${svgURI}`;
     })
     .catch((error) => {
-      console.error(error); // eslint-disable-line no-console
+      logError(error);
       return '';
     });
 }

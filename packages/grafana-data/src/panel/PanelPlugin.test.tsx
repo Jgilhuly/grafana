@@ -10,11 +10,29 @@ import { FieldConfigProperty, FieldConfigPropertyItem } from '../types/fieldOver
 import { PanelMigrationModel } from '../types/panel';
 import { VisualizationSuggestionsBuilder, VisualizationSuggestionScore } from '../types/suggestions';
 import { PanelOptionsEditorBuilder } from '../utils/OptionsUIBuilders';
+import { getStructuredLogger, setStructuredLogger, type StructuredLogger } from '../utils/structuredLogging';
 
 import { PanelPlugin } from './PanelPlugin';
 import { getPanelDataSummary } from './suggestions/getPanelDataSummary';
 
 describe('PanelPlugin', () => {
+  let originalLogger: StructuredLogger;
+
+  const createLoggerSpy = (): StructuredLogger => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  });
+
+  beforeAll(() => {
+    originalLogger = getStructuredLogger();
+  });
+
+  afterEach(() => {
+    setStructuredLogger(originalLogger);
+  });
+
   describe('declarative options', () => {
     beforeAll(() => {
       standardFieldConfigEditorRegistry.setInit(() => {
@@ -523,7 +541,8 @@ describe('PanelPlugin', () => {
     });
 
     it('should not throw for the old syntax, but also should not register suggestions', () => {
-      jest.spyOn(console, 'warn').mockImplementation();
+      const loggerSpy = createLoggerSpy();
+      setStructuredLogger(loggerSpy);
 
       class DeprecatedSuggestionsSupplier {
         getSuggestionsForData(builder: VisualizationSuggestionsBuilder): void {
@@ -544,7 +563,7 @@ describe('PanelPlugin', () => {
       expect(() => {
         panel.setSuggestionsSupplier(new DeprecatedSuggestionsSupplier());
       }).not.toThrow();
-      expect(console.warn).toHaveBeenCalled();
+      expect(loggerSpy.warn).toHaveBeenCalled();
       expect(
         panel.getSuggestions(
           getPanelDataSummary([
@@ -557,7 +576,7 @@ describe('PanelPlugin', () => {
     });
 
     it('should support the deprecated pattern of getSuggestionsSupplier with builder', () => {
-      jest.spyOn(console, 'warn').mockImplementation();
+      setStructuredLogger(createLoggerSpy());
 
       const panel = new PanelPlugin(() => <div>Panel</div>).setSuggestionsSupplier((ds) => {
         if (!ds.hasFieldType(FieldType.number)) {

@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
 
-import { PageLayoutType } from '@grafana/data';
+import { logError, PageLayoutType } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
 import { SceneComponentProps, SceneObjectBase, behaviors, sceneGraph } from '@grafana/scenes';
@@ -149,7 +149,7 @@ export class GeneralSettingsEditView
       const liveNow = this.getLiveNowTimer();
       enable ? liveNow.enable() : liveNow.disable();
     } catch (err) {
-      console.error(err);
+      logError(err);
     }
   };
 
