@@ -660,6 +660,9 @@ export const versionedComponents = {
       item: {
         '12.0.0': (type: string) => `data-testid outline item ${type}`,
       },
+      searchInput: {
+        '12.0.0': 'data-testid outline search input',
+      },
     },
     ElementEditPane: {
       variableType: {

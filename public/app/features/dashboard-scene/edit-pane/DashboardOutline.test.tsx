@@ -139,4 +139,99 @@ describe('DashboardOutline', () => {
       });
     });
   });
+
+  describe('search functionality', () => {
+    it('should render search input', () => {
+      const scene = buildTestScene();
+      scene.state.editPane.enableSelection();
+
+      render(
+        <ElementSelectionContext.Provider value={scene.state.editPane.state.selectionContext}>
+          <WrapSidebar>
+            <DashboardOutline editPane={scene.state.editPane} isEditing={true} />
+          </WrapSidebar>
+        </ElementSelectionContext.Provider>
+      );
+
+      const searchInput = screen.getByTestId('outline search input');
+      expect(searchInput).toBeInTheDocument();
+      expect(searchInput).toHaveAttribute('placeholder', 'Search by name, type, or plugin');
+    });
+
+    it('should filter items by name', async () => {
+      const user = userEvent.setup();
+      const scene = buildTestScene();
+      scene.state.editPane.enableSelection();
+
+      render(
+        <ElementSelectionContext.Provider value={scene.state.editPane.state.selectionContext}>
+          <WrapSidebar>
+            <DashboardOutline editPane={scene.state.editPane} isEditing={true} />
+          </WrapSidebar>
+        </ElementSelectionContext.Provider>
+      );
+
+      const searchInput = screen.getByTestId('outline search input');
+
+      // Before search, all items should be visible
+      expect(screen.getByTestId(selectors.components.PanelEditor.Outline.item('Row level 1'))).toBeInTheDocument();
+      expect(screen.getByTestId(selectors.components.PanelEditor.Outline.item('Row level 2'))).toBeInTheDocument();
+
+      // Search for "Panel"
+      await user.type(searchInput, 'Panel');
+
+      // Now only items matching "Panel" should be visible
+      expect(screen.queryByText('Row level 1')).not.toBeInTheDocument();
+      expect(screen.queryByText('Row level 2')).not.toBeInTheDocument();
+      expect(screen.getByText('Panel level 4 - A')).toBeInTheDocument();
+    });
+
+    it('should auto-expand containers when searching', async () => {
+      const user = userEvent.setup();
+      const scene = buildTestScene();
+      scene.state.editPane.enableSelection();
+
+      render(
+        <ElementSelectionContext.Provider value={scene.state.editPane.state.selectionContext}>
+          <WrapSidebar>
+            <DashboardOutline editPane={scene.state.editPane} isEditing={true} />
+          </WrapSidebar>
+        </ElementSelectionContext.Provider>
+      );
+
+      const searchInput = screen.getByTestId('outline search input');
+
+      // Search for "Panel level 4"
+      await user.type(searchInput, 'Panel level 4');
+
+      // The panel should be visible even though it's nested deep
+      expect(screen.getByText('Panel level 4 - A')).toBeInTheDocument();
+    });
+
+    it('should clear filters when search is cleared', async () => {
+      const user = userEvent.setup();
+      const scene = buildTestScene();
+      scene.state.editPane.enableSelection();
+
+      render(
+        <ElementSelectionContext.Provider value={scene.state.editPane.state.selectionContext}>
+          <WrapSidebar>
+            <DashboardOutline editPane={scene.state.editPane} isEditing={true} />
+          </WrapSidebar>
+        </ElementSelectionContext.Provider>
+      );
+
+      const searchInput = screen.getByTestId('outline search input');
+
+      // Search for "Panel"
+      await user.type(searchInput, 'Panel');
+      expect(screen.queryByText('Row level 1')).not.toBeInTheDocument();
+
+      // Clear search
+      await user.clear(searchInput);
+
+      // All items should be visible again
+      expect(screen.getByTestId(selectors.components.PanelEditor.Outline.item('Row level 1'))).toBeInTheDocument();
+    });
+  });
 });
