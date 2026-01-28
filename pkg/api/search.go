@@ -36,6 +36,12 @@ func (hs *HTTPServer) Search(c *contextmodel.ReqContext) response.Response {
 	c, span := hs.injectSpan(c, "api.Search")
 	defer span.End()
 
+	// Check authorization for deleted searches before any delegation
+	deleted := c.Query("deleted")
+	if deleted == "true" && c.GetOrgRole() != org.RoleAdmin {
+		return response.Error(http.StatusUnauthorized, "Unauthorized", nil)
+	}
+
 	// Check if we should delegate to K8s API
 	if hs.Features.IsEnabledGlobally(featuremgmt.FlagUnifiedStorageSearchUI) {
 		return hs.searchViaK8sAPI(c)
@@ -49,12 +55,7 @@ func (hs *HTTPServer) Search(c *contextmodel.ReqContext) response.Response {
 	page := c.QueryInt64("page")
 	dashboardType := c.Query("type")
 	sort := c.Query("sort")
-	deleted := c.Query("deleted")
 	permission := dashboardaccess.PERMISSION_VIEW
-
-	if deleted == "true" && c.GetOrgRole() != org.RoleAdmin {
-		return response.Error(http.StatusUnauthorized, "Unauthorized", nil)
-	}
 
 	if limit > 5000 {
 		return response.Error(http.StatusUnprocessableEntity, "Limit is above maximum allowed (5000), use page parameter to access hits beyond limit", nil)
@@ -126,6 +127,14 @@ func (hs *HTTPServer) Search(c *contextmodel.ReqContext) response.Response {
 
 // searchViaK8sAPI delegates search requests to the K8s API and transforms the response
 func (hs *HTTPServer) searchViaK8sAPI(c *contextmodel.ReqContext) response.Response {
+	// Check for unsupported deprecated ID parameters
+	if len(c.QueryStrings("dashboardIds")) > 0 {
+		return response.Error(http.StatusBadRequest, "dashboardIds parameter is not supported with unified storage, use dashboardUIDs instead", nil)
+	}
+	if len(c.QueryStrings("folderIds")) > 0 {
+		return response.Error(http.StatusBadRequest, "folderIds parameter is not supported with unified storage, use folderUIDs instead", nil)
+	}
+
 	user, err := identity.GetRequester(c.Req.Context())
 	if err != nil {
 		return response.Error(http.StatusUnauthorized, "Unauthorized", err)
@@ -257,15 +266,13 @@ func (hs *HTTPServer) addLegacySearchParamsToK8sRequest(req *rest.Request, c *co
 func (hs *HTTPServer) transformK8sSearchResultsToLegacy(k8sResults dashboardv0alpha1.SearchResults, c *contextmodel.ReqContext) model.HitList {
 	hits := make(model.HitList, 0, len(k8sResults.Hits))
 
-	// Get starred dashboards if starred filter is requested
-	var starredUIDs map[string]bool
-	if c.Query("starred") == "true" {
-		starredUIDs = hs.getStarredDashboardUIDs(c)
-	}
+	// Get starred dashboards for all searches to populate IsStarred field
+	starredUIDs := hs.getStarredDashboardUIDs(c)
+	filterByStarred := c.Query("starred") == "true"
 
 	for _, k8sHit := range k8sResults.Hits {
 		// Filter by starred if requested
-		if starredUIDs != nil && !starredUIDs[k8sHit.Name] {
+		if filterByStarred && !starredUIDs[k8sHit.Name] {
 			continue
 		}
 
@@ -275,7 +282,7 @@ func (hs *HTTPServer) transformK8sSearchResultsToLegacy(k8sResults dashboardv0al
 			Tags:      k8sHit.Tags,
 			Type:      hs.mapResourceTypeToHitType(k8sHit.Resource),
 			FolderUID: k8sHit.Folder,
-			IsStarred: starredUIDs != nil && starredUIDs[k8sHit.Name],
+			IsStarred: starredUIDs[k8sHit.Name],
 		}
 
 		// Set description if available
