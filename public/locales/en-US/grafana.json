@@ -9573,6 +9573,14 @@
     }
   },
   "label-dropdown-info": "Can't find your label? Enter it manually",
+  "labs": {
+    "empty": {
+      "message": "No feature flags are enabled"
+    },
+    "table": {
+      "flag": "Feature flag"
+    }
+  },
   "layers": {
     "layer-drag-drop-list": {
       "draggable-aria-label": "Drag and drop to reorder",
@@ -10738,6 +10746,10 @@
     },
     "kubernetes": {
       "title": "Kubernetes"
+    },
+    "labs": {
+      "subtitle": "View enabled feature flags",
+      "title": "Labs"
     },
     "library-panels": {
       "subtitle": "Reusable panels that can be added to multiple dashboards",

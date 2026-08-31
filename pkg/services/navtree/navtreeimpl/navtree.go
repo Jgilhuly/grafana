@@ -170,6 +170,8 @@ func (s *ServiceImpl) GetNavTree(c *contextmodel.ReqContext, prefs *pref.Prefere
 		return nil, err
 	}
 
+	treeRoot.AddSection(s.buildLabsNavLink())
+
 	s.addHelpLinks(treeRoot, c)
 
 	if err := s.addAppLinks(treeRoot, c); err != nil {
@@ -590,4 +592,15 @@ func (s *ServiceImpl) buildDataConnectionsNavLink(c *contextmodel.ReqContext) *n
 		return navLink
 	}
 	return nil
+}
+
+func (s *ServiceImpl) buildLabsNavLink() *navtree.NavLink {
+	return &navtree.NavLink{
+		Text:       "Labs",
+		Id:         navtree.NavIDLabs,
+		SubTitle:   "View enabled feature flags",
+		Icon:       "rocket",
+		Url:        s.cfg.AppSubURL + "/labs",
+		SortWeight: navtree.WeightLabs,
+	}
 }
