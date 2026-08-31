@@ -25,10 +25,7 @@ export default function LabsPage() {
     <Page navId="labs">
       <Page.Contents>
         {enabledFlags.length === 0 ? (
-          <EmptyState
-            variant="not-found"
-            message={t('labs.empty.message', 'No feature flags are enabled')}
-          />
+          <EmptyState variant="not-found" message={t('labs.empty.message', 'No feature flags are enabled')} />
         ) : (
           <table className="filter-table" data-testid="labs-page">
             <thead>

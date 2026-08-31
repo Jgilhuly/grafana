@@ -1,5 +1,6 @@
-import { config } from '@grafana/runtime';
 import { render, screen } from 'test/test-utils';
+
+import { config } from '@grafana/runtime';
 
 import LabsPage, { getEnabledFeatureFlags } from './LabsPage';
 
