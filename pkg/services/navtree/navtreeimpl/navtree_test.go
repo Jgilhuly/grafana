@@ -11,10 +11,12 @@ import (
 
 	contextmodel "github.com/grafana/grafana/pkg/services/contexthandler/model"
 	"github.com/grafana/grafana/pkg/services/dashboards"
+	"github.com/grafana/grafana/pkg/services/navtree"
 	"github.com/grafana/grafana/pkg/services/search/model"
 	"github.com/grafana/grafana/pkg/services/star"
 	"github.com/grafana/grafana/pkg/services/star/startest"
 	"github.com/grafana/grafana/pkg/services/user"
+	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/web"
 )
 
@@ -157,4 +159,19 @@ func TestBuildStarredItemsNavLinks(t *testing.T) {
 		require.Equal(t, "B Dashboard", navLinks[1].Text)
 		require.Equal(t, "C Dashboard", navLinks[2].Text)
 	})
+}
+
+func TestBuildLabsNavLink(t *testing.T) {
+	service := ServiceImpl{
+		cfg: setting.NewCfg(),
+	}
+	service.cfg.AppSubURL = "/grafana"
+
+	link := service.buildLabsNavLink()
+	require.Equal(t, navtree.NavIDLabs, link.Id)
+	require.Equal(t, "Labs", link.Text)
+	require.Equal(t, "View enabled feature flags", link.SubTitle)
+	require.Equal(t, "rocket", link.Icon)
+	require.Equal(t, "/grafana/labs", link.Url)
+	require.Equal(t, int64(navtree.WeightLabs), link.SortWeight)
 }
