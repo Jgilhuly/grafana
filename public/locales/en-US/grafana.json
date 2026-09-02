@@ -9721,6 +9721,14 @@
     "subtitle": "The LDAP integration in Grafana allows your Grafana users to log in with their LDAP credentials. Find out more in our <2><1>documentation</1></2>.",
     "title": "Basic Settings"
   },
+  "labs": {
+    "empty": {
+      "message": "No feature flags are enabled"
+    },
+    "table": {
+      "flag": "Feature flag"
+    }
+  },
   "library-panel": {
     "add-modal": {
       "error": "Library panel with this name already exists",
@@ -10738,6 +10746,10 @@
     },
     "kubernetes": {
       "title": "Kubernetes"
+    },
+    "labs": {
+      "subtitle": "View enabled feature flags",
+      "title": "Labs"
     },
     "library-panels": {
       "subtitle": "Reusable panels that can be added to multiple dashboards",

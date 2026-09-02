@@ -303,6 +303,12 @@ export function getAppRoutes(): RouteDescriptor[] {
         contextSrv.evaluatePermission([AccessControlAction.ActionTeamsRead, AccessControlAction.ActionTeamsCreate]),
       component: SafeDynamicImport(() => import(/* webpackChunkName: "TeamPages" */ 'app/features/teams/TeamPages')),
     },
+    {
+      path: '/labs',
+      component: SafeDynamicImport(
+        () => import(/* webpackChunkName: "LabsPage" */ 'app/features/labs/LabsPage')
+      ),
+    },
     // ADMIN
     {
       path: '/admin',

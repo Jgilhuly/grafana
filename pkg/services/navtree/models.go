@@ -37,6 +37,10 @@ const (
 	WeightHelp
 )
 
+// WeightLabs sits between plugin items and Administration so Labs appears
+// alongside Connections and Administration without shifting iota-based weights.
+const WeightLabs = -1950
+
 const (
 	NavIDRoot                 = "root"
 	NavIDDashboards           = "dashboards/browse"
@@ -55,6 +59,7 @@ const (
 	NavIDCfgPlugins           = "cfg/plugins"
 	NavIDCfgAccess            = "cfg/access"
 	NavIDBookmarks            = "bookmarks"
+	NavIDLabs                 = "labs"
 )
 
 type NavLink struct {

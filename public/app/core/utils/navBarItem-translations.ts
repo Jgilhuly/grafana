@@ -177,6 +177,8 @@ export function getNavTitle(navId: string | undefined) {
       return t('nav.search-dashboards.title', 'Search dashboards');
     case 'connections':
       return t('nav.connections.title', 'Connections');
+    case 'labs':
+      return t('nav.labs.title', 'Labs');
     case 'connections-add-new-connection':
       return t('nav.add-new-connections.title', 'Add new connection');
     case 'standalone-plugin-page-/connections/collector':
@@ -300,6 +302,8 @@ export function getNavSubTitle(navId: string | undefined) {
       return t('nav.alerts-and-incidents.subtitle', 'Alerting and incident management apps');
     case 'testing-and-synthetics':
       return t('nav.testing-and-synthetics.subtitle', 'Optimize performance with k6 and Synthetic Monitoring insights');
+    case 'labs':
+      return t('nav.labs.subtitle', 'View enabled feature flags');
     case 'connections-add-new-connection':
       return t('nav.connections.subtitle', 'Browse and create new connections');
     case 'connections-datasources':
